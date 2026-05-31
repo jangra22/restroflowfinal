@@ -1,0 +1,16 @@
+# RestoFlow Robot Directives File
+# For search engines like Googlebot, Bingbot, etc.
+
+User-agent: *
+Allow: /index.html
+Allow: /customer.html
+Allow: /css/
+Allow: /js/
+
+# Disallow access to the merchant administrative POS console for transaction privacy
+Disallow: /pos.html
+Disallow: /js/pos.js
+Disallow: /css/pos.css
+
+# Site Index reference
+Sitemap: https://restoflow.demo/sitemap.xml

@@ -1,0 +1,700 @@
+/* --- Restaurant POS & Merchant Dashboard Stylesheet ---
+ * Ganeshwaram Signature Edition
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
+:root {
+    --pos-bg: #f8f9fa;
+    --pos-bg-card: #ffffff;
+    --pos-bg-alt: #f3f4f5;
+    --pos-primary: #b02a5b; /* Brand Pink for Action Buttons */
+    --pos-primary-glow: rgba(176, 42, 91, 0.15);
+    --pos-gold: #d4af37;    /* Signature Gold for Accents & VIP */
+    --pos-border: #e0e0e0;
+    --pos-border-hover: #d0c5af;
+    --pos-text: #191c1d;    /* Deep Charcoal for high contrast readability */
+    --pos-text-secondary: #7f7663;
+    --pos-muted: #adb4b6;
+    
+    /* Semantic Status Colors */
+    --status-free: #10b981;    /* Emerald green */
+    --status-dining: #f59e0b;  /* Amber */
+    --status-billing: #3b82f6; /* Blue */
+    --status-alert: #ef4444;   /* Crimson red */
+    
+    --radius-pos: 16px;
+    --transition-pos: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--pos-bg);
+    color: var(--pos-text);
+    font-family: 'Inter', -apple-system, sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+}
+
+/* --- Login Overlay --- */
+.login-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(248, 249, 250, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-pos);
+}
+.login-card {
+    background: var(--pos-bg-card);
+    border: 1px solid var(--pos-border);
+    border-radius: var(--radius-pos);
+    padding: 3rem;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.06);
+    text-align: center;
+}
+.login-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.85rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: var(--pos-text);
+}
+.login-logo span { color: var(--pos-gold); }
+
+.pin-display {
+    background: var(--pos-bg-alt);
+    border: 1px solid var(--pos-border);
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: 2rem;
+    letter-spacing: 0.5rem;
+    color: var(--pos-text);
+    margin-bottom: 1.5rem;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.pin-pad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+}
+.pin-btn {
+    background: var(--pos-bg-card);
+    border: 1px solid var(--pos-border);
+    color: var(--pos-text);
+    font-size: 1.5rem;
+    font-weight: 600;
+    padding: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    transition: var(--transition-pos);
+}
+.pin-btn:active {
+    background: var(--pos-primary);
+    color: white;
+    transform: scale(0.95);
+}
+
+/* --- Layout Navigation Sidebar --- */
+aside {
+    width: 260px;
+    background: var(--pos-bg-card);
+    border-right: 1px solid var(--pos-border);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.5rem 1rem;
+    box-shadow: 4px 0 20px rgba(0,0,0,0.02);
+}
+
+.brand-section {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-left: 0.5rem;
+    margin-bottom: 2.5rem;
+}
+.brand-icon {
+    width: 28px;
+    height: 28px;
+    background: var(--pos-primary);
+    color: white;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    box-shadow: 0 2px 6px rgba(176, 42, 91, 0.3);
+}
+.brand-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--pos-text);
+}
+.brand-name span { color: var(--pos-gold); }
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.85rem 1rem;
+    color: var(--pos-text-secondary);
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition-pos);
+}
+.nav-link:hover {
+    color: var(--pos-primary);
+    background: rgba(176, 42, 91, 0.05);
+}
+.nav-link.active {
+    color: white;
+    background: var(--pos-primary);
+    box-shadow: 0 4px 12px var(--pos-primary-glow);
+}
+
+.staff-info {
+    border-top: 1px solid var(--pos-border);
+    padding-top: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.staff-details h5 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--pos-text);
+}
+.staff-details span {
+    font-size: 0.75rem;
+    color: var(--pos-primary);
+    font-weight: 600;
+}
+
+/* --- Main Screen Wrapper --- */
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 100vh;
+}
+
+/* Page View Active Toggle */
+.pos-view-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+/* --- View 1: POS Billing Interface --- */
+.billing-workspace {
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap: 1.5rem;
+    height: 100%;
+    overflow: hidden;
+}
+
+.table-layout-card {
+    background: var(--pos-bg-card);
+    border: 1px solid var(--pos-border);
+    border-radius: var(--radius-pos);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+}
+.table-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+    overflow-y: auto;
+    flex: 1;
+    padding-right: 0.5rem;
+}
+.table-node {
+    background: var(--pos-bg-alt);
+    border: 1px solid var(--pos-border);
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.01);
+    transition: var(--transition-pos);
+    position: relative;
+}
+.table-node:hover {
+    border-color: var(--pos-border-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+}
+.table-node.selected {
+    border-color: var(--pos-gold);
+    background: var(--pos-bg-card);
+    box-shadow: 0 0 15px rgba(212,175,55,0.15);
+}
+.table-node.free .table-status-pill { background: var(--status-free); }
+.table-node.dining .table-status-pill { background: var(--status-dining); }
+.table-node.billing .table-status-pill { background: var(--status-billing); }
+
+.table-status-pill {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    position: absolute;
+    top: 8px; right: 8px;
+}
+.table-node h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    color: var(--pos-text);
+}
+.table-node span {
+    font-size: 0.8rem;
+    color: var(--pos-text-secondary);
+}
+
+/* POS Right Terminal Panel */
+.checkout-terminal-card {
+    background: var(--pos-bg-card);
+    border: 1px solid var(--pos-border);
+    border-radius: var(--radius-pos);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+}
+.terminal-receipt-desk {
+    flex: 1;
+    overflow-y: auto;
+    border: 1px dashed var(--pos-border);
+    border-radius: 8px;
+    padding: 1rem;
+    background: var(--pos-bg-alt);
+    margin: 1rem 0;
+}
+.receipt-header {
+    text-align: center;
+    border-bottom: 1px dashed var(--pos-border);
+    padding-bottom: 0.75rem;
+    margin-bottom: 1rem;
+}
+.receipt-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    margin-bottom: 0.4rem;
+    color: var(--pos-text);
+}
+.receipt-row.total {
+    border-top: 1px dashed var(--pos-border);
+    padding-top: 0.5rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+/* --- View 2: KDS Kitchen Display System --- */
+.kds-board {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    align-items: start;
+}
+.kds-card {
+    background: var(--pos-bg-card);
+    border: 1px solid var(--pos-border);
+    border-radius: var(--radius-pos);
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+}
+.kds-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--pos-border);
+    padding-bottom: 0.5rem;
+}
+.kds-badge {
+    padding: 0.25rem 0.6rem;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    background: var(--pos-primary);
+    color: white;
+}
+.kds-badge.pending { background: var(--status-dining); color: black; }
+.kds-badge.cooking { background: var(--pos-primary); color: white; }
+.kds-badge.ready { background: var(--status-billing); color: white; }
+
+.kds-items {
+    font-size: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    color: var(--pos-text);
+}
+.kds-btn-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+}
+.kds-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+/* --- View 3: Inventory Control Screen --- */
+.pos-table-card {
+    background: var(--pos-bg-card);
+    border: 1px solid var(--pos-border);
+    border-radius: var(--radius-pos);
+    padding: 1.5rem;
+    overflow-x: auto;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+}
+.pos-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    text-align: left;
+    color: var(--pos-text);
+}
+.pos-table th {
+    border-bottom: 2px solid var(--pos-border);
+    padding: 1rem;
+    color: var(--pos-text-secondary);
+    font-weight: 600;
+}
+.pos-table td {
+    border-bottom: 1px solid var(--pos-border);
+    padding: 1rem;
+    vertical-align: middle;
+}
+.status-tag {
+    display: inline-block;
+    padding: 0.25rem 0.6rem;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+.status-tag.in-stock { background: rgba(16, 185, 129, 0.1); color: #059669; }
+.status-tag.low-stock { background: rgba(245, 158, 11, 0.1); color: #d97706; }
+.status-tag.out-of-stock { background: rgba(239, 68, 68, 0.1); color: #dc2626; }
+
+.stock-input {
+    background: var(--pos-bg-alt);
+    border: 1px solid var(--pos-border);
+    color: var(--pos-text);
+    width: 70px;
+    padding: 0.35rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    text-align: center;
+}
+.stock-input:focus {
+    outline: none;
+    border-color: var(--pos-gold);
+}
+
+/* --- View 4: Reports Analytics Screens --- */
+.metrics-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+.metric-card {
+    background: var(--pos-bg-card);
+    border: 1px solid var(--pos-border);
+    border-radius: var(--radius-pos);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+}
+.metric-card h5 {
+    color: var(--pos-text-secondary);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.metric-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--pos-text);
+}
+
+.charts-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+.chart-box {
+    background: var(--pos-bg-card);
+    border: 1px solid var(--pos-border);
+    border-radius: var(--radius-pos);
+    padding: 1.5rem;
+    height: 350px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+}
+.chart-box h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--pos-text);
+}
+
+/* --- Security Audits Panel --- */
+.logs-console {
+    background: #111314;
+    border: 1px solid var(--pos-border);
+    border-radius: 8px;
+    padding: 1.25rem;
+    font-family: monospace;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    height: 500px;
+    overflow-y: auto;
+    color: #34d399; /* Neo matrix console green */
+    box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);
+}
+.log-entry {
+    margin-bottom: 0.4rem;
+    display: flex;
+    gap: 1rem;
+}
+.log-entry.level-WARNING { color: #fbbf24; }
+.log-entry.level-DANGER { color: #f87171; }
+.log-time { color: #6b7280; }
+
+/* --- General Grid UI helper rules --- */
+.dashboard-grid-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--pos-text);
+}
+.btn-pos-primary {
+    background: var(--pos-primary);
+    color: white;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition-pos);
+    box-shadow: 0 4px 12px var(--pos-primary-glow);
+}
+.btn-pos-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px var(--pos-primary-glow);
+}
+.btn-pos-primary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.btn-pos-secondary {
+    background: transparent;
+    color: var(--pos-text);
+    border: 1px solid var(--pos-border);
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: var(--transition-pos);
+}
+.btn-pos-secondary:hover {
+    background: var(--pos-bg-alt);
+    border-color: var(--pos-border-hover);
+}
+
+/* --- Premium Dialog Modal --- */
+.modal {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(25, 28, 29, 0.4);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: var(--transition-pos);
+}
+.modal.open {
+    opacity: 1;
+    pointer-events: all;
+}
+.modal-content {
+    background: var(--pos-bg-card);
+    border: 1px solid var(--pos-border);
+    border-radius: var(--radius-pos);
+    padding: 2.5rem;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    position: relative;
+    transform: scale(0.95);
+    transition: var(--transition-pos);
+}
+.modal.open .modal-content {
+    transform: scale(1);
+}
+.close-modal {
+    position: absolute;
+    top: 1.25rem; right: 1.25rem;
+    background: transparent;
+    border: none;
+    color: var(--pos-text-secondary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: var(--transition-pos);
+}
+.close-modal:hover {
+    color: var(--pos-text);
+}
+
+/* --- Live Online Orders Desk Layout --- */
+.aggregator-orders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+.aggregator-card {
+    background: var(--pos-bg-card);
+    border: 1px solid var(--pos-border);
+    border-radius: var(--radius-pos);
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    display: flex;
+    flex-direction: column;
+}
+.aggregator-card-header {
+    padding: 1rem 1.25rem;
+    color: white;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.aggregator-card-header.zomato {
+    background: #e23744;
+}
+.aggregator-card-header.swiggy {
+    background: #fc8019;
+}
+.aggregator-logo-badge {
+    padding: 0.2rem 0.5rem;
+    background: rgba(255,255,255,0.2);
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+.aggregator-card-body {
+    padding: 1.25rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.aggregator-items-list {
+    margin: 1rem 0;
+    padding: 0.75rem;
+    background: var(--pos-bg-alt);
+    border-radius: 8px;
+    font-size: 0.85rem;
+}
+
+/* Pulsing Active Indicator */
+.pulse-dot {
+    width: 8px;
+    height: 8px;
+    background: #10b981;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    animation: pulse 1.6s infinite;
+    vertical-align: middle;
+    margin-right: 0.5rem;
+}
+@keyframes pulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+/* CRM Quick Input Desk */
+.pos-crm-lookup-box {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--pos-bg-alt);
+    border: 1px solid var(--pos-border);
+    border-radius: 8px;
+}
+.pos-crm-input-group {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+

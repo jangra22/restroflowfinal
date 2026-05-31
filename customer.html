@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ganeshwaram | Premium Digital Dining & QR Order Portal</title>
+    <meta name="description" content="Secure and fast contactless table ordering app by Ganeshwaram. Browse artisanal recipes, request customizations, and pay instantly.">
+    <!-- PWA Configurations -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#f8f9fa">
+    
+    <link rel="stylesheet" href="css/customer.css">
+</head>
+<body>
+
+    <!-- IOS Fixed Header -->
+    <header class="mobile-header">
+        <div class="header-top">
+            <div class="brand-label">Ganeshwaram<span>.</span></div>
+            <div class="table-badge" id="table-number-badge">Table 3</div>
+        </div>
+        <div class="search-box">
+            <span>🔍</span>
+            <input type="text" id="menu-search-input" placeholder="Search paneer tikka, mango lassi, chai..." oninput="handleMenuSearch()">
+        </div>
+    </header>
+
+    <!-- Main Mobile Content Area -->
+    <main style="padding-top: 1rem;">
+        
+        <!-- View 1: Menu View -->
+        <section id="view-menu" class="mobile-view">
+            <!-- Categories swipe slider -->
+            <div class="categories-slider" id="categories-tabs-slider">
+                <!-- Injected dynamically: Mains, Pizzas, Drinks, Desserts -->
+            </div>
+
+            <!-- Injected categories/cards -->
+            <div id="menu-items-sections-container">
+                <!-- Injected via customer.js -->
+            </div>
+        </section>
+
+        <!-- View 2: Basket View -->
+        <section id="view-basket" class="mobile-view" style="display: none; padding: 0 1rem;">
+            <h3 class="menu-section-title">Your Order Basket</h3>
+            
+            <div id="basket-items-list" class="basket-list">
+                <!-- Injected items -->
+            </div>
+
+            <!-- CRM LOYALTY WIDGET CARD -->
+            <div id="customer-loyalty-widget" class="loyalty-widget-card" style="display: none;">
+                <div class="custom-section-title">Ganeshwaram Loyalty Program</div>
+                <p style="font-size: 0.8rem; color: var(--ios-text-secondary); margin-bottom: 0.5rem;">Enter mobile number to check point balances & redeem cash discounts.</p>
+                <div class="crm-input-group">
+                    <input type="tel" id="loyalty-phone-input" class="crm-input" placeholder="Enter 10-digit Mobile No." maxlength="10">
+                    <button class="btn-crm-action" onclick="checkLoyaltyAccount()">Link Account</button>
+                </div>
+                <div id="loyalty-status-details" class="loyalty-status-box" style="display: none;"></div>
+            </div>
+
+            <!-- PROMO CODE WIDGET CARD -->
+            <div id="coupon-code-widget" class="coupon-widget-card" style="display: none;">
+                <div class="custom-section-title">Apply Promo Coupon</div>
+                <div class="crm-input-group">
+                    <input type="text" id="coupon-code-input" class="crm-input" placeholder="Enter Promo Code (e.g. WELCOME50)">
+                    <button class="btn-crm-action" onclick="applyCouponCode()">Apply Coupon</button>
+                </div>
+                <div id="coupon-status-details" style="font-size: 0.8rem; margin-top: 0.5rem; display: none; font-weight: 700;"></div>
+            </div>
+
+            <!-- PRICING SUMMARY CARD -->
+            <div id="basket-pricing-card" class="summary-card" style="display: none;">
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span id="summary-subtotal">₹0.00</span>
+                </div>
+                <div class="summary-row" id="discount-coupon-row" style="display: none; color: var(--ios-accent);">
+                    <span>Promo Coupon Discount</span>
+                    <span id="summary-coupon-discount">-₹0.00</span>
+                </div>
+                <div class="summary-row" id="discount-loyalty-row" style="display: none; color: var(--ios-accent);">
+                    <span>Loyalty Points Redeemed</span>
+                    <span id="summary-loyalty-discount">-₹0.00</span>
+                </div>
+                <div class="summary-row">
+                    <span>CGST (2.5%)</span>
+                    <span id="summary-cgst">₹0.00</span>
+                </div>
+                <div class="summary-row">
+                    <span>SGST (2.5%)</span>
+                    <span id="summary-sgst">₹0.00</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Grand Total</span>
+                    <span id="summary-total">₹0.00</span>
+                </div>
+            </div>
+
+            <!-- PAYMENT CHECKOUT SELECTION PANEL -->
+            <div id="payment-gateways-container" style="display: none;">
+                <div class="custom-section-title">Secure Billing Checkout</div>
+                
+                <div class="payment-selector">
+                    <div class="payment-option selected" id="pay-opt-upi" onclick="selectPaymentMethod('UPI')">
+                        📱 Instant UPI
+                    </div>
+                    <div class="payment-option" id="pay-opt-card" onclick="selectPaymentMethod('Card')">
+                        💳 Credit Card
+                    </div>
+                </div>
+
+                <!-- UPI Apps Grid Selector -->
+                <div id="upi-brands-container" style="display: block; margin-bottom: 1.5rem;">
+                    <div class="custom-section-title" style="font-size:0.75rem; margin-bottom: 0.4rem;">Select UPI Payment App</div>
+                    <div class="upi-brands-grid">
+                        <div class="upi-brand-pill selected" id="upi-brand-gpay" onclick="selectUPIBrand('GPay')">Google Pay</div>
+                        <div class="upi-brand-pill" id="upi-brand-paytm" onclick="selectUPIBrand('Paytm')">Paytm</div>
+                        <div class="upi-brand-pill" id="upi-brand-phonepe" onclick="selectUPIBrand('PhonePe')">PhonePe</div>
+                    </div>
+                </div>
+
+                <button class="btn-basket-action" id="btn-place-order" onclick="submitCustomerOrder()">
+                    Confirm & Send Order to Kitchen
+                </button>
+            </div>
+        </section>
+
+        <!-- View 3: Tracking View -->
+        <section id="view-tracking" class="mobile-view" style="display: none; padding: 0 1rem;">
+            <h3 class="menu-section-title">Order Processing Status</h3>
+            
+            <div id="active-tracking-cards">
+                <!-- Active order tracking injected here -->
+            </div>
+        </section>
+
+        <!-- View 4: Feedback View -->
+        <section id="view-feedback" class="mobile-view" style="display: none; padding: 0 1rem;">
+            <h3 class="menu-section-title">Share Your Experience</h3>
+            
+            <div class="tracking-container" style="margin-bottom: 2rem;">
+                <p style="font-size: 0.95rem; color: var(--ios-text-secondary);">Your table feedback goes directly to our owner dashboard to maintain absolute luxury service quality.</p>
+                
+                <div class="rating-faces">
+                    <span class="rating-face" id="face-1" onclick="selectFeedbackFace(1)">😠</span>
+                    <span class="rating-face" id="face-2" onclick="selectFeedbackFace(2)">😕</span>
+                    <span class="rating-face" id="face-3" onclick="selectFeedbackFace(3)">😐</span>
+                    <span class="rating-face" id="face-4" onclick="selectFeedbackFace(4)">🙂</span>
+                    <span class="rating-face active" id="face-5" onclick="selectFeedbackFace(5)">😍</span>
+                </div>
+
+                <div class="form-group" style="text-align: left;">
+                    <label for="feedback-comments" class="custom-section-title">What did you enjoy most?</label>
+                    <textarea id="feedback-comments" class="feedback-textarea" placeholder="Food temperature, truffles quality, server courtesy..."></textarea>
+                </div>
+
+                <button class="btn-basket-action" onclick="submitCustomerFeedback()">
+                    Submit Secure Feedback
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Sliding Add-on Customizer Drawer (iOS Style Sheet) -->
+    <div class="ios-sheet" id="customizer-sheet" onclick="closeCustomizerSheet(event)">
+        <div class="ios-sheet-content" onclick="event.stopPropagation()">
+            <div class="ios-sheet-handle"></div>
+            <h4 class="ios-sheet-title" id="cust-item-title">Customize Dish</h4>
+            <p class="ios-sheet-desc" id="cust-item-desc">Select optional preferences for your recipe.</p>
+            
+            <div class="custom-section-title">Add-ons & Variations</div>
+            <div id="cust-options-list">
+                <!-- Checkbox options injected dynamically -->
+            </div>
+
+            <button class="btn-basket-action" id="btn-add-customized-basket" onclick="addCustomizedItemToBasket()">
+                Add to Basket - <span id="cust-add-price">₹0.00</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- IOS Fixed Bottom Tab Navigator Bar -->
+    <nav class="tab-bar">
+        <button class="tab-item active" id="tab-nav-menu" onclick="switchMobileView('menu')">
+            <span class="tab-icon">📖</span>
+            Menu
+        </button>
+        <button class="tab-item" id="tab-nav-basket" onclick="switchMobileView('basket')">
+            <span class="tab-icon">🛒</span>
+            Basket
+            <span class="badge-count" id="basket-badge-count" style="display: none;">0</span>
+        </button>
+        <button class="tab-item" id="tab-nav-tracking" onclick="switchMobileView('tracking')">
+            <span class="tab-icon">⏱</span>
+            Status
+            <span class="badge-count" id="tracking-badge-count" style="display: none; background: var(--ios-orange);">!</span>
+        </button>
+        <button class="tab-item" id="tab-nav-feedback" onclick="switchMobileView('feedback')">
+            <span class="tab-icon">⭐</span>
+            Review
+        </button>
+    </nav>
+
+    <!-- Script references -->
+    <script src="js/core-state.js"></script>
+    <script src="js/customer.js"></script>
+</body>
+</html>

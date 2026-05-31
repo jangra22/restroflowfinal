@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ganeshwaram Signature | Merchant Control & Smart POS Dashboard</title>
+    <meta name="description" content="Secure administrative terminal for Ganeshwaram. Process transactions, manage inventory, and track live kitchen dockets.">
+    <link rel="stylesheet" href="css/pos.css">
+</head>
+<body>
+
+    <!-- SECURE AUTH OVERLAY GATE -->
+    <div class="login-overlay" id="merchant-login-gate">
+        <div class="login-card">
+            <div class="login-logo">
+                <div class="brand-icon">G</div>
+                Ganeshwaram<span>.</span>
+            </div>
+            <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem; font-family:'Playfair Display', serif; color: var(--pos-text);">Secure Terminal Access</h3>
+            <p style="color: var(--pos-text-secondary); font-size: 0.85rem; margin-bottom: 1.5rem;">
+                Select staff profile and enter your secure access PIN.
+            </p>
+            
+            <div class="form-group" style="text-align: left; margin-bottom: 1.25rem;">
+                <label for="login-username-select" style="font-size: 0.8rem; font-weight:600; color:var(--pos-text);">STAFF PROFILE</label>
+                <select id="login-username-select" style="background:var(--pos-bg-alt); border:1px solid var(--pos-border); padding:0.6rem; color:var(--pos-text); border-radius:6px; width:100%; font-size:0.9rem; margin-top:0.4rem; font-family:inherit;">
+                    <option value="admin">Sarah Connor (Admin)</option>
+                    <option value="manager">David Miller (Manager)</option>
+                    <option value="captain">Alex Mercer (Captain)</option>
+                    <option value="billing">Emma Watson (Billing Staff)</option>
+                </select>
+            </div>
+
+            <div class="pin-display" id="pin-secure-display"></div>
+            
+            <div class="pin-pad">
+                <button class="pin-btn" onclick="pressPin('1')">1</button>
+                <button class="pin-btn" onclick="pressPin('2')">2</button>
+                <button class="pin-btn" onclick="pressPin('3')">3</button>
+                <button class="pin-btn" onclick="pressPin('4')">4</button>
+                <button class="pin-btn" onclick="pressPin('5')">5</button>
+                <button class="pin-btn" onclick="pressPin('6')">6</button>
+                <button class="pin-btn" onclick="pressPin('7')">7</button>
+                <button class="pin-btn" onclick="pressPin('8')">8</button>
+                <button class="pin-btn" onclick="pressPin('9')">9</button>
+                <button class="pin-btn" style="background:var(--pos-bg-alt);" onclick="clearPin()">C</button>
+                <button class="pin-btn" onclick="pressPin('0')">0</button>
+                <button class="pin-btn" style="background:var(--pos-primary); color:white;" onclick="submitPin()">✔</button>
+            </div>
+            
+            <p id="login-error-msg" style="color:var(--status-alert); font-size:0.85rem; font-weight:700; margin-top:1.5rem; display:none;"></p>
+        </div>
+    </div>
+
+    <!-- MAIN SIDEBAR NAVIGATION -->
+    <aside id="merchant-sidebar" style="display: none;">
+        <div>
+            <div class="brand-section">
+                <div class="brand-icon">G</div>
+                <div class="brand-name">Ganeshwaram<span>.</span></div>
+            </div>
+            
+            <ul class="nav-links">
+                <li class="nav-link active" id="tab-nav-pos" onclick="switchDashboardTab('pos')">
+                    <span>💳</span> POS Terminal
+                </li>
+                <li class="nav-link" id="tab-nav-online" onclick="switchDashboardTab('online')">
+                    <span class="pulse-dot"></span> Online Desk
+                </li>
+                <li class="nav-link" id="tab-nav-kds" onclick="switchDashboardTab('kds')">
+                    <span>🍳</span> Kitchen Monitor
+                </li>
+                <li class="nav-link" id="tab-nav-inventory" onclick="switchDashboardTab('inventory')">
+                    <span>📦</span> Ingredients
+                </li>
+                <li class="nav-link" id="tab-nav-reports" onclick="switchDashboardTab('reports')">
+                    <span>📈</span> Reports
+                </li>
+                <li class="nav-link" id="tab-nav-security" onclick="switchDashboardTab('security')">
+                    <span>🔒</span> Security Log
+                </li>
+            </ul>
+        </div>
+
+        <div class="staff-info">
+            <div class="staff-details">
+                <h5 id="merchant-staff-name">David Miller</h5>
+                <span id="merchant-staff-role">Manager</span>
+            </div>
+            <button class="btn-pos-secondary" onclick="logoutMerchant()" style="padding:0.35rem 0.6rem; font-size:0.75rem;">Logout</button>
+        </div>
+    </aside>
+
+    <!-- CONTENT MODULE DESK -->
+    <main id="merchant-main" style="display: none;">
+        
+        <!-- View 1: POS Billing Console -->
+        <section id="view-pos-billing" class="pos-view-panel" style="display: flex;">
+            <div class="dashboard-grid-title">Dine-In Billing Counter</div>
+            
+            <div class="billing-workspace">
+                <!-- Left panel: Tables floor layout plan -->
+                <div class="table-layout-card">
+                    <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Floor Table Layout Plan</h3>
+                    <p style="color:var(--pos-text-secondary); font-size:0.8rem; margin-bottom:1rem;">Select active dining tables to pull open receipts and execute checkouts.</p>
+                    
+                    <div class="table-grid" id="pos-tables-floor-grid">
+                        <!-- Injected via pos.js -->
+                    </div>
+                </div>
+
+                <!-- Right panel: Active Ticket Detail -->
+                <div class="checkout-terminal-card">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                        <div>
+                            <h3 style="font-size: 1.1rem; font-family:'Playfair Display', serif;" id="terminal-selected-title">Receipt Terminal: Table --</h3>
+                            <p style="color:var(--pos-text-secondary); font-size:0.8rem; margin-top:0.2rem;">Verify items and click billing to close ticket.</p>
+                        </div>
+                        <button class="btn-pos-secondary" id="btn-terminal-add-items" style="display:none; padding:0.4rem 0.8rem; font-size:0.75rem;" onclick="openOrderModal()">+ Take Custom Order</button>
+                    </div>
+
+                    <div class="terminal-receipt-desk" id="terminal-active-ticket-desk">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📋</div>
+                            <p>No table selected. Click on a table layout block to print active billing ticket details.</p>
+                        </div>
+                    </div>
+
+                    <!-- CRM LOYALTY WIDGET CARD inside merchant active receipt card -->
+                    <div id="terminal-crm-widget" style="display: none; margin-bottom: 1rem;" class="pos-crm-lookup-box">
+                        <div class="custom-section-title" style="font-size:0.75rem; color:var(--pos-text); font-weight:700; margin-bottom: 0.4rem;">Customer CRM Rewards</div>
+                        <div class="pos-crm-input-group">
+                            <input type="tel" id="pos-crm-phone-input" class="stock-input" style="flex:1; text-align:left; width: 100%;" placeholder="Enter 10-digit Phone" maxlength="10">
+                            <button class="btn-pos-secondary" style="padding:0.4rem 0.8rem; font-size:0.75rem;" onclick="lookupPOSLoyalty()">CRM Search</button>
+                        </div>
+                        <div id="pos-crm-status-details" style="font-size:0.75rem; margin-top:0.6rem; display:none; color:var(--pos-text-secondary);"></div>
+                    </div>
+
+                    <div id="terminal-action-buttons-desk" style="display: none;">
+                        <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                            <button class="btn-pos-secondary" style="flex:1;" onclick="applyDiscount(10)">Add 10% Discount</button>
+                            <button class="btn-pos-secondary" style="flex:1;" onclick="applyDiscount(20)">Add 20% Discount</button>
+                        </div>
+                        <button class="btn-pos-primary" style="width: 100%;" onclick="processTerminalCheckout()">
+                            Settle Payment & Close Ticket
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- View 6: Zomato & Swiggy Online orders desk -->
+        <section id="view-pos-online" class="pos-view-panel" style="display: none;">
+            <div class="dashboard-grid-title">Aggregator Orders Desk (Zomato & Swiggy)</div>
+            <p style="color:var(--pos-text-secondary); font-size:0.85rem; margin-bottom:1.5rem;">
+                Review and dispatch incoming delivery dockets directly into cooking queues. Pulsing green dot indicates active aggregator API link.
+            </p>
+            <div class="aggregator-orders-grid" id="pos-online-aggregator-grid">
+                <!-- Aggregator cards injected dynamically by pos.js -->
+            </div>
+        </section>
+
+        <!-- View 2: KDS Kitchen Display Monitor -->
+        <section id="view-pos-kds" class="pos-view-panel" style="display: none;">
+            <div class="dashboard-grid-title">Kitchen Order Dispatch Desk (KDS)</div>
+            
+            <div class="kds-board" id="pos-kds-board-grid">
+                <!-- Live cards injected via pos.js -->
+            </div>
+        </section>
+
+        <!-- View 3: Ingredient Stocks Manager -->
+        <section id="view-pos-inventory" class="pos-view-panel" style="display: none;">
+            <div style="display: flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+                <div class="dashboard-grid-title" style="margin-bottom:0;">Ingredient Stock Inventory Desk</div>
+                <button class="btn-pos-primary" onclick="resetDefaultStock()">Refill All Standard Recipe Ingredients</button>
+            </div>
+
+            <div class="pos-table-card">
+                <table class="pos-table">
+                    <thead>
+                        <tr>
+                            <th>Ingredient Name</th>
+                            <th>Current Inventory Qty</th>
+                            <th>Critical Reorder Threshold</th>
+                            <th>Status Badge</th>
+                            <th>Inventory Modification Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pos-inventory-table-body">
+                        <!-- Injected dynamic inventory items -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- View 4: Business Intelligence & Reports -->
+        <section id="view-pos-reports" class="pos-view-panel" style="display: none;">
+            <div class="dashboard-grid-title">Business Analytics Intelligence</div>
+            
+            <!-- Statistical Summary Cards -->
+            <div class="metrics-row">
+                <div class="metric-card">
+                    <h5>Today's Gross Sales</h5>
+                    <div class="metric-number" id="rep-today-sales">₹0.00</div>
+                    <span style="color:#10b981; font-size:0.8rem; font-weight:700;">↑ 12.4% vs last week</span>
+                </div>
+                <div class="metric-card">
+                    <h5>Active Tables</h5>
+                    <div class="metric-number" id="rep-active-tables">0 / 12</div>
+                    <span style="color:var(--pos-text-secondary); font-size:0.8rem;">Dine-In occupancy count</span>
+                </div>
+                <div class="metric-card">
+                    <h5>Low Stock Alerts</h5>
+                    <div class="metric-number" id="rep-low-stocks" style="color:var(--status-dining);">0</div>
+                    <span style="color:var(--status-alert); font-size:0.8rem; font-weight:700;">Action required</span>
+                </div>
+                <div class="metric-card">
+                    <h5>Customer Rating Index</h5>
+                    <div class="metric-number" id="rep-satisfaction" style="color:#38bdf8;">4.8 ★</div>
+                    <span style="color:#10b981; font-size:0.8rem; font-weight:700;">Outstanding score</span>
+                </div>
+            </div>
+
+            <!-- Beautiful Analytical Charts Row -->
+            <div class="charts-row">
+                <!-- SVG Sales Hourly Bar Chart -->
+                <div class="chart-box">
+                    <h4>Sales Volume Analysis (Hourly)</h4>
+                    <div style="flex:1; display:flex; align-items:flex-end; gap:1.25rem; border-left:1px solid var(--pos-border); border-bottom:1px solid var(--pos-border); padding:1rem 1rem 0; margin-left:1rem;" id="svg-hourly-sales-chart">
+                        <!-- SVG elements built dynamically by pos.js -->
+                    </div>
+                </div>
+
+                <!-- SVG Popular Categories Share Chart -->
+                <div class="chart-box">
+                    <h4>Dish Categories Share (Pie Percentage)</h4>
+                    <div style="flex:1; display:flex; align-items:center; justify-content:center; position:relative;" id="svg-pie-categories-chart">
+                        <!-- SVG Pie built dynamically by pos.js -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- View 5: Access Logs & Security Audits -->
+        <section id="view-pos-security" class="pos-view-panel" style="display: none;">
+            <div class="dashboard-grid-title">Platform Access & Secure Authorization Audits</div>
+            
+            <p style="color:var(--pos-text-secondary); font-size:0.9rem; margin-bottom:1.5rem;">
+                Detailed cryptographic activity logs tracking staff authorization activities, discount additions, KOT updates, and stock inventory edits.
+            </p>
+
+            <div class="logs-console" id="pos-security-console">
+                <!-- Appended logs injected by pos.js -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- POS ORDER ENTRY POPUP -->
+    <div class="modal" id="pos-order-modal">
+        <div class="modal-content" style="max-width: 960px; display: grid; grid-template-columns: 1.3fr 1fr; gap: 2rem; padding: 2.5rem; width: 90%;">
+            <button class="close-modal" onclick="closeOrderModal()">&times;</button>
+            
+            <!-- Left Panel: Menu Items Picker -->
+            <div style="display:flex; flex-direction:column; overflow:hidden; height: 600px;">
+                <h3 style="font-size:1.6rem; margin-bottom: 0.25rem;" id="pos-order-modal-title">Take Order: Table --</h3>
+                <p style="color:var(--pos-text-secondary); font-size:0.85rem; margin-bottom:1.5rem;">Select recipe dishes from categories below to add to draft.</p>
+                
+                <!-- Horizontal slider tabs inside modal -->
+                <div class="categories-slider" id="pos-modal-categories" style="padding:0; margin-bottom:1.5rem; gap:0.5rem;">
+                    <!-- Categories pills injected dynamically -->
+                </div>
+                
+                <!-- Menu lists grid scroll area -->
+                <div style="flex:1; overflow-y:auto; padding-right:0.5rem;" id="pos-modal-menu-grid">
+                    <!-- Injected menu items list -->
+                </div>
+            </div>
+
+            <!-- Right Panel: Draft Receipt Calculations -->
+            <div style="background:rgba(0,0,0,0.25); border:1px solid var(--pos-border); border-radius:12px; padding:1.5rem; display:flex; flex-direction:column; justify-content:space-between; height: 600px; border-left:1px dashed var(--pos-border);">
+                <div>
+                    <h4 style="font-weight: 800; font-size:1.1rem; border-bottom:1px dashed var(--pos-border); padding-bottom:0.75rem; margin-bottom:1.25rem; color:white; letter-spacing:0.02em;">CURRENT TICKET DRAFT</h4>
+                    
+                    <div style="overflow-y:auto; max-height: 380px; display:flex; flex-direction:column; gap:0.85rem;" id="pos-modal-draft-list">
+                        <!-- Injected draft items lists -->
+                    </div>
+                </div>
+
+                <div>
+                    <div style="border-top:1px dashed var(--pos-border); padding-top:0.85rem; margin-bottom:1.25rem; font-size:0.95rem; display:flex; flex-direction:column; gap:0.4rem;">
+                        <div class="receipt-row">
+                            <span>Draft Subtotal</span>
+                            <span id="pos-modal-subtotal">₹0.00</span>
+                        </div>
+                        <div class="receipt-row" style="font-weight: 700; font-size:1.15rem; color:var(--pos-text);">
+                            <span>Total (incl. 5% GST)</span>
+                            <span id="pos-modal-total">₹0.00</span>
+                        </div>
+                    </div>
+                    
+                    <button class="btn-pos-primary" style="width:100%; padding:1rem; border-radius:8px; font-size:1rem;" onclick="submitPOSModalOrder()">
+                        Send to Kitchen (KOT)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script references -->
+    <script src="js/core-state.js"></script>
+    <script src="js/pos.js"></script>
+</body>
+</html>

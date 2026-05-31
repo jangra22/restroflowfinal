@@ -1,0 +1,23 @@
+{
+  "name": "restoflow-restaurant-suite",
+  "version": "1.0.0",
+  "description": "Premium All-in-One Restaurant Billing POS, Customer QR Order Portal, and SEO Marketing SaaS Hub.",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx -y lite-server",
+    "start": "npx -y lite-server"
+  },
+  "keywords": [
+    "restaurant",
+    "pos",
+    "qr-ordering",
+    "inventory-management",
+    "saas"
+  ],
+  "author": "RestoFlow Tech",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "lite-server": "^2.6.1"
+  }
+}
