@@ -1335,35 +1335,35 @@ export class POSView {
                     </thead>
                     <tbody>
                         <tr>
-                            <td style="text-align:left; font-weight:700; color:white;">Dine-In Billing Counter (Settle Ticket)</td>
+                            <td style="text-align:left; font-weight:700; color:var(--pos-text);">Dine-In Billing Counter (Settle Ticket)</td>
                             <td style="color:#10b981;">✔ Allowed</td>
                             <td style="color:#10b981;">✔ Allowed</td>
                             <td style="color:var(--pos-primary);">✖ Restricted</td>
                             <td style="color:var(--pos-primary);">✖ Restricted</td>
                         </tr>
                         <tr>
-                            <td style="text-align:left; font-weight:700; color:white;">Zomato/Swiggy Online Desk (Accept Order)</td>
+                            <td style="text-align:left; font-weight:700; color:var(--pos-text);">Zomato/Swiggy Online Desk (Accept Order)</td>
                             <td style="color:#10b981;">✔ Allowed</td>
                             <td style="color:#10b981;">✔ Allowed</td>
                             <td style="color:#10b981;">✔ Allowed</td>
                             <td style="color:var(--pos-primary);">✖ Restricted</td>
                         </tr>
                         <tr>
-                            <td style="text-align:left; font-weight:700; color:white;">Staff Registrations & CRM Directory</td>
+                            <td style="text-align:left; font-weight:700; color:var(--pos-text);">Staff Registrations & CRM Directory</td>
                             <td style="color:#10b981;">✔ Allowed</td>
                             <td style="color:#10b981;">✔ Allowed</td>
                             <td style="color:var(--pos-primary);">✖ Restricted</td>
                             <td style="color:var(--pos-primary);">✖ Restricted</td>
                         </tr>
                         <tr>
-                            <td style="text-align:left; font-weight:700; color:white;">Warehouse Inventory Stock Modification</td>
+                            <td style="text-align:left; font-weight:700; color:var(--pos-text);">Warehouse Inventory Stock Modification</td>
                             <td style="color:#10b981;">✔ Allowed</td>
                             <td style="color:#10b981;">✔ Allowed</td>
                             <td style="color:#10b981;">✔ Allowed</td>
                             <td style="color:var(--pos-primary);">✖ Restricted</td>
                         </tr>
                         <tr>
-                            <td style="text-align:left; font-weight:700; color:white;">Business Intelligence Sales Analytics</td>
+                            <td style="text-align:left; font-weight:700; color:var(--pos-text);">Business Intelligence Sales Analytics</td>
                             <td style="color:#10b981;">✔ Allowed</td>
                             <td style="color:var(--pos-primary);">✖ Restricted</td>
                             <td style="color:var(--pos-primary);">✖ Restricted</td>
@@ -1391,7 +1391,7 @@ export class POSView {
                     <div style="border-top:1px dashed var(--pos-border); padding-top:1rem; margin-top:1.5rem; display:flex; flex-direction:column; gap:0.5rem;">
                         <div style="display:flex; justify-content:space-between; font-size:0.9rem;">
                             <span>Subscription Tier:</span>
-                            <span style="font-weight:700; color:white;">All-Inclusive Suite</span>
+                            <span style="font-weight:700; color:var(--pos-primary);">All-Inclusive Suite</span>
                         </div>
                         <div style="display:flex; justify-content:space-between; font-size:0.9rem;">
                             <span>Billing Cycle:</span>
@@ -1399,7 +1399,7 @@ export class POSView {
                         </div>
                         <div style="display:flex; justify-content:space-between; font-size:0.9rem;">
                             <span>Next Billing Date:</span>
-                            <span style="font-weight:700; color:white;">2027-05-30</span>
+                            <span style="font-weight:700; color:var(--pos-text);">2027-05-30</span>
                         </div>
                         <div style="display:flex; justify-content:space-between; font-size:0.9rem;">
                             <span>Amount Due:</span>
@@ -1414,7 +1414,7 @@ export class POSView {
                     <div style="border:1px solid var(--pos-border); border-radius:6px; padding:0.85rem; margin-top:1.5rem; display:flex; align-items:center; gap:0.75rem; background:rgba(0,0,0,0.1);">
                         <span style="font-size:1.5rem;">💳</span>
                         <div>
-                            <div style="font-weight:700; color:white; font-size:0.9rem;">HDFC Platinum Credit Card</div>
+                            <div style="font-weight:700; color:var(--pos-text); font-size:0.9rem;">HDFC Platinum Credit Card</div>
                             <span style="font-size:0.75rem; color:var(--pos-text-secondary);">Expires: 11 / 2030 (Ending: **** 8812)</span>
                         </div>
                     </div>

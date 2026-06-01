@@ -763,6 +763,43 @@ main {
         grid-template-columns: repeat(2, 1fr);
         gap: 1rem;
     }
+    
+    /* Adapt standard tables to horizontal scrolling with clean padding */
+    .pos-table th, 
+    .pos-table td {
+        white-space: nowrap;
+    }
+}
+
+/* Tablet Portrait & Smaller Screens (under 900px) */
+@media screen and (max-width: 900px) {
+    /* Stack control filter headers on Inventory, Employees, Orders, and Menu views */
+    .pos-view-panel > div:nth-child(2)[style*="display:flex"] {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 0.75rem !important;
+        height: auto !important;
+        padding: 1rem !important;
+    }
+    
+    .pos-view-panel > div:nth-child(2)[style*="display:flex"] > input {
+        width: 100% !important;
+        flex: none !important;
+        text-align: left !important;
+    }
+    
+    .pos-view-panel > div:nth-child(2)[style*="display:flex"] > div {
+        width: 100% !important;
+        flex: none !important;
+        margin-top: 0.25rem !important;
+        justify-content: flex-start !important;
+    }
+    
+    .pos-view-panel > div:nth-child(2)[style*="display:flex"] select.stock-input {
+        width: 100% !important;
+        text-align: left !important;
+        flex: 1 !important;
+    }
 }
 
 /* Mobile & Small Tablets (under 768px) */
@@ -888,10 +925,71 @@ main {
         margin-bottom: 1rem;
     }
     
-    /* Integrations & Branches on Mobile */
+    /* Integrations & Branches & SaaS Subscription on Mobile */
     #view-pos-integrations > div,
-    #view-pos-branches > div {
+    #view-pos-branches > div,
+    #view-pos-billing-sub > div[style*="grid-template-columns"] {
         grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+    
+    /* Settings Form Fields stack on mobile */
+    #view-pos-settings div[style*="grid-template-columns:1fr 1fr"] {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+    
+    /* POS Add Custom Order Modal overlay columns stacking */
+    #pos-order-modal .modal-content {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+        padding: 1.5rem !important;
+        max-height: 92vh !important;
+        overflow-y: auto !important;
+        width: 95% !important;
+    }
+    
+    #pos-order-modal #pos-modal-menu-grid {
+        max-height: 250px !important;
+    }
+    
+    #pos-order-modal #pos-modal-draft-list {
+        max-height: 200px !important;
+    }
+}
+
+/* Tablet Intermediate grids helper */
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+    #view-pos-integrations > div[style*="grid-template-columns"],
+    #view-pos-branches > div[style*="grid-template-columns"],
+    #view-pos-billing-sub > div[style*="grid-template-columns"] {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 1.25rem !important;
+    }
+}
+
+/* Small Smart Mobile Portrait (under 480px) */
+@media screen and (max-width: 480px) {
+    /* Dashboard Overview Quick Actions stacking */
+    #view-pos-dashboard .chart-box div[style*="grid-template-columns:1fr 1fr"] {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem !important;
+    }
+    
+    #view-pos-dashboard .chart-box {
+        height: auto !important;
+        min-height: 320px;
+    }
+    
+    /* Make headers flexible */
+    .pos-view-panel > div:first-of-type[style*="display:flex"] {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.75rem !important;
+    }
+    
+    .pos-view-panel > div:first-of-type[style*="display:flex"] button {
+        width: 100% !important;
     }
 }
 
