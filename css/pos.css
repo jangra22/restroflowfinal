@@ -247,6 +247,7 @@ main {
     grid-template-columns: 1.35fr 1fr;
     gap: 1.5rem;
     height: calc(100vh - 9rem);
+    min-height: 620px; /* Prevent extreme squishing on low heights or zoomed screens */
     overflow: hidden;
 }
 
