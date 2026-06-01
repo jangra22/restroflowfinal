@@ -1433,50 +1433,59 @@ export class POSView {
             <h2 class="dashboard-grid-title" style="margin-bottom:0.25rem;">General Configurations Settings</h2>
             <p style="color:var(--pos-text-secondary); font-size:0.8rem; margin-bottom:1.5rem;">Configure restaurant brand descriptors, print layout rules, and terminal session parameters.</p>
             
-            <div class="chart-box" style="text-align:left; width:100%; margin-bottom: 2rem;">
-                <h4 style="font-family:'Playfair Display', serif; font-size:1.15rem; color:var(--pos-text); margin-bottom:1.5rem;">Merchant Payment Gateway Settings</h4>
-                
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem;">
-                    <div class="form-group" style="display:flex; flex-direction:column; gap:0.4rem;">
-                        <label style="font-size:0.8rem; font-weight:700; color:var(--pos-text-secondary);">MERCHANT UPI ADDRESS (VPA)</label>
-                        <input type="text" id="settings-merchant-upi" class="stock-input" style="text-align:left; font-weight:700; border-color:var(--pos-accent);" value="${currentUpi}" placeholder="e.g. restaurant@upi">
-                        <span style="font-size:0.7rem; color:var(--pos-text-secondary);">This UPI address generates the dynamic QR codes scanned by customers at the table.</span>
+            <div class="settings-container">
+                <!-- Merchant Payment Gateway Settings Card -->
+                <div class="settings-card">
+                    <h4 class="settings-card-title">💳 Merchant Payment Gateway Settings</h4>
+                    
+                    <div class="settings-form-grid">
+                        <div class="settings-group">
+                            <label class="settings-label">MERCHANT UPI ADDRESS (VPA)</label>
+                            <input type="text" id="settings-merchant-upi" class="settings-input" value="${currentUpi}" placeholder="e.g. restaurant@upi">
+                            <span style="font-size:0.7rem; color:var(--pos-text-secondary); margin-top: 0.25rem;">
+                                This UPI address generates the dynamic QR codes scanned by customers at the table.
+                            </span>
+                        </div>
+                        <div class="settings-group">
+                            <label class="settings-label">UPI BRAND SETTLEMENT PARTNER</label>
+                            <select class="settings-input" style="height: 46px;">
+                                <option>Axis Bank UPI Gateway</option>
+                                <option>HDFC Bank Merchant Services</option>
+                                <option>ICICI Merchant Instant Settlement</option>
+                                <option>SBI Merchant UPI Pay</option>
+                            </select>
+                            <span style="font-size:0.7rem; color:var(--pos-text-secondary); margin-top: 0.25rem;">
+                                Primary instant settlement nodal bank connection.
+                            </span>
+                        </div>
                     </div>
-                    <div class="form-group" style="display:flex; flex-direction:column; gap:0.4rem;">
-                        <label style="font-size:0.8rem; font-weight:700; color:var(--pos-text-secondary);">UPI BRAND SETTLEMENT PARTNER</label>
-                        <select class="stock-input" style="text-align:left; height:42px;">
-                            <option>Axis Bank UPI Gateway</option>
-                            <option>HDFC Bank Merchant Services</option>
-                            <option>ICICI Merchant Instant Settlement</option>
-                            <option>SBI Merchant UPI Pay</option>
-                        </select>
-                    </div>
+                    
+                    <button class="settings-btn" onclick="posCtrl.saveMerchantPaymentSettings()">
+                        <span>💾</span> Save Payment Settings
+                    </button>
                 </div>
-                
-                <button class="btn btn-primary" onclick="posCtrl.saveMerchantPaymentSettings()" style="background:var(--pos-accent); color:white; border:none; padding:0.6rem 1.5rem; border-radius:6px; font-weight:700; cursor:pointer;">Save Payment Settings</button>
-            </div>
 
-            <div class="chart-box" style="text-align:left; width:100%;">
-                <h4 style="font-family:'Playfair Display', serif; font-size:1.15rem; color:var(--pos-text); margin-bottom:1.5rem;">Restaurant Metadata Settings</h4>
-                
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem;">
-                    <div class="form-group" style="display:flex; flex-direction:column; gap:0.4rem;">
-                        <label style="font-size:0.8rem; font-weight:700; color:var(--pos-text-secondary);">RESTAURANT BRAND NAME</label>
-                        <input type="text" class="stock-input" style="text-align:left;" value="Ganeshwaram Signature" readonly>
-                    </div>
-                    <div class="form-group" style="display:flex; flex-direction:column; gap:0.4rem;">
-                        <label style="font-size:0.8rem; font-weight:700; color:var(--pos-text-secondary);">PRIMARY PHONE CONTACT</label>
-                        <input type="text" class="stock-input" style="text-align:left;" value="+91 98765 43210" readonly>
-                    </div>
-                </div>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
-                    <div class="form-group" style="display:flex; flex-direction:column; gap:0.4rem;">
-                        <label style="font-size:0.8rem; font-weight:700; color:var(--pos-text-secondary);">SUPPORT CONTACT EMAIL</label>
-                        <input type="text" class="stock-input" style="text-align:left;" value="support@ganeshwaram.com" readonly>
-                    </div>
-                    <div class="form-group" style="display:flex; flex-direction:column; gap:0.4rem;">
-                        <label style="font-size:0.8rem; font-weight:700; color:var(--pos-text-secondary);">GST IDENTIFICATION NUMBER (GSTIN)</label>
-                        <input type="text" class="stock-input" style="text-align:left;" value="07AAAAA1111A1Z1" readonly>
+                <!-- Restaurant Metadata Settings Card -->
+                <div class="settings-card">
+                    <h4 class="settings-card-title">🏢 Restaurant Metadata Settings</h4>
+                    
+                    <div class="settings-form-grid">
+                        <div class="settings-group">
+                            <label class="settings-label">RESTAURANT BRAND NAME</label>
+                            <input type="text" class="settings-input" value="Ganeshwaram Signature" readonly>
+                        </div>
+                        <div class="settings-group">
+                            <label class="settings-label">PRIMARY PHONE CONTACT</label>
+                            <input type="text" class="settings-input" value="+91 98765 43210" readonly>
+                        </div>
+                        <div class="settings-group">
+                            <label class="settings-label">SUPPORT CONTACT EMAIL</label>
+                            <input type="text" class="settings-input" value="support@ganeshwaram.com" readonly>
+                        </div>
+                        <div class="settings-group">
+                            <label class="settings-label">GST IDENTIFICATION NUMBER (GSTIN)</label>
+                            <input type="text" class="settings-input" value="07AAAAA1111A1Z1" readonly>
+                        </div>
                     </div>
                 </div>
             </div>
