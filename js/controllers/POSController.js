@@ -1010,4 +1010,18 @@ export class POSController {
         this.closeAddMenuModal();
         this.refreshActiveDashboardView();
     }
+
+    saveMerchantPaymentSettings() {
+        const input = document.getElementById("settings-merchant-upi");
+        const val = input ? input.value.trim() : "";
+
+        if (!val || !val.includes("@")) {
+            this.view.showToast("Please enter a valid UPI ID (containing '@')!", "error");
+            return;
+        }
+
+        this.model.setMerchantUPI(val);
+        this.view.showToast("Merchant UPI Payment VPA address updated successfully!", "success");
+        this.refreshActiveDashboardView();
+    }
 }

@@ -275,7 +275,7 @@ export class CustomerController {
         // Right now: UPI shows a scannable test QR code modal & triggers intent on mobile
         // Future: Toggle to Razorpay or Stripe here easily
         if (this.selectedPayment === "UPI") {
-            const testVpa = "devan.gupta712-1@okaxis"; // Test UPI VPA
+            const testVpa = this.model.getMerchantUPI();
             const upiUrl = `upi://pay?pa=${testVpa}&pn=RestroFlow%20Cafe&am=${grandTotal.toFixed(2)}&cu=INR&tn=Table%20${this.currentTableId}%20Order`;
             
             // Trigger UPI intent directly if on a mobile phone

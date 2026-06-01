@@ -1427,12 +1427,37 @@ export class POSView {
         const panel = document.getElementById("view-pos-settings");
         if (!panel) return;
 
+        const currentUpi = this.model.getMerchantUPI();
+
         panel.innerHTML = `
             <h2 class="dashboard-grid-title" style="margin-bottom:0.25rem;">General Configurations Settings</h2>
             <p style="color:var(--pos-text-secondary); font-size:0.8rem; margin-bottom:1.5rem;">Configure restaurant brand descriptors, print layout rules, and terminal session parameters.</p>
             
+            <div class="chart-box" style="text-align:left; width:100%; margin-bottom: 2rem;">
+                <h4 style="font-family:'Playfair Display', serif; font-size:1.15rem; color:var(--pos-text); margin-bottom:1.5rem;">Merchant Payment Gateway Settings</h4>
+                
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem;">
+                    <div class="form-group" style="display:flex; flex-direction:column; gap:0.4rem;">
+                        <label style="font-size:0.8rem; font-weight:700; color:var(--pos-text-secondary);">MERCHANT UPI ADDRESS (VPA)</label>
+                        <input type="text" id="settings-merchant-upi" class="stock-input" style="text-align:left; font-weight:700; border-color:var(--pos-accent);" value="${currentUpi}" placeholder="e.g. restaurant@upi">
+                        <span style="font-size:0.7rem; color:var(--pos-text-secondary);">This UPI address generates the dynamic QR codes scanned by customers at the table.</span>
+                    </div>
+                    <div class="form-group" style="display:flex; flex-direction:column; gap:0.4rem;">
+                        <label style="font-size:0.8rem; font-weight:700; color:var(--pos-text-secondary);">UPI BRAND SETTLEMENT PARTNER</label>
+                        <select class="stock-input" style="text-align:left; height:42px;">
+                            <option>Axis Bank UPI Gateway</option>
+                            <option>HDFC Bank Merchant Services</option>
+                            <option>ICICI Merchant Instant Settlement</option>
+                            <option>SBI Merchant UPI Pay</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary" onclick="posCtrl.saveMerchantPaymentSettings()" style="background:var(--pos-accent); color:white; border:none; padding:0.6rem 1.5rem; border-radius:6px; font-weight:700; cursor:pointer;">Save Payment Settings</button>
+            </div>
+
             <div class="chart-box" style="text-align:left; width:100%;">
-                <h4 style="font-family:'Playfair Display', serif; font-size:1.15rem; color:var(--pos-text); margin-bottom:1.5rem;">Restaurant Metadata settings</h4>
+                <h4 style="font-family:'Playfair Display', serif; font-size:1.15rem; color:var(--pos-text); margin-bottom:1.5rem;">Restaurant Metadata Settings</h4>
                 
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem;">
                     <div class="form-group" style="display:flex; flex-direction:column; gap:0.4rem;">

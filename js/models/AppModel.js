@@ -882,6 +882,16 @@ export class AppModel extends EventTarget {
         return this.safeGetItem("restoflow_feedback", []);
     }
 
+    getMerchantUPI() {
+        return localStorage.getItem("restoflow_merchant_upi") || "devan.gupta712-1@okaxis";
+    }
+
+    setMerchantUPI(vpa) {
+        localStorage.setItem("restoflow_merchant_upi", vpa);
+        this.logSecurityEvent(`Merchant UPI VPA updated to: ${vpa}`, "WARNING");
+        this.notifyChange("restoflow_merchant_upi");
+    }
+
     notifyChange(key) {
         // Dispatch internally
         this.dispatchEvent(new CustomEvent("stateChange", { detail: { key } }));
