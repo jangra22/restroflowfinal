@@ -88,6 +88,11 @@ export class POSController {
             this.view.showLoginGate(false);
             this.view.setStaffIndicator(session.name, session.role);
             this.initDashboardEngine();
+            // Set mobile staff badge
+            const badge = document.getElementById("mobile-staff-badge");
+            if (badge) {
+                badge.innerText = session.name.split(" ").map(n => n.charAt(0)).join("").toUpperCase();
+            }
         } else {
             this.view.showLoginGate(true);
         }
@@ -168,6 +173,11 @@ export class POSController {
             this.view.setStaffIndicator(sessionUser.name, sessionUser.role);
             this.clearPin();
             this.initDashboardEngine();
+            // Set mobile staff badge
+            const badge = document.getElementById("mobile-staff-badge");
+            if (badge) {
+                badge.innerText = sessionUser.name.split(" ").map(n => n.charAt(0)).join("").toUpperCase();
+            }
         } else {
             this.clearPin();
             this.view.showLoginError("Incorrect Secure PIN code. Access denied.");
@@ -236,6 +246,55 @@ export class POSController {
         this.currentDashboardTab = tabId;
         this.view.switchTab(tabId);
         this.refreshActiveDashboardView();
+        
+        // Auto close sidebar on mobile navigation
+        const sidebar = document.getElementById("merchant-sidebar");
+        if (sidebar && sidebar.classList.contains("open")) {
+            this.toggleMobileSidebar();
+        }
+    }
+
+    toggleMobileSidebar() {
+        const sidebar = document.getElementById("merchant-sidebar");
+        if (sidebar) {
+            const isOpen = sidebar.classList.contains("open");
+            if (isOpen) {
+                sidebar.classList.remove("open");
+                this.hideSidebarOverlay();
+            } else {
+                sidebar.classList.add("open");
+                this.showSidebarOverlay();
+            }
+        }
+    }
+
+    showSidebarOverlay() {
+        let overlay = document.getElementById("sidebar-overlay");
+        if (!overlay) {
+            overlay = document.createElement("div");
+            overlay.id = "sidebar-overlay";
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.4);
+                backdrop-filter: blur(4px);
+                -webkit-backdrop-filter: blur(4px);
+                z-index: 9999;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            `;
+            overlay.onclick = () => this.toggleMobileSidebar();
+            document.body.appendChild(overlay);
+        }
+        setTimeout(() => overlay.style.opacity = "1", 50);
+    }
+
+    hideSidebarOverlay() {
+        const overlay = document.getElementById("sidebar-overlay");
+        if (overlay) {
+            overlay.style.opacity = "0";
+            setTimeout(() => overlay.remove(), 300);
+        }
     }
 
     // --- Dynamic Employee Directory Handlers ---

@@ -122,6 +122,17 @@
 
     <!-- CONTENT MODULE DESK -->
     <main id="merchant-main" style="display: none;">
+        <!-- Mobile Top Navbar Bar -->
+        <header class="mobile-top-nav" style="display: none;">
+            <button class="hamburger-btn" onclick="posCtrl.toggleMobileSidebar()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="mobile-logo">RestroFlow <span>POS</span></div>
+            <div class="mobile-staff-badge" id="mobile-staff-badge">ST</div>
+        </header>
+
         <!-- View: Dashboard Overview -->
         <section id="view-pos-dashboard" class="pos-view-panel" style="display: none; flex-direction: column; width: 100%;">
             <!-- Injected via POSView.js -->
