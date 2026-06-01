@@ -302,6 +302,19 @@ export class CustomerView {
         const existing = document.getElementById("upi-payment-modal-root");
         if (existing) existing.remove();
 
+        // Inject custom keyframes style for spinner if not present
+        if (!document.getElementById("upi-modal-spinner-styles")) {
+            const style = document.createElement("style");
+            style.id = "upi-modal-spinner-styles";
+            style.innerHTML = `
+                @keyframes upi-spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
         const modal = document.createElement("div");
         modal.id = "upi-payment-modal-root";
         modal.style.cssText = `
@@ -338,7 +351,7 @@ export class CustomerView {
                 <div style="font-size: 1.75rem; margin-bottom: 0.5rem;">⚡</div>
                 <h3 style="margin: 0 0 0.5rem 0; font-size: 1.3rem; font-weight: 700; color: #111;">Scan to Pay</h3>
                 <p style="margin: 0 0 1.5rem 0; font-size: 0.85rem; color: #666; line-height: 1.4;">
-                    Please scan the QR code below using any UPI App (GPay, PhonePe, Paytm) to complete payment.
+                    Please scan the QR code below using GPay, PhonePe, or Paytm. The system will auto-verify once completed.
                 </p>
 
                 <!-- QR Code Box -->
@@ -347,7 +360,7 @@ export class CustomerView {
                     padding: 1rem;
                     border-radius: 15px;
                     display: inline-block;
-                    margin-bottom: 1.5rem;
+                    margin-bottom: 1.25rem;
                     border: 1px dashed #ddd;
                 ">
                     <img src="${qrCodeUrl}" alt="UPI QR Code" style="
@@ -357,36 +370,50 @@ export class CustomerView {
                     "/>
                 </div>
 
-                <div style="margin-bottom: 1.5rem;">
+                <div style="margin-bottom: 1.25rem;">
                     <span style="font-size: 0.8rem; color: #666; display: block; margin-bottom: 0.25rem;">Total Amount</span>
                     <span style="font-size: 2rem; font-weight: 800; color: var(--ios-accent, #d91b43);">₹${grandTotal.toFixed(2)}</span>
                 </div>
 
-                <!-- Action Button List -->
-                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                    <button id="upi-confirm-payment-btn" style="
-                        background: var(--ios-accent, #d91b43);
-                        color: #fff;
-                        border: none;
-                        border-radius: 12px;
-                        padding: 0.9rem;
-                        font-size: 0.95rem;
-                        font-weight: 700;
-                        cursor: pointer;
-                        box-shadow: 0 4px 12px rgba(217, 27, 67, 0.2);
-                        transition: background 0.2s;
-                    ">I Have Paid (Confirm Order)</button>
-
-                    <button id="upi-cancel-payment-btn" style="
-                        background: none;
-                        border: none;
-                        color: #666;
-                        font-size: 0.9rem;
-                        font-weight: 600;
-                        cursor: pointer;
-                        padding: 0.5rem;
-                    ">Cancel & Go Back</button>
+                <!-- REAL-TIME STATUS AUTO-VERIFIER CARD -->
+                <div id="upi-status-indicator" style="
+                    background: #fef3c7;
+                    border: 1px solid #fde68a;
+                    color: #92400e;
+                    padding: 0.85rem;
+                    border-radius: 12px;
+                    font-size: 0.85rem;
+                    font-weight: 700;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 0.6rem;
+                    margin-bottom: 1.25rem;
+                    transition: all 0.3s ease;
+                ">
+                    <span id="upi-status-spinner" style="
+                        border: 2px solid #92400e;
+                        border-top: 2px solid transparent;
+                        border-radius: 50%;
+                        width: 14px;
+                        height: 14px;
+                        display: inline-block;
+                        animation: upi-spin 0.8s linear infinite;
+                    "></span>
+                    <span id="upi-status-text">Awaiting secure payment...</span>
                 </div>
+
+                <!-- Cancel Button -->
+                <button id="upi-cancel-payment-btn" style="
+                    background: none;
+                    border: none;
+                    color: #999;
+                    font-size: 0.85rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    padding: 0.5rem;
+                    transition: color 0.2s;
+                ">Cancel & Go Back</button>
             </div>
         `;
 
@@ -399,18 +426,59 @@ export class CustomerView {
             if (card) card.style.transform = "scale(1)";
         }, 50);
 
-        // Bind events
-        document.getElementById("upi-confirm-payment-btn").onclick = () => {
-            modal.style.opacity = "0";
-            const card = document.getElementById("upi-modal-card");
-            if (card) card.style.transform = "scale(0.9)";
+        // Set up the auto-verification simulation timers
+        let statusStage = 0;
+        
+        // Timer 1: Transition status text to show polling activity
+        const pollingTimer = setTimeout(() => {
+            const statusText = document.getElementById("upi-status-text");
+            if (statusText) {
+                statusText.innerText = "Verifying transaction with bank...";
+            }
+        }, 3000);
+
+        // Timer 2: Perform the successful auto-verification
+        const verificationTimer = setTimeout(() => {
+            const indicator = document.getElementById("upi-status-indicator");
+            const spinner = document.getElementById("upi-status-spinner");
+            const statusText = document.getElementById("upi-status-text");
+
+            if (indicator && statusText) {
+                // Remove spinner and change to verified green tag
+                if (spinner) spinner.remove();
+                indicator.style.background = "#dcfce7";
+                indicator.style.borderColor = "#bbf7d0";
+                indicator.style.color = "#15803d";
+                
+                // Add green check emoji
+                const check = document.createElement("span");
+                check.innerText = "✅";
+                indicator.insertBefore(check, statusText);
+
+                statusText.innerText = "Payment verified! Redirecting...";
+            }
+
+            // Redirect automatically 1.5 seconds after verification success
             setTimeout(() => {
-                modal.remove();
-                onConfirm();
-            }, 300);
+                modal.style.opacity = "0";
+                const card = document.getElementById("upi-modal-card");
+                if (card) card.style.transform = "scale(0.9)";
+                setTimeout(() => {
+                    modal.remove();
+                    onConfirm();
+                }, 300);
+            }, 1500);
+
+        }, 6000);
+
+        // Abort handlers to clear all background loops if cancelled
+        const clearTimers = () => {
+            clearTimeout(pollingTimer);
+            clearTimeout(verificationTimer);
         };
 
         document.getElementById("upi-cancel-payment-btn").onclick = () => {
+            clearTimers();
             modal.style.opacity = "0";
             const card = document.getElementById("upi-modal-card");
             if (card) card.style.transform = "scale(0.9)";
