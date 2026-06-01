@@ -7,6 +7,7 @@
  * Extends EventTarget to act as an observable model in our MVC architecture.
  */
 
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from "../config.js";
 
 const DEFAULT_MENU = [
     {
@@ -408,7 +409,30 @@ const DEFAULT_AGGREGATOR_ORDERS = [
 export class AppModel extends EventTarget {
     constructor() {
         super();
+        this.supabase = null;
+        this.isCloudEnabled = false;
+
+        // Initialize Supabase if keys are set and window.supabase is loaded
+        if (typeof window !== "undefined" && window.supabase && SUPABASE_URL && !SUPABASE_URL.includes("your-project-id")) {
+            try {
+                this.supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                this.isCloudEnabled = true;
+                console.log("⚡ RestroFlow Cloud Data Layer Connected to Supabase!");
+            } catch (e) {
+                console.error("Supabase client initialization failed, falling back to LocalStorage:", e);
+            }
+        } else {
+            console.log("📁 RestroFlow Local Data Layer Enabled (Awaiting Supabase config keys inside js/config.js)");
+        }
+
         this.init();
+
+        // Run async background cloud sync & realtime listeners if connected
+        if (this.isCloudEnabled) {
+            this.syncFromCloud().then(() => {
+                this.setupRealtimeListeners();
+            });
+        }
     }
 
     safeGetItem(key, defaultVal = []) {
@@ -529,6 +553,20 @@ export class AppModel extends EventTarget {
     saveMenu(menu) {
         localStorage.setItem("restoflow_menu", JSON.stringify(menu));
         this.notifyChange("restoflow_menu");
+
+        if (this.isCloudEnabled && this.supabase) {
+            const formatted = menu.map(m => ({
+                id: m.id,
+                name: m.name,
+                category: m.category,
+                price: m.price,
+                description: m.description,
+                image: m.image,
+                ingredients: m.ingredients,
+                customizations: m.customizations || []
+            }));
+            this.supabase.from("menu").upsert(formatted).then();
+        }
     }
 
     // Inventory Methods
@@ -538,6 +576,17 @@ export class AppModel extends EventTarget {
     saveInventory(inv) {
         localStorage.setItem("restoflow_inventory", JSON.stringify(inv));
         this.notifyChange("restoflow_inventory");
+
+        if (this.isCloudEnabled && this.supabase) {
+            const entries = Object.entries(inv).map(([key, val]) => ({
+                key,
+                name: val.name,
+                qty: val.qty,
+                unit: val.unit,
+                min_threshold: val.min_threshold
+            }));
+            this.supabase.from("inventory").upsert(entries).then();
+        }
     }
     deductStock(menuItemId, quantity = 1, itemCustomizations = []) {
         const menu = this.getMenu();
@@ -580,6 +629,16 @@ export class AppModel extends EventTarget {
     saveTables(tables) {
         localStorage.setItem("restoflow_tables", JSON.stringify(tables));
         this.notifyChange("restoflow_tables");
+
+        if (this.isCloudEnabled && this.supabase) {
+            const formatted = tables.map(t => ({
+                id: t.id,
+                name: t.name,
+                seats: t.seats,
+                status: t.status
+            }));
+            this.supabase.from("tables").upsert(formatted).then();
+        }
     }
     updateTableStatus(tableId, status) {
         const tables = this.getTables();
@@ -624,6 +683,15 @@ export class AppModel extends EventTarget {
     saveLoyaltyDatabase(loyalty) {
         localStorage.setItem("restoflow_loyalty", JSON.stringify(loyalty));
         this.notifyChange("restoflow_loyalty");
+
+        if (this.isCloudEnabled && this.supabase) {
+            const entries = Object.entries(loyalty).map(([phone, val]) => ({
+                phone,
+                name: val.name || 'Guest Customer',
+                points: val.points || 0
+            }));
+            this.supabase.from("loyalty").upsert(entries).then();
+        }
     }
     getLoyaltyCustomer(phone) {
         const db = this.getLoyaltyDatabase();
@@ -741,6 +809,27 @@ export class AppModel extends EventTarget {
     saveOrders(orders) {
         localStorage.setItem("restoflow_orders", JSON.stringify(orders));
         this.notifyChange("restoflow_orders");
+
+        if (this.isCloudEnabled && this.supabase) {
+            const formatted = orders.map(o => ({
+                id: o.id,
+                created_at: o.timestamp,
+                status: o.status,
+                payment_status: o.paymentStatus,
+                payment_method: o.paymentMethod || 'unsettled',
+                items: o.items,
+                subtotal: o.subtotal,
+                coupon_discount: o.couponDiscount || 0,
+                loyalty_discount: o.loyaltyDiscount || 0,
+                coupon_code: o.couponCode || null,
+                phone: o.phone || null,
+                tax: o.tax,
+                total: o.total,
+                order_type: o.orderType,
+                table_id: o.tableId || null
+            }));
+            this.supabase.from("orders").upsert(formatted).then();
+        }
     }
     createOrder(orderData) {
         const orders = this.getOrders();
@@ -900,6 +989,137 @@ export class AppModel extends EventTarget {
         localStorage.setItem("restoflow_merchant_upi", vpa);
         this.logSecurityEvent(`Merchant UPI VPA updated to: ${vpa}`, "WARNING");
         this.notifyChange("restoflow_merchant_upi");
+    }
+
+    // --- SUPABASE CLOUD SYNC LAYER METHODS ---
+    async syncFromCloud() {
+        if (!this.isCloudEnabled || !this.supabase) return;
+        try {
+            console.log("🔄 Syncing latest tables, menu, inventory, coupons, loyalty, and orders from Supabase...");
+
+            // 1. Fetch tables
+            const { data: dbTables, error: tErr } = await this.supabase.from("tables").select("*").order("id");
+            if (!tErr && dbTables && dbTables.length > 0) {
+                localStorage.setItem("restoflow_tables", JSON.stringify(dbTables));
+            }
+
+            // 2. Fetch menu
+            const { data: dbMenu, error: mErr } = await this.supabase.from("menu").select("*");
+            if (!mErr && dbMenu && dbMenu.length > 0) {
+                const formattedMenu = dbMenu.map(d => ({
+                    id: d.id,
+                    name: d.name,
+                    category: d.category,
+                    price: parseFloat(d.price),
+                    description: d.description,
+                    image: d.image,
+                    ingredients: d.ingredients,
+                    customizations: d.customizations || []
+                }));
+                localStorage.setItem("restoflow_menu", JSON.stringify(formattedMenu));
+            }
+
+            // 3. Fetch inventory
+            const { data: dbInv, error: iErr } = await this.supabase.from("inventory").select("*");
+            if (!iErr && dbInv && dbInv.length > 0) {
+                const formattedInv = {};
+                dbInv.forEach(row => {
+                    formattedInv[row.key] = {
+                        name: row.name,
+                        qty: parseFloat(row.qty),
+                        unit: row.unit,
+                        min_threshold: parseFloat(row.min_threshold)
+                    };
+                });
+                localStorage.setItem("restoflow_inventory", JSON.stringify(formattedInv));
+            }
+
+            // 4. Fetch coupons
+            const { data: dbCoupons, error: cErr } = await this.supabase.from("coupons").select("*");
+            if (!cErr && dbCoupons && dbCoupons.length > 0) {
+                const formattedCoupons = dbCoupons.map(c => ({
+                    code: c.code,
+                    type: c.type,
+                    value: parseFloat(c.value),
+                    min_bill: parseFloat(c.min_bill),
+                    description: c.description
+                }));
+                localStorage.setItem("restoflow_coupons", JSON.stringify(formattedCoupons));
+            }
+
+            // 5. Fetch loyalty CRM profiles
+            const { data: dbLoyalty, error: lErr } = await this.supabase.from("loyalty").select("*");
+            if (!lErr && dbLoyalty && dbLoyalty.length > 0) {
+                const formattedLoyalty = {};
+                dbLoyalty.forEach(row => {
+                    formattedLoyalty[row.phone] = {
+                        name: row.name,
+                        points: parseInt(row.points)
+                    };
+                });
+                localStorage.setItem("restoflow_loyalty", JSON.stringify(formattedLoyalty));
+            }
+
+            // 6. Fetch orders ledger
+            const { data: dbOrders, error: oErr } = await this.supabase.from("orders").select("*").order("created_at", { ascending: true });
+            if (!oErr && dbOrders) {
+                const formattedOrders = dbOrders.map(o => ({
+                    id: o.id,
+                    timestamp: o.created_at,
+                    status: o.status,
+                    paymentStatus: o.payment_status,
+                    paymentMethod: o.payment_method,
+                    items: o.items || [],
+                    subtotal: parseFloat(o.subtotal),
+                    couponDiscount: parseFloat(o.coupon_discount),
+                    loyaltyDiscount: parseFloat(o.loyalty_discount),
+                    couponCode: o.coupon_code,
+                    phone: o.phone,
+                    tax: parseFloat(o.tax),
+                    total: parseFloat(o.total),
+                    orderType: o.order_type,
+                    tableId: o.table_id
+                }));
+                localStorage.setItem("restoflow_orders", JSON.stringify(formattedOrders));
+            }
+
+            // Notify all listeners to repaint views
+            this.notifyChange("restoflow_orders");
+            this.notifyChange("restoflow_tables");
+            this.notifyChange("restoflow_menu");
+            this.notifyChange("restoflow_inventory");
+            this.notifyChange("restoflow_loyalty");
+            console.log("🟢 Supabase cloud schemas parsed & synchronized successfully into active local state.");
+        } catch (e) {
+            console.error("Supabase cloud synchronization failed:", e);
+        }
+    }
+
+    setupRealtimeListeners() {
+        if (!this.isCloudEnabled || !this.supabase) return;
+        try {
+            console.log("📡 Subscribing to Supabase PostgreSQL Realtime channels...");
+
+            // Listen to orders changes
+            this.supabase
+                .channel("realtime:orders")
+                .on("postgres_changes", { event: "*", schema: "public", table: "orders" }, async () => {
+                    console.log("🔔 Realtime Order update received from Supabase. Triggering sync...");
+                    await this.syncFromCloud();
+                })
+                .subscribe();
+
+            // Listen to tables occupancy updates
+            this.supabase
+                .channel("realtime:tables")
+                .on("postgres_changes", { event: "*", schema: "public", table: "tables" }, async () => {
+                    console.log("🔔 Realtime Tables occupancy update received from Supabase. Triggering sync...");
+                    await this.syncFromCloud();
+                })
+                .subscribe();
+        } catch (e) {
+            console.error("Failed to setup Supabase realtime channels:", e);
+        }
     }
 
     notifyChange(key) {
