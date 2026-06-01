@@ -246,7 +246,7 @@ main {
     display: grid;
     grid-template-columns: 1.35fr 1fr;
     gap: 1.5rem;
-    height: 100%;
+    height: calc(100vh - 9rem);
     overflow: hidden;
 }
 

@@ -179,7 +179,10 @@
             <div class="billing-workspace">
                 <!-- Left panel: Tables floor layout plan -->
                 <div class="table-layout-card">
-                    <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Floor Table Layout Plan</h3>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+                        <h3 style="font-size: 1.1rem; margin:0;">Floor Table Layout Plan</h3>
+                        <button class="btn-pos-secondary" style="padding:0.4rem 0.8rem; font-size:0.75rem;" onclick="posCtrl.addTablePrompt()">+ Add Table</button>
+                    </div>
                     <p style="color:var(--pos-text-secondary); font-size:0.8rem; margin-bottom:1rem;">Select active dining tables to pull open receipts and execute checkouts.</p>
                     
                     <div class="table-grid" id="pos-tables-floor-grid">

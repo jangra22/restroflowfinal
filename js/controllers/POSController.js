@@ -296,6 +296,19 @@ export class POSController {
         this.refreshActiveDashboardView();
     }
 
+    addTablePrompt() {
+        const name = prompt("Enter table name (e.g. Table 13, Bar 13, VIP 1):");
+        if (!name) return;
+        const seats = parseInt(prompt("Enter number of seats (e.g. 2, 4, 6):", "4"));
+        if (isNaN(seats) || seats <= 0) {
+            alert("Invalid number of seats!");
+            return;
+        }
+        
+        this.model.addTable({ name, seats });
+        this.refreshActiveDashboardView();
+    }
+
     applyDiscount(percent) {
         this.appliedDiscountPercent = percent;
         this.model.logSecurityEvent(`Applied ${percent}% discount to receipt for Table ${this.posSelectedTableId}`, "WARNING");

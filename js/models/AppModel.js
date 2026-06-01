@@ -459,6 +459,20 @@ export class AppModel extends EventTarget {
             this.saveTables(tables);
         }
     }
+    addTable(tableData) {
+        const tables = this.getTables();
+        const nextId = tables.length > 0 ? Math.max(...tables.map(t => t.id)) + 1 : 1;
+        const newTable = {
+            id: nextId,
+            name: tableData.name || `Table ${nextId}`,
+            seats: tableData.seats || 4,
+            status: "Free"
+        };
+        tables.push(newTable);
+        this.saveTables(tables);
+        this.logSecurityEvent(`Added new floor layout seat: ${newTable.name} (${newTable.seats} Seats)`);
+        return newTable;
+    }
 
     // Coupons Methods
     getCoupons() {
