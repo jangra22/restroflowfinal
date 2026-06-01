@@ -296,4 +296,128 @@ export class CustomerView {
         const activeBtn = document.getElementById(`tab-nav-${activeTab}`);
         if (activeBtn) activeBtn.classList.add("active");
     }
+
+    showUPIPaymentModal(grandTotal, upiUrl, onConfirm, onCancel) {
+        // Remove existing if any
+        const existing = document.getElementById("upi-payment-modal-root");
+        if (existing) existing.remove();
+
+        const modal = document.createElement("div");
+        modal.id = "upi-payment-modal-root";
+        modal.style.cssText = `
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200000;
+            padding: 1.5rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, sans-serif;
+        `;
+
+        const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiUrl)}`;
+
+        modal.innerHTML = `
+            <div id="upi-modal-card" style="
+                background: #fff;
+                border-radius: 20px;
+                width: 100%;
+                max-width: 380px;
+                padding: 2rem;
+                text-align: center;
+                box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+                transform: scale(0.9);
+                transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                box-sizing: border-box;
+            ">
+                <div style="font-size: 1.75rem; margin-bottom: 0.5rem;">⚡</div>
+                <h3 style="margin: 0 0 0.5rem 0; font-size: 1.3rem; font-weight: 700; color: #111;">Scan to Pay</h3>
+                <p style="margin: 0 0 1.5rem 0; font-size: 0.85rem; color: #666; line-height: 1.4;">
+                    Please scan the QR code below using any UPI App (GPay, PhonePe, Paytm) to complete payment.
+                </p>
+
+                <!-- QR Code Box -->
+                <div style="
+                    background: #f8f9fa;
+                    padding: 1rem;
+                    border-radius: 15px;
+                    display: inline-block;
+                    margin-bottom: 1.5rem;
+                    border: 1px dashed #ddd;
+                ">
+                    <img src="${qrCodeUrl}" alt="UPI QR Code" style="
+                        width: 180px;
+                        height: 180px;
+                        display: block;
+                    "/>
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <span style="font-size: 0.8rem; color: #666; display: block; margin-bottom: 0.25rem;">Total Amount</span>
+                    <span style="font-size: 2rem; font-weight: 800; color: var(--ios-accent, #d91b43);">₹${grandTotal.toFixed(2)}</span>
+                </div>
+
+                <!-- Action Button List -->
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <button id="upi-confirm-payment-btn" style="
+                        background: var(--ios-accent, #d91b43);
+                        color: #fff;
+                        border: none;
+                        border-radius: 12px;
+                        padding: 0.9rem;
+                        font-size: 0.95rem;
+                        font-weight: 700;
+                        cursor: pointer;
+                        box-shadow: 0 4px 12px rgba(217, 27, 67, 0.2);
+                        transition: background 0.2s;
+                    ">I Have Paid (Confirm Order)</button>
+
+                    <button id="upi-cancel-payment-btn" style="
+                        background: none;
+                        border: none;
+                        color: #666;
+                        font-size: 0.9rem;
+                        font-weight: 600;
+                        cursor: pointer;
+                        padding: 0.5rem;
+                    ">Cancel & Go Back</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        // Animate open
+        setTimeout(() => {
+            modal.style.opacity = "1";
+            const card = document.getElementById("upi-modal-card");
+            if (card) card.style.transform = "scale(1)";
+        }, 50);
+
+        // Bind events
+        document.getElementById("upi-confirm-payment-btn").onclick = () => {
+            modal.style.opacity = "0";
+            const card = document.getElementById("upi-modal-card");
+            if (card) card.style.transform = "scale(0.9)";
+            setTimeout(() => {
+                modal.remove();
+                onConfirm();
+            }, 300);
+        };
+
+        document.getElementById("upi-cancel-payment-btn").onclick = () => {
+            modal.style.opacity = "0";
+            const card = document.getElementById("upi-modal-card");
+            if (card) card.style.transform = "scale(0.9)";
+            setTimeout(() => {
+                modal.remove();
+                onCancel();
+            }, 300);
+        };
+    }
 }

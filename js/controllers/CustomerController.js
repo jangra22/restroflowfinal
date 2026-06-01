@@ -199,7 +199,7 @@ export class CustomerController {
         const btn = document.getElementById("btn-place-order");
         if (btn) {
             btn.disabled = true;
-            btn.innerText = this.selectedPayment === "Counter" ? "Sending Order to Counter..." : "Processing UPI Secure Gate...";
+            btn.innerText = "Processing checkout...";
         }
 
         let subtotal = 0;
@@ -224,18 +224,10 @@ export class CustomerController {
         let tax = isGSTFree ? 0 : netBase * 0.05;
         let grandTotal = netBase + tax;
 
-        setTimeout(() => {
+        // Unified payment callback
+        const completeOrder = (payMethod, payStatus) => {
             if (this.linkedLoyaltyPhone && activeLoyaltyDiscount > 0) {
                 this.model.redeemLoyaltyPoints(this.linkedLoyaltyPhone, activeLoyaltyDiscount);
-            }
-
-            let payMethod = "Credit Card";
-            let payStatus = "paid";
-            if (this.selectedPayment === "UPI") {
-                payMethod = `UPI (${this.selectedUPIBrand})`;
-            } else if (this.selectedPayment === "Counter") {
-                payMethod = "Pay at Counter";
-                payStatus = "unpaid";
             }
 
             this.model.createOrder({
@@ -269,7 +261,51 @@ export class CustomerController {
 
             this.view.showMobileNotice("Order placed securely! Sending to kitchen.");
             this.switchMobileView("orders");
-        }, 1500);
+        };
+
+        const handleCancel = () => {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerText = "Confirm & Send Order to Kitchen";
+            }
+            this.view.showMobileNotice("Payment cancelled.");
+        };
+
+        // --- PAYMENT ROUTING LAYER ---
+        // Right now: UPI shows a scannable test QR code modal & triggers intent on mobile
+        // Future: Toggle to Razorpay or Stripe here easily
+        if (this.selectedPayment === "UPI") {
+            const testVpa = "devan.gupta712-1@okaxis"; // Test UPI VPA
+            const upiUrl = `upi://pay?pa=${testVpa}&pn=RestroFlow%20Cafe&am=${grandTotal.toFixed(2)}&cu=INR&tn=Table%20${this.currentTableId}%20Order`;
+            
+            // Trigger UPI intent directly if on a mobile phone
+            const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+            if (isMobile) {
+                window.location.href = upiUrl;
+            }
+
+            // Show interactive QR Code modal so they can scan it or confirm it
+            this.view.showUPIPaymentModal(
+                grandTotal, 
+                upiUrl,
+                () => {
+                    completeOrder(`UPI (${this.selectedUPIBrand})`, "paid");
+                },
+                () => {
+                    handleCancel();
+                }
+            );
+        } else if (this.selectedPayment === "Counter") {
+            // Settle at counter POS
+            setTimeout(() => {
+                completeOrder("Pay at Counter", "unpaid");
+            }, 1000);
+        } else {
+            // Card or standard gateway simulation
+            setTimeout(() => {
+                completeOrder("Credit Card", "paid");
+            }, 1200);
+        }
     }
 
     // 4. CRM Customer Loyalty Operations
