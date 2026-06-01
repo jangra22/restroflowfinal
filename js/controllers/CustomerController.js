@@ -29,6 +29,11 @@ export class CustomerController {
     }
 
     init() {
+        // Redefine window.alert to show modern on-screen notices
+        window.alert = (msg) => {
+            this.view.showMobileNotice(msg);
+        };
+
         // Extract table ID parameters from address bar query e.g. customer.html?table=5
         const urlParams = new URLSearchParams(window.location.search);
         const tableId = urlParams.get("table");
@@ -312,7 +317,7 @@ export class CustomerController {
         }
         
         if (this.linkedLoyaltyCustomer && pointsVal > this.linkedLoyaltyCustomer.points) {
-            alert(`You only have ${this.linkedLoyaltyCustomer.points} points. Cap applied.`);
+            this.view.showMobileNotice(`You only have ${this.linkedLoyaltyCustomer.points} points. Cap applied.`);
             this.redeemedPoints = this.linkedLoyaltyCustomer.points;
         } else {
             this.redeemedPoints = pointsVal;

@@ -8,6 +8,81 @@ export class POSView {
         this.model = model;
     }
 
+    showToast(message, type = 'success') {
+        let toastContainer = document.getElementById("toast-container");
+        if (!toastContainer) {
+            toastContainer = document.createElement("div");
+            toastContainer.id = "toast-container";
+            toastContainer.style.cssText = `
+                position: fixed;
+                top: 24px;
+                right: 24px;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                z-index: 100005;
+                pointer-events: none;
+            `;
+            document.body.appendChild(toastContainer);
+        }
+
+        const toast = document.createElement("div");
+        toast.style.cssText = `
+            min-width: 300px;
+            max-width: 450px;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            background: rgba(30, 27, 46, 0.95);
+            border: 1px solid var(--pos-border);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: var(--pos-text);
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(100px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: auto;
+        `;
+
+        let icon = "✅";
+        if (type === "warning") {
+            icon = "⚠️";
+            toast.style.borderLeft = "4px solid #f59e0b";
+        } else if (type === "error" || type === "danger") {
+            icon = "❌";
+            toast.style.borderLeft = "4px solid #ef4444";
+        } else {
+            toast.style.borderLeft = "4px solid #b02a5b"; // Match the pos primary theme
+        }
+
+        toast.innerHTML = `
+            <span style="font-size: 1.2rem;">${icon}</span>
+            <div style="flex: 1; line-height: 1.4;">${message}</div>
+            <button style="background: transparent; border: none; color: var(--pos-text-secondary); cursor: pointer; font-size: 1.1rem; padding: 0; display: inline-flex; align-items: center; justify-content: center; height: 18px; width: 18px;" onclick="this.parentElement.remove()">&times;</button>
+        `;
+
+        toastContainer.appendChild(toast);
+
+        // Slide in
+        setTimeout(() => {
+            toast.style.transform = "translateX(0)";
+            toast.style.opacity = "1";
+        }, 50);
+
+        // Auto remove
+        setTimeout(() => {
+            toast.style.transform = "translateX(100px)";
+            toast.style.opacity = "0";
+            setTimeout(() => toast.remove(), 400);
+        }, 4000);
+    }
+
     updatePinDisplay(enteredPin) {
         const display = document.getElementById("pin-secure-display");
         if (display) {
@@ -574,7 +649,7 @@ export class POSView {
                                         </span>
                                     </td>
                                     <td>
-                                        <button class="btn-pos-secondary" style="padding:0.25rem 0.5rem; font-size:0.75rem;" onclick="alert('Viewing profile for ${emp.name}. Access PIN: ${emp.pin}')">✏ Edit</button>
+                                        <button class="btn-pos-secondary" style="padding:0.25rem 0.5rem; font-size:0.75rem;" onclick="posCtrl.showEmployeePin('${emp.name}', '${emp.pin}')">🔑 PIN</button>
                                     </td>
                                 </tr>
                             `;
@@ -981,7 +1056,7 @@ export class POSView {
                                 <td style="font-weight:600;">+91 ${phone}</td>
                                 <td>${cust.points} Points</td>
                                 <td style="color:#10b981; font-weight:700;">₹${cust.points.toFixed(2)}</td>
-                                <td><button class="btn-pos-secondary" style="padding:0.25rem 0.5rem; font-size:0.75rem;" onclick="alert('Viewing transaction history for ${cust.name}')">View Activity</button></td>
+                                <td><button class="btn-pos-secondary" style="padding:0.25rem 0.5rem; font-size:0.75rem;" onclick="posCtrl.viewCustomerActivity('${cust.name}')">View Activity</button></td>
                             </tr>
                         `).join("")}
                     </tbody>
@@ -1458,7 +1533,7 @@ export class POSView {
                                         </span>
                                     </td>
                                     <td>
-                                        <button class="btn-pos-secondary" style="padding:0.25rem 0.5rem; font-size:0.75rem;" onclick="alert('Printing receipt docket for ${o.id}')">🖨 Receipt</button>
+                                        <button class="btn-pos-secondary" style="padding:0.25rem 0.5rem; font-size:0.75rem;" onclick="posCtrl.printReceipt('${o.id}')">🖨 Receipt</button>
                                     </td>
                                 </tr>
                             `;
@@ -1538,7 +1613,8 @@ export class POSView {
                                     </td>
                                     <td>
                                         <div style="display:flex; gap:0.4rem; align-items:center;">
-                                            <button class="btn-pos-secondary" style="padding:0.25rem 0.5rem; font-size:0.75rem;" onclick="posCtrl.editMenuItemPricePrompt('${item.id}')">✏ Price</button>
+                                            <button class="btn-pos-secondary" style="padding:0.25rem 0.5rem; font-size:0.75rem;" onclick="posCtrl.openEditMenuModal('${item.id}')">✏ Edit</button>
+                                            <button class="btn-pos-secondary" style="padding:0.25rem 0.5rem; font-size:0.75rem; background:rgba(239,68,68,0.1); color:#ef4444; border-color:rgba(239,68,68,0.2);" onclick="posCtrl.deleteMenuItem('${item.id}')">❌ Delete</button>
                                         </div>
                                     </td>
                                 </tr>

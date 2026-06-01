@@ -447,6 +447,182 @@
         </div>
     </div>
 
+    <!-- POS EDIT MENU ITEM POPUP MODAL -->
+    <div class="modal" id="pos-edit-menu-modal">
+        <div class="modal-content" style="max-width: 500px; padding: 2.5rem; width: 90%;">
+            <button class="close-modal" onclick="posCtrl.closeEditMenuModal()">&times;</button>
+            <h3 style="font-family:'Playfair Display', serif; font-size:1.6rem; margin-bottom: 0.5rem; color:var(--pos-text);">Edit Menu Item</h3>
+            <p style="color:var(--pos-text-secondary); font-size:0.85rem; margin-bottom:1.5rem;">Modify the pricing, category classification, description, and visual assets of the dish.</p>
+            
+            <form id="pos-edit-menu-form" onsubmit="posCtrl.submitEditMenuForm(event)">
+                <input type="hidden" id="edit-menu-id">
+                <div class="form-group" style="margin-bottom:1.25rem;">
+                    <label for="edit-menu-name" style="font-size:0.8rem; font-weight:600; color:var(--pos-text);">DISH NAME</label>
+                    <input type="text" id="edit-menu-name" required class="stock-input" style="width:100%; text-align:left; margin-top:0.4rem; padding:0.6rem; background:var(--pos-bg-alt); border:1px solid var(--pos-border); color:var(--pos-text); border-radius:6px;">
+                </div>
+                <div style="display:grid; grid-template-columns: 1.2fr 1fr; gap:1rem; margin-bottom:1.25rem;">
+                    <div class="form-group">
+                        <label for="edit-menu-category" style="font-size:0.8rem; font-weight:600; color:var(--pos-text);">CATEGORY</label>
+                        <select id="edit-menu-category" required class="stock-input" style="width:100%; text-align:left; margin-top:0.4rem; padding:0.6rem; background:var(--pos-bg-alt); border:1px solid var(--pos-border); color:var(--pos-text); border-radius:6px; font-family:inherit;">
+                            <option value="Starters">Starters / Appetizers</option>
+                            <option value="Mains">Mains / Main Course</option>
+                            <option value="Chinese">Chinese Specialities</option>
+                            <option value="Fusion Pizzas">Fusion Pizzas</option>
+                            <option value="Beverages">Beverages</option>
+                            <option value="Desserts">Desserts</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-menu-price" style="font-size:0.8rem; font-weight:600; color:var(--pos-text);">PRICE (₹)</label>
+                        <input type="number" id="edit-menu-price" required min="1" step="0.01" class="stock-input" style="width:100%; text-align:left; margin-top:0.4rem; padding:0.6rem; background:var(--pos-bg-alt); border:1px solid var(--pos-border); color:var(--pos-text); border-radius:6px;">
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom:1.25rem;">
+                    <label for="edit-menu-desc" style="font-size:0.8rem; font-weight:600; color:var(--pos-text);">DESCRIPTION</label>
+                    <textarea id="edit-menu-desc" required class="stock-input" style="width:100%; text-align:left; margin-top:0.4rem; padding:0.6rem; background:var(--pos-bg-alt); border:1px solid var(--pos-border); color:var(--pos-text); border-radius:6px; height:80px; resize:none; font-family:inherit;"></textarea>
+                </div>
+                <div class="form-group" style="margin-bottom:1.5rem;">
+                    <label for="edit-menu-image" style="font-size:0.8rem; font-weight:600; color:var(--pos-text);">IMAGE URL</label>
+                    <input type="url" id="edit-menu-image" class="stock-input" style="width:100%; text-align:left; margin-top:0.4rem; padding:0.6rem; background:var(--pos-bg-alt); border:1px solid var(--pos-border); color:var(--pos-text); border-radius:6px;">
+                </div>
+                
+                <button type="submit" class="btn-pos-primary" style="width: 100%; padding:0.85rem; font-size:0.95rem;">
+                    Save Menu Modifications
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- POS ADD EMPLOYEE POPUP MODAL -->
+    <div class="modal" id="pos-add-employee-modal">
+        <div class="modal-content" style="max-width: 500px; padding: 2.5rem; width: 90%;">
+            <button class="close-modal" onclick="posCtrl.closeAddEmployeeModal()">&times;</button>
+            <h3 style="font-family:'Playfair Display', serif; font-size:1.6rem; margin-bottom: 0.5rem; color:var(--pos-text);">Add New Employee Profile</h3>
+            <p style="color:var(--pos-text-secondary); font-size:0.85rem; margin-bottom:1.5rem;">Register a staff profile, configure secure login credentials, and branch locations.</p>
+            
+            <form id="pos-add-employee-form" onsubmit="posCtrl.submitAddEmployeeForm(event)">
+                <div class="form-group" style="margin-bottom:1.25rem;">
+                    <label for="add-emp-name" style="font-size:0.8rem; font-weight:600; color:var(--pos-text);">FULL NAME</label>
+                    <input type="text" id="add-emp-name" required class="stock-input" style="width:100%; text-align:left; margin-top:0.4rem; padding:0.6rem; background:var(--pos-bg-alt); border:1px solid var(--pos-border); color:var(--pos-text); border-radius:6px;" placeholder="Sarah Connor">
+                </div>
+                <div style="display:grid; grid-template-columns: 1.2fr 1.2fr; gap:1rem; margin-bottom:1.25rem;">
+                    <div class="form-group">
+                        <label for="add-emp-role" style="font-size:0.8rem; font-weight:600; color:var(--pos-text);">ROLE</label>
+                        <select id="add-emp-role" required class="stock-input" style="width:100%; text-align:left; margin-top:0.4rem; padding:0.6rem; background:var(--pos-bg-alt); border:1px solid var(--pos-border); color:var(--pos-text); border-radius:6px; font-family:inherit;">
+                            <option value="Admin">Admin</option>
+                            <option value="Restaurant Manager">Restaurant Manager</option>
+                            <option value="Chef">Chef</option>
+                            <option value="Waiter">Waiter</option>
+                            <option value="Cashier">Cashier</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="add-emp-branch" style="font-size:0.8rem; font-weight:600; color:var(--pos-text);">BRANCH</label>
+                        <select id="add-emp-branch" required class="stock-input" style="width:100%; text-align:left; margin-top:0.4rem; padding:0.6rem; background:var(--pos-bg-alt); border:1px solid var(--pos-border); color:var(--pos-text); border-radius:6px; font-family:inherit;">
+                            <option value="Main Branch">Main Branch</option>
+                            <option value="Downtown Branch">Downtown Branch</option>
+                            <option value="Uptown Branch">Uptown Branch</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display:grid; grid-template-columns: 1.5fr 1fr; gap:1rem; margin-bottom:1.25rem;">
+                    <div class="form-group">
+                        <label for="add-emp-email" style="font-size:0.8rem; font-weight:600; color:var(--pos-text);">WORK EMAIL</label>
+                        <input type="email" id="add-emp-email" required class="stock-input" style="width:100%; text-align:left; margin-top:0.4rem; padding:0.6rem; background:var(--pos-bg-alt); border:1px solid var(--pos-border); color:var(--pos-text); border-radius:6px;" placeholder="sarah.c@restoflow.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="add-emp-pin" style="font-size:0.8rem; font-weight:600; color:var(--pos-text);">SECURE ACCESS PIN</label>
+                        <input type="text" id="add-emp-pin" required pattern="\d{4}" maxlength="4" class="stock-input" style="width:100%; text-align:left; margin-top:0.4rem; padding:0.6rem; background:var(--pos-bg-alt); border:1px solid var(--pos-border); color:var(--pos-text); border-radius:6px;" placeholder="4-Digit (e.g. 1234)">
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom:1.5rem;">
+                    <label for="add-emp-phone" style="font-size:0.8rem; font-weight:600; color:var(--pos-text);">CONTACT PHONE</label>
+                    <input type="tel" id="add-emp-phone" required class="stock-input" style="width:100%; text-align:left; margin-top:0.4rem; padding:0.6rem; background:var(--pos-bg-alt); border:1px solid var(--pos-border); color:var(--pos-text); border-radius:6px;" placeholder="+91 98765 43210">
+                </div>
+                
+                <button type="submit" class="btn-pos-primary" style="width: 100%; padding:0.85rem; font-size:0.95rem;">
+                    Register Employee Profile
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- POS ADD INVENTORY ITEM POPUP MODAL -->
+    <div class="modal" id="pos-add-inventory-modal">
+        <div class="modal-content" style="max-width: 500px; padding: 2.5rem; width: 90%;">
+            <button class="close-modal" onclick="posCtrl.closeAddInventoryModal()">&times;</button>
+            <h3 style="font-family:'Playfair Display', serif; font-size:1.6rem; margin-bottom: 0.5rem; color:var(--pos-text);">Add New Inventory Stock</h3>
+            <p style="color:var(--pos-text-secondary); font-size:0.85rem; margin-bottom:1.5rem;">Track raw ingredients, bulk warehouse allocations, and supplier associations.</p>
+            
+            <form id="pos-add-inventory-form" onsubmit="posCtrl.submitAddInventoryForm(event)">
+                <div style="display:grid; grid-template-columns: 1.2fr 1fr; gap:1rem; margin-bottom:1.25rem;">
+                    <div class="form-group">
+                        <label for="add-inv-name" style="font-size:0.8rem; font-weight:600; color:var(--pos-text);">INGREDIENT NAME</label>
+                        <input type="text" id="add-inv-name" required class="stock-input" style="width:100%; text-align:left; margin-top:0.4rem; padding:0.6rem; background:var(--pos-bg-alt); border:1px solid var(--pos-border); color:var(--pos-text); border-radius:6px;" placeholder="e.g. Saffron / Kesar">
+                    </div>
+                    <div class="form-group">
+                        <label for="add-inv-category" style="font-size:0.8rem; font-weight:600; color:var(--pos-text);">CATEGORY</label>
+                        <select id="add-inv-category" required class="stock-input" style="width:100%; text-align:left; margin-top:0.4rem; padding:0.6rem; background:var(--pos-bg-alt); border:1px solid var(--pos-border); color:var(--pos-text); border-radius:6px; font-family:inherit;">
+                            <option value="Ingredients">Ingredients</option>
+                            <option value="Dairy">Dairy</option>
+                            <option value="Produce">Produce</option>
+                            <option value="Spices">Spices</option>
+                            <option value="Packaging">Packaging</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display:grid; grid-template-columns: 1.2fr 1.2fr 1fr; gap:1rem; margin-bottom:1.25rem;">
+                    <div class="form-group">
+                        <label for="add-inv-max" style="font-size:0.8rem; font-weight:600; color:var(--pos-text);">MAX CAPACITY</label>
+                        <input type="number" id="add-inv-max" required min="1" class="stock-input" style="width:100%; text-align:left; margin-top:0.4rem; padding:0.6rem; background:var(--pos-bg-alt); border:1px solid var(--pos-border); color:var(--pos-text); border-radius:6px;" placeholder="50">
+                    </div>
+                    <div class="form-group">
+                        <label for="add-inv-cost" style="font-size:0.8rem; font-weight:600; color:var(--pos-text);">UNIT COST (₹)</label>
+                        <input type="number" id="add-inv-cost" required min="1" step="0.01" class="stock-input" style="width:100%; text-align:left; margin-top:0.4rem; padding:0.6rem; background:var(--pos-bg-alt); border:1px solid var(--pos-border); color:var(--pos-text); border-radius:6px;" placeholder="400.00">
+                    </div>
+                    <div class="form-group">
+                        <label for="add-inv-unit" style="font-size:0.8rem; font-weight:600; color:var(--pos-text);">UNIT</label>
+                        <input type="text" id="add-inv-unit" required class="stock-input" style="width:100%; text-align:left; margin-top:0.4rem; padding:0.6rem; background:var(--pos-bg-alt); border:1px solid var(--pos-border); color:var(--pos-text); border-radius:6px;" placeholder="kg / litres / pcs">
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom:1.5rem;">
+                    <label for="add-inv-supplier" style="font-size:0.8rem; font-weight:600; color:var(--pos-text);">SUPPLIER NAME</label>
+                    <input type="text" id="add-inv-supplier" required class="stock-input" style="width:100%; text-align:left; margin-top:0.4rem; padding:0.6rem; background:var(--pos-bg-alt); border:1px solid var(--pos-border); color:var(--pos-text); border-radius:6px;" placeholder="Royal Spices Ltd">
+                </div>
+                
+                <button type="submit" class="btn-pos-primary" style="width: 100%; padding:0.85rem; font-size:0.95rem;">
+                    Save Warehouse Stock
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- POS ADD TABLE POPUP MODAL -->
+    <div class="modal" id="pos-add-table-modal">
+        <div class="modal-content" style="max-width: 450px; padding: 2.5rem; width: 90%;">
+            <button class="close-modal" onclick="posCtrl.closeAddTableModal()">&times;</button>
+            <h3 style="font-family:'Playfair Display', serif; font-size:1.6rem; margin-bottom: 0.5rem; color:var(--pos-text);">Add Seating Table</h3>
+            <p style="color:var(--pos-text-secondary); font-size:0.85rem; margin-bottom:1.5rem;">Configure table names, numbers, and seating capacities for the Dine-In billing counter floor layout.</p>
+            
+            <form id="pos-add-table-form" onsubmit="posCtrl.submitAddTableForm(event)">
+                <div style="display:grid; grid-template-columns: 1.5fr 1fr; gap:1rem; margin-bottom:1.5rem;">
+                    <div class="form-group">
+                        <label for="add-table-name" style="font-size:0.8rem; font-weight:600; color:var(--pos-text);">TABLE IDENTIFIER</label>
+                        <input type="text" id="add-table-name" required class="stock-input" style="width:100%; text-align:left; margin-top:0.4rem; padding:0.6rem; background:var(--pos-bg-alt); border:1px solid var(--pos-border); color:var(--pos-text); border-radius:6px;" placeholder="e.g. Table 13, Bar 13, VIP 1">
+                    </div>
+                    <div class="form-group">
+                        <label for="add-table-seats" style="font-size:0.8rem; font-weight:600; color:var(--pos-text);">SEAT CAPACITY</label>
+                        <input type="number" id="add-table-seats" required min="1" max="20" class="stock-input" style="width:100%; text-align:left; margin-top:0.4rem; padding:0.6rem; background:var(--pos-bg-alt); border:1px solid var(--pos-border); color:var(--pos-text); border-radius:6px;" value="4">
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-pos-primary" style="width: 100%; padding:0.85rem; font-size:0.95rem;">
+                    Add Table to Seating Plan
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- Script references -->
     <script type="module" src="js/app-pos.js?v=2.0.1"></script>
 </body>

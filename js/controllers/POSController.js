@@ -44,6 +44,11 @@ export class POSController {
     }
 
     init() {
+        // Redefine window.alert to show modern non-blocking Toast
+        window.alert = (msg) => {
+            this.view.showToast(msg, "info");
+        };
+
         // Force-populate staff dropdown dynamically
         const staffList = this.model.getStaffList();
         this.view.renderLoginProfiles(staffList);
@@ -86,6 +91,52 @@ export class POSController {
         } else {
             this.view.showLoginGate(true);
         }
+    }
+
+    showConfirm(title, message, onConfirm) {
+        const modal = document.createElement("div");
+        modal.className = "modal open";
+        modal.id = "custom-confirm-modal";
+        modal.style.zIndex = "100000";
+
+        modal.innerHTML = `
+            <div class="modal-content" style="max-width: 400px; padding: 2.5rem; width: 90%; text-align: center;">
+                <h3 style="font-family:'Playfair Display', serif; font-size:1.5rem; margin-bottom: 1rem; color:var(--pos-text);">${title}</h3>
+                <p style="color:var(--pos-text-secondary); font-size:0.9rem; margin-bottom:2rem; line-height: 1.5;">${message}</p>
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <button id="confirm-cancel-btn" class="btn-pos-secondary" style="flex: 1; padding: 0.75rem;">Cancel</button>
+                    <button id="confirm-ok-btn" class="btn-pos-primary" style="flex: 1; padding: 0.75rem; background: var(--pos-primary); color: white;">Confirm</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        const close = () => {
+            modal.classList.remove("open");
+            setTimeout(() => modal.remove(), 300);
+        };
+
+        modal.querySelector("#confirm-cancel-btn").onclick = () => {
+            close();
+        };
+
+        modal.querySelector("#confirm-ok-btn").onclick = () => {
+            close();
+            if (onConfirm) onConfirm();
+        };
+    }
+
+    showEmployeePin(name, pin) {
+        this.view.showToast(`Employee "${name}" Access PIN: ${pin}`, "warning");
+    }
+
+    viewCustomerActivity(name) {
+        this.view.showToast(`Loading transaction activity history for ${name}...`, "success");
+    }
+
+    printReceipt(orderId) {
+        this.view.showToast(`Receipt docket for order ${orderId} sent to thermal printer.`, "success");
     }
 
     // 1. PIN Access Gate Controls
@@ -201,29 +252,48 @@ export class POSController {
     }
 
     addEmployeePrompt() {
-        const name = prompt("Enter new employee name:");
-        if (!name) return;
-        const role = prompt("Enter employee role (e.g. Waiter, Cashier, Chef, Restaurant Manager, Admin):");
-        const branch = prompt("Enter branch (e.g. Main Branch, Downtown Branch, Uptown Branch):");
-        const email = prompt("Enter work email:");
-        const phone = prompt("Enter contact phone:");
-        
+        const modal = document.getElementById("pos-add-employee-modal");
+        if (modal) {
+            const form = document.getElementById("pos-add-employee-form");
+            if (form) form.reset();
+            modal.classList.add("open");
+        }
+    }
+
+    closeAddEmployeeModal() {
+        const modal = document.getElementById("pos-add-employee-modal");
+        if (modal) {
+            modal.classList.remove("open");
+        }
+    }
+
+    submitAddEmployeeForm(event) {
+        event.preventDefault();
+        const name = document.getElementById("add-emp-name").value.trim();
+        const role = document.getElementById("add-emp-role").value;
+        const branch = document.getElementById("add-emp-branch").value;
+        const email = document.getElementById("add-emp-email").value.trim();
+        const pin = document.getElementById("add-emp-pin").value.trim();
+        const phone = document.getElementById("add-emp-phone").value.trim();
+
         const currentStaff = JSON.parse(localStorage.getItem("restoflow_staff")) || [];
-        const nextId = 1001 + currentStaff.length;
         const newEmp = {
             username: name.toLowerCase().replace(/\s+/g, ""),
-            pin: "0000",
+            pin: pin || "0000",
             name,
             role,
             branch,
-            contact: `${email.toLowerCase()} / +91 ${phone}`,
+            contact: `${email} / +91 ${phone}`,
             joinDate: new Date().toISOString().split('T')[0],
             status: "Active"
         };
         currentStaff.push(newEmp);
         localStorage.setItem("restoflow_staff", JSON.stringify(currentStaff));
         this.model.logSecurityEvent(`Registered new employee profile: ${name} (${role})`);
+        this.view.showToast(`Registered employee profile: ${name}`, "success");
+        this.closeAddEmployeeModal();
         this.refreshActiveDashboardView();
+        this.view.renderLoginProfiles(currentStaff);
     }
 
     // --- Dynamic Inventory Table Handlers ---
@@ -239,14 +309,30 @@ export class POSController {
     }
 
     addInventoryItemPrompt() {
-        const name = prompt("Enter item name (e.g. Rice, Milk, Paneer):");
-        if (!name) return;
-        const category = prompt("Enter category (e.g. Meat, Ingredients, Dairy, Produce, Spices, Packaging):");
-        const maxQty = parseFloat(prompt("Enter maximum stock capacity limit:"));
-        const cost = parseFloat(prompt("Enter unit cost (₹):"));
-        const supplier = prompt("Enter supplier name:");
-        const unit = prompt("Enter unit (e.g., kg, litres, pcs):");
-        
+        const modal = document.getElementById("pos-add-inventory-modal");
+        if (modal) {
+            const form = document.getElementById("pos-add-inventory-form");
+            if (form) form.reset();
+            modal.classList.add("open");
+        }
+    }
+
+    closeAddInventoryModal() {
+        const modal = document.getElementById("pos-add-inventory-modal");
+        if (modal) {
+            modal.classList.remove("open");
+        }
+    }
+
+    submitAddInventoryForm(event) {
+        event.preventDefault();
+        const name = document.getElementById("add-inv-name").value.trim();
+        const category = document.getElementById("add-inv-category").value;
+        const maxQty = parseFloat(document.getElementById("add-inv-max").value);
+        const cost = parseFloat(document.getElementById("add-inv-cost").value);
+        const supplier = document.getElementById("add-inv-supplier").value.trim();
+        const unit = document.getElementById("add-inv-unit").value.trim() || "pcs";
+
         const inv = this.model.getInventory();
         const key = name.toLowerCase().replace(/\s+/g, "");
         inv[key] = {
@@ -262,6 +348,8 @@ export class POSController {
         };
         this.model.saveInventory(inv);
         this.model.logSecurityEvent(`Added new raw inventory item: ${name} (Supplier: ${supplier})`);
+        this.view.showToast(`Added ingredient: ${name} to stock`, "success");
+        this.closeAddInventoryModal();
         this.refreshActiveDashboardView();
     }
 
@@ -297,15 +385,34 @@ export class POSController {
     }
 
     addTablePrompt() {
-        const name = prompt("Enter table name (e.g. Table 13, Bar 13, VIP 1):");
-        if (!name) return;
-        const seats = parseInt(prompt("Enter number of seats (e.g. 2, 4, 6):", "4"));
+        const modal = document.getElementById("pos-add-table-modal");
+        if (modal) {
+            const form = document.getElementById("pos-add-table-form");
+            if (form) form.reset();
+            modal.classList.add("open");
+        }
+    }
+
+    closeAddTableModal() {
+        const modal = document.getElementById("pos-add-table-modal");
+        if (modal) {
+            modal.classList.remove("open");
+        }
+    }
+
+    submitAddTableForm(event) {
+        event.preventDefault();
+        const name = document.getElementById("add-table-name").value.trim();
+        const seats = parseInt(document.getElementById("add-table-seats").value);
+
         if (isNaN(seats) || seats <= 0) {
-            alert("Invalid number of seats!");
+            this.view.showToast("Invalid number of seats!", "error");
             return;
         }
-        
+
         this.model.addTable({ name, seats });
+        this.view.showToast(`Table ${name} added successfully!`, "success");
+        this.closeAddTableModal();
         this.refreshActiveDashboardView();
     }
 
@@ -331,7 +438,7 @@ export class POSController {
     }
 
     deleteReceiptItem(orderId, itemId) {
-        if (confirm("Are you sure you want to delete/void this item from the receipt?")) {
+        this.showConfirm("Void Item?", "Are you sure you want to delete/void this item from the receipt?", () => {
             const orders = this.model.getOrders();
             const orderIdx = orders.findIndex(o => o.id === orderId);
             
@@ -365,20 +472,22 @@ export class POSController {
                         this.model.updateTableStatus(order.tableId, "Free");
                         this.posSelectedTableId = null;
                         this.model.logSecurityEvent(`Voided entire empty receipt for Table ${order.tableId}.`, "WARNING");
+                        this.view.showToast(`Voided empty receipt for Table ${order.tableId}`, "warning");
                     } else {
                         orders[orderIdx] = order;
                         this.model.logSecurityEvent(`Deleted item "${deletedItem.name}" from Table ${order.tableId} receipt.`, "WARNING");
+                        this.view.showToast(`Voided ${deletedItem.name} from Table ${order.tableId}`, "success");
                     }
                     
                     this.model.saveOrders(orders);
                     this.refreshActiveDashboardView();
                 }
             }
-        }
+        });
     }
 
     deleteKDSItem(orderId, itemId) {
-        if (confirm("Are you sure you want to void this item from the kitchen order card?")) {
+        this.showConfirm("Void Kitchen Item?", "Are you sure you want to void this item from the kitchen order card?", () => {
             const orders = this.model.getOrders();
             const orderIdx = orders.findIndex(o => o.id === orderId);
             
@@ -410,16 +519,18 @@ export class POSController {
                         orders.splice(orderIdx, 1);
                         this.model.updateTableStatus(order.tableId, "Free");
                         this.model.logSecurityEvent(`Voided entire kitchen ticket for Table ${order.tableId} from KDS.`, "WARNING");
+                        this.view.showToast(`Voided KDS ticket for Table ${order.tableId}`, "warning");
                     } else {
                         orders[orderIdx] = order;
                         this.model.logSecurityEvent(`Voided item "${deletedItem.name}" from KDS Docket ${order.id}.`, "WARNING");
+                        this.view.showToast(`Voided ${deletedItem.name} from KDS`, "success");
                     }
                     
                     this.model.saveOrders(orders);
                     this.refreshActiveDashboardView();
                 }
             }
-        }
+        });
     }
 
     // 4. Kitchen Monitors Controls (KDS)
@@ -520,7 +631,7 @@ export class POSController {
 
     submitPOSModalOrder() {
         if (this.posDraftBasket.length === 0) {
-            alert("Your order draft is empty. Please add some dishes first.");
+            this.view.showToast("Your order draft is empty. Please add some dishes first.", "error");
             return;
         }
 
@@ -603,7 +714,7 @@ export class POSController {
     registerPOSLoyalty(phone) {
         this.model.registerLoyaltyCustomer(phone, "POS Guest Customer");
         this.lookupPOSLoyalty();
-        alert("New loyalty profile registered successfully!");
+        this.view.showToast("New loyalty profile registered successfully!", "success");
     }
 
     applyPOSLoyaltyRedeem(phone) {
@@ -615,7 +726,7 @@ export class POSController {
         if (!customer || !activeOrder || isNaN(pts) || pts <= 0) return;
 
         if (pts > customer.points) {
-            alert("Requested points redemption exceeds customer balance!");
+            this.view.showToast("Requested points redemption exceeds customer balance!", "error");
             return;
         }
 
@@ -653,7 +764,7 @@ export class POSController {
             // Also push to central model queue for KDS sync
             const order = this.model.acceptAggregatorOrder(orderId);
             if (order) {
-                alert(`Aggregator Order ${orderId} accepted successfully! Transferred to KDS.`);
+                this.view.showToast(`Aggregator Order ${orderId} accepted successfully! Transferred to KDS.`, "success");
             }
             this.refreshActiveDashboardView();
         }
@@ -666,21 +777,23 @@ export class POSController {
             aggOrders[idx].status = "served"; // Dispatched
             this.model.saveAggregatorOrders(aggOrders);
             this.model.logSecurityEvent(`Marked Online order ${orderId} as ready & Dispatched.`);
+            this.view.showToast(`Aggregator Order ${orderId} food ready & Dispatched`, "success");
             this.refreshActiveDashboardView();
         }
     }
 
     rejectOnlineOrder(orderId) {
-        if (confirm(`Are you sure you want to reject Aggregator Docket ${orderId}?`)) {
+        this.showConfirm("Reject Order?", `Are you sure you want to reject Aggregator Docket ${orderId}?`, () => {
             const aggOrders = this.model.getAggregatorOrders();
             const idx = aggOrders.findIndex(o => o.id === orderId);
             if (idx !== -1) {
                 aggOrders.splice(idx, 1);
                 this.model.saveAggregatorOrders(aggOrders);
                 this.model.logSecurityEvent(`Rejected Aggregator Order ${orderId}.`);
+                this.view.showToast(`Rejected Aggregator Order ${orderId}`, "warning");
                 this.refreshActiveDashboardView();
             }
-        }
+        });
     }
 
     // --- Dynamic Orders Filter Handlers ---
@@ -717,21 +830,75 @@ export class POSController {
         }
     }
 
-    editMenuItemPricePrompt(itemId) {
+    openEditMenuModal(itemId) {
         const menu = this.model.getMenu();
         const item = menu.find(i => i.id === itemId);
         if (!item) return;
 
-        const newPrice = parseFloat(prompt(`Enter new price for ${item.name}:`, item.price));
-        if (isNaN(newPrice) || newPrice <= 0) {
-            alert("Invalid price!");
+        document.getElementById("edit-menu-id").value = item.id;
+        document.getElementById("edit-menu-name").value = item.name;
+        document.getElementById("edit-menu-category").value = item.category;
+        document.getElementById("edit-menu-price").value = item.price;
+        document.getElementById("edit-menu-desc").value = item.description;
+        document.getElementById("edit-menu-image").value = item.image || "";
+
+        const modal = document.getElementById("pos-edit-menu-modal");
+        if (modal) {
+            modal.classList.add("open");
+        }
+    }
+
+    closeEditMenuModal() {
+        const modal = document.getElementById("pos-edit-menu-modal");
+        if (modal) {
+            modal.classList.remove("open");
+        }
+    }
+
+    submitEditMenuForm(event) {
+        event.preventDefault();
+        const id = document.getElementById("edit-menu-id").value;
+        const name = document.getElementById("edit-menu-name").value.trim();
+        const category = document.getElementById("edit-menu-category").value;
+        const price = parseFloat(document.getElementById("edit-menu-price").value);
+        const description = document.getElementById("edit-menu-desc").value.trim();
+        const image = document.getElementById("edit-menu-image").value.trim();
+
+        if (!name || isNaN(price) || price <= 0) {
+            this.view.showToast("Please enter a valid name and price!", "error");
             return;
         }
 
-        item.price = newPrice;
-        this.model.saveMenu(menu);
-        this.model.logSecurityEvent(`Updated price of ${item.name} to ₹${newPrice}.`);
+        const menu = this.model.getMenu();
+        const itemIdx = menu.findIndex(i => i.id === id);
+        if (itemIdx !== -1) {
+            menu[itemIdx].name = name;
+            menu[itemIdx].category = category;
+            menu[itemIdx].price = price;
+            menu[itemIdx].description = description;
+            if (image) {
+                menu[itemIdx].image = image;
+            }
+            this.model.saveMenu(menu);
+            this.model.logSecurityEvent(`Updated menu item: ${name} (₹${price})`);
+            this.view.showToast(`Updated menu item: ${name}`, "success");
+        }
+        this.closeEditMenuModal();
         this.refreshActiveDashboardView();
+    }
+
+    deleteMenuItem(itemId) {
+        const menu = this.model.getMenu();
+        const item = menu.find(i => i.id === itemId);
+        if (!item) return;
+
+        this.showConfirm("Delete Dish?", `Are you sure you want to permanently remove "${item.name}" from the menu catalog?`, () => {
+            const updatedMenu = menu.filter(i => i.id !== itemId);
+            this.model.saveMenu(updatedMenu);
+            this.model.logSecurityEvent(`Deleted catalog menu item: ${item.name}`, "WARNING");
+            this.view.showToast(`Deleted ${item.name} from catalog`, "success");
+            this.refreshActiveDashboardView();
+        });
     }
 
     addMenuItemPrompt() {
@@ -759,7 +926,7 @@ export class POSController {
         const image = document.getElementById("add-menu-image").value.trim();
 
         if (!name || isNaN(price) || price <= 0) {
-            alert("Please enter a valid name and price!");
+            this.view.showToast("Please enter a valid name and price!", "error");
             return;
         }
 
@@ -779,6 +946,7 @@ export class POSController {
         menu.push(newItem);
         this.model.saveMenu(menu);
         this.model.logSecurityEvent(`Added new menu item via Admin Form: ${name} (₹${price})`);
+        this.view.showToast(`Added ${name} to catalog`, "success");
         
         this.closeAddMenuModal();
         this.refreshActiveDashboardView();
