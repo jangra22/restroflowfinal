@@ -1015,13 +1015,17 @@ export class POSController {
         const input = document.getElementById("settings-merchant-upi");
         const val = input ? input.value.trim() : "";
 
+        const rateSelect = document.getElementById("settings-loyalty-rate");
+        const rateVal = rateSelect ? parseInt(rateSelect.value) : 1;
+
         if (!val || !val.includes("@")) {
             this.view.showToast("Please enter a valid UPI ID (containing '@')!", "error");
             return;
         }
 
         this.model.setMerchantUPI(val);
-        this.view.showToast("Merchant UPI Payment VPA address updated successfully!", "success");
+        this.model.setLoyaltyRate(rateVal);
+        this.view.showToast("Payment and Loyalty reward configurations saved successfully!", "success");
         this.refreshActiveDashboardView();
     }
 }

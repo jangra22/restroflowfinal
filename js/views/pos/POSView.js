@@ -1436,7 +1436,7 @@ export class POSView {
             <div class="settings-container">
                 <!-- Merchant Payment Gateway Settings Card -->
                 <div class="settings-card">
-                    <h4 class="settings-card-title">💳 Merchant Payment Gateway Settings</h4>
+                    <h4 class="settings-card-title">💳 Merchant Payment & Rewards Settings</h4>
                     
                     <div class="settings-form-grid">
                         <div class="settings-group">
@@ -1458,10 +1458,22 @@ export class POSView {
                                 Primary instant settlement nodal bank connection.
                             </span>
                         </div>
+                        <div class="settings-group">
+                            <label class="settings-label">LOYALTY REWARDS ACCRUAL RATE</label>
+                            <select id="settings-loyalty-rate" class="settings-input" style="height: 46px;">
+                                <option value="1" ${this.model.getLoyaltyRate() === 1 ? 'selected' : ''}>1 Point per ₹100 spent (1% Cashback)</option>
+                                <option value="5" ${this.model.getLoyaltyRate() === 5 ? 'selected' : ''}>5 Points per ₹100 spent (5% Cashback)</option>
+                                <option value="10" ${this.model.getLoyaltyRate() === 10 ? 'selected' : ''}>10 Points per ₹100 spent (10% Cashback)</option>
+                                <option value="20" ${this.model.getLoyaltyRate() === 20 ? 'selected' : ''}>20 Points per ₹100 spent (20% Cashback)</option>
+                            </select>
+                            <span style="font-size:0.7rem; color:var(--pos-text-secondary); margin-top: 0.25rem;">
+                                Define how many reward points are automatically credited per ₹100 spent.
+                            </span>
+                        </div>
                     </div>
                     
                     <button class="settings-btn" onclick="posCtrl.saveMerchantPaymentSettings()">
-                        <span>💾</span> Save Payment Settings
+                        <span>💾</span> Save Configurations Settings
                     </button>
                 </div>
 

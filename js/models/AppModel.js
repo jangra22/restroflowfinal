@@ -629,10 +629,20 @@ export class AppModel extends EventTarget {
         const db = this.getLoyaltyDatabase();
         return db[phone] || null;
     }
+    getLoyaltyRate() {
+        return parseInt(localStorage.getItem("restoflow_loyalty_rate") || "1");
+    }
+
+    setLoyaltyRate(val) {
+        localStorage.setItem("restoflow_loyalty_rate", val.toString());
+        this.logSecurityEvent(`Loyalty point accrual rate updated to: ${val}% cashback`, "WARNING");
+    }
+
     earnLoyaltyPoints(phone, billTotal) {
         if (!phone) return;
         const db = this.getLoyaltyDatabase();
-        const pointsEarned = Math.floor(billTotal / 100); // 1 Point per ₹100 spent
+        const rate = this.getLoyaltyRate();
+        const pointsEarned = Math.floor((billTotal / 100) * rate); // Dynamic points based on rate
         
         if (db[phone]) {
             db[phone].points += pointsEarned;
