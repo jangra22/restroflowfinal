@@ -1028,4 +1028,16 @@ export class POSController {
         this.view.showToast("Payment and Loyalty reward configurations saved successfully!", "success");
         this.refreshActiveDashboardView();
     }
+
+    generateTableQR(tableId) {
+        const table = this.model.getTables().find(t => t.id === tableId);
+        if (!table) return;
+
+        // Auto-detect the origin domain (works locally or in production)
+        const base = window.location.origin + window.location.pathname.replace("pos.html", "customer.html");
+        const qrUrl = `${base}?table=${tableId}`;
+
+        this.view.showTableQRModal(tableId, qrUrl, table.name);
+        this.model.logSecurityEvent(`Generated table QR code for ${table.name}`, "INFO");
+    }
 }

@@ -176,6 +176,26 @@ export class POSView {
                     <div class="table-status-pill"></div>
                     <h4>${table.name}</h4>
                     <span>${orderSummary}</span>
+                    <!-- Dynamic Table QR Generator button -->
+                    <button class="qr-btn" onclick="event.stopPropagation(); posCtrl.generateTableQR(${table.id})" style="
+                        position: absolute;
+                        bottom: 8px;
+                        right: 8px;
+                        background: rgba(255,255,255,0.12);
+                        border: 1px solid var(--pos-border);
+                        color: var(--pos-text);
+                        cursor: pointer;
+                        font-size: 0.75rem;
+                        padding: 0.2rem 0.35rem;
+                        border-radius: 6px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        transition: background 0.2s, transform 0.1s;
+                        z-index: 10;
+                    " title="Generate Table QR Code">
+                        📷 QR
+                    </button>
                 </div>
             `;
         }).join("");
@@ -1844,6 +1864,190 @@ export class POSView {
     hideFeedbackModal() {
         const modal = document.getElementById("pos-feedback-modal");
         if (modal) modal.classList.remove("open");
+    }
+
+    showTableQRModal(tableId, qrUrl, tableName) {
+        // Remove existing modal if any
+        const existing = document.getElementById("pos-qr-modal-root");
+        if (existing) existing.remove();
+
+        const modal = document.createElement("div");
+        modal.id = "pos-qr-modal-root";
+        modal.style.cssText = `
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 250000;
+            padding: 1.5rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, sans-serif;
+        `;
+
+        const qrCodeApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(qrUrl)}`;
+
+        modal.innerHTML = `
+            <div id="pos-qr-modal-card" style="
+                background: #ffffff;
+                border-radius: 20px;
+                width: 100%;
+                max-width: 400px;
+                padding: 2rem;
+                text-align: center;
+                box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+                transform: scale(0.9);
+                transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                box-sizing: border-box;
+                border: 1px solid rgba(255,255,255,0.1);
+            ">
+                <!-- Brand logo representation -->
+                <div style="
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 46px;
+                    height: 46px;
+                    background: var(--pos-accent, #b02a5b);
+                    color: white;
+                    border-radius: 12px;
+                    font-size: 1.5rem;
+                    font-weight: 900;
+                    margin-bottom: 0.75rem;
+                    box-shadow: 0 4px 10px rgba(176,42,91,0.2);
+                ">R</div>
+                
+                <h3 style="margin: 0 0 0.25rem 0; font-size: 1.4rem; font-weight: 800; color: #1e293b;">RestroFlow QR Engine</h3>
+                <span style="background: rgba(176,42,91,0.1); color: var(--pos-accent, #b02a5b); padding: 0.25rem 0.75rem; border-radius: 100px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase;">
+                    ${tableName} (Table ${tableId})
+                </span>
+
+                <!-- QR print wrap -->
+                <div id="pos-qr-print-area" style="
+                    background: #f8fafc;
+                    padding: 1.5rem;
+                    border-radius: 16px;
+                    display: inline-block;
+                    margin: 1.5rem 0;
+                    border: 1px dashed #cbd5e1;
+                    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+                ">
+                    <img src="${qrCodeApiUrl}" alt="Table QR Code" style="
+                        width: 220px;
+                        height: 220px;
+                        display: block;
+                        background: #ffffff;
+                    "/>
+                </div>
+
+                <div style="margin-bottom: 1.5rem; font-size: 0.8rem; color: #64748b; line-height: 1.4;">
+                    Customers scan this QR code from their device cameras to open menus and order directly.
+                </div>
+
+                <!-- Action Button List -->
+                <div style="display: flex; gap: 0.75rem;">
+                    <button id="pos-qr-print-btn" style="
+                        flex: 1;
+                        background: var(--pos-accent, #b02a5b);
+                        color: #ffffff;
+                        border: none;
+                        border-radius: 10px;
+                        padding: 0.8rem;
+                        font-size: 0.9rem;
+                        font-weight: 700;
+                        cursor: pointer;
+                        box-shadow: 0 4px 12px rgba(176,42,91,0.15);
+                        transition: background 0.2s;
+                    ">🖨 Print QR</button>
+
+                    <button id="pos-qr-close-btn" style="
+                        flex: 1;
+                        background: #f1f5f9;
+                        border: 1px solid #e2e8f0;
+                        color: #475569;
+                        border-radius: 10px;
+                        padding: 0.8rem;
+                        font-size: 0.9rem;
+                        font-weight: 700;
+                        cursor: pointer;
+                        transition: background 0.2s;
+                    ">Close</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        // Animate open
+        setTimeout(() => {
+            modal.style.opacity = "1";
+            const card = document.getElementById("pos-qr-modal-card");
+            if (card) card.style.transform = "scale(1)";
+        }, 50);
+
+        // Bind events
+        document.getElementById("pos-qr-print-btn").onclick = () => {
+            const printWindow = window.open("", "_blank");
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Print QR - ${tableName}</title>
+                    <style>
+                        body {
+                            font-family: -apple-system, sans-serif;
+                            text-align: center;
+                            padding: 3rem;
+                        }
+                        .container {
+                            border: 3px solid #b02a5b;
+                            border-radius: 20px;
+                            padding: 2.5rem;
+                            display: inline-block;
+                            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+                        }
+                        .title {
+                            font-size: 2rem;
+                            font-weight: 800;
+                            margin: 0;
+                            color: #1e293b;
+                        }
+                        .subtitle {
+                            font-size: 1.5rem;
+                            font-weight: 800;
+                            color: #b02a5b;
+                            margin: 0.5rem 0 1.5rem 0;
+                            text-transform: uppercase;
+                        }
+                        .desc {
+                            color: #64748b;
+                            margin-top: 1.5rem;
+                            font-size: 1rem;
+                        }
+                    </style>
+                </head>
+                <body onload="window.print(); window.close();">
+                    <div class="container">
+                        <div class="title">RestroFlow</div>
+                        <div class="subtitle">${tableName}</div>
+                        <img src="${qrCodeApiUrl}" style="width: 250px; height: 250px;"/>
+                        <div class="desc">Scan to Browse Menu & Order Instantly!</div>
+                    </div>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+        };
+
+        document.getElementById("pos-qr-close-btn").onclick = () => {
+            modal.style.opacity = "0";
+            const card = document.getElementById("pos-qr-modal-card");
+            if (card) card.style.transform = "scale(0.9)";
+            setTimeout(() => modal.remove(), 300);
+        };
     }
 }
 
