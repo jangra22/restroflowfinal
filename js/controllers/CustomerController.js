@@ -15,6 +15,7 @@ export class CustomerController {
         this.customerBasket = [];
         this.selectedPayment = "UPI";
         this.selectedUPIBrand = "GPay";
+        this.currentCategory = "All";
         
         this.linkedLoyaltyPhone = null;
         this.linkedLoyaltyCustomer = null;
@@ -193,7 +194,7 @@ export class CustomerController {
         const btn = document.getElementById("btn-place-order");
         if (btn) {
             btn.disabled = true;
-            btn.innerText = "Processing UPI Secure Gate...";
+            btn.innerText = this.selectedPayment === "Counter" ? "Sending Order to Counter..." : "Processing UPI Secure Gate...";
         }
 
         let subtotal = 0;
@@ -223,6 +224,15 @@ export class CustomerController {
                 this.model.redeemLoyaltyPoints(this.linkedLoyaltyPhone, activeLoyaltyDiscount);
             }
 
+            let payMethod = "Credit Card";
+            let payStatus = "paid";
+            if (this.selectedPayment === "UPI") {
+                payMethod = `UPI (${this.selectedUPIBrand})`;
+            } else if (this.selectedPayment === "Counter") {
+                payMethod = "Pay at Counter";
+                payStatus = "unpaid";
+            }
+
             this.model.createOrder({
                 tableId: this.currentTableId,
                 items: this.customerBasket,
@@ -233,8 +243,8 @@ export class CustomerController {
                 phone: this.linkedLoyaltyPhone,
                 tax,
                 total: grandTotal,
-                paymentMethod: this.selectedPayment === "UPI" ? `UPI (${this.selectedUPIBrand})` : "Credit Card",
-                paymentStatus: "paid",
+                paymentMethod: payMethod,
+                paymentStatus: payStatus,
                 orderType: "Dine-In"
             });
 
@@ -340,30 +350,7 @@ export class CustomerController {
         this.view.renderCartDrawer(this);
     }
 
-    // 5. VIP Profile Sub-sections Controls
-    setProfileSection(sec) {
-        this.view.profileTabComponent.setSection(sec);
-    }
 
-    editPersonalProfile() {
-        const newName = prompt("Enter your Full Name:", this.view.profileTabComponent.fullName);
-        if (newName && newName.trim()) {
-            this.view.profileTabComponent.fullName = newName.trim();
-            
-            const newEmail = prompt("Enter your Email Address:", this.view.profileTabComponent.email);
-            if (newEmail && newEmail.trim()) {
-                this.view.profileTabComponent.email = newEmail.trim();
-            }
-            
-            const newDOB = prompt("Enter your Date of Birth:", this.view.profileTabComponent.dob);
-            if (newDOB && newDOB.trim()) {
-                this.view.profileTabComponent.dob = newDOB.trim();
-            }
-
-            this.refreshActiveDashboardView();
-            this.view.showMobileNotice("Profile bio updated successfully!");
-        }
-    }
 
     // 6. Navigation Router Tab Switching
     switchMobileView(viewName) {

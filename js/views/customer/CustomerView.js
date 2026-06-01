@@ -22,10 +22,8 @@ export class CustomerView {
         this.categorySliderComponent = new CategorySlider(model);
         this.menuSectionComponent = new MenuSection(model);
         this.cartDrawerComponent = new CartDrawer(model);
-        this.profileTabComponent = new ProfileTab(model);
         this.ordersTabComponent = new OrdersTab(model);
         this.kitchenTabComponent = new KitchenTab(model);
-        this.eventsTabComponent = new EventsTab();
         this.customizerSheetComponent = new CustomizerSheet();
     }
 
@@ -81,10 +79,6 @@ export class CustomerView {
             root.innerHTML = this.ordersTabComponent.render(controllerState.currentTableId);
         } else if (activeTab === 'kitchen') {
             root.innerHTML = this.kitchenTabComponent.render(controllerState.currentTableId);
-        } else if (activeTab === 'events') {
-            root.innerHTML = this.eventsTabComponent.render();
-        } else if (activeTab === 'profile') {
-            root.innerHTML = this.profileTabComponent.render();
         }
     }
 

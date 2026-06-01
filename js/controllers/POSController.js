@@ -474,6 +474,15 @@ export class POSController {
         this.view.hideOrderModal();
     }
 
+    showFeedbackListModal() {
+        const feedback = this.model.getFeedback();
+        this.view.showFeedbackModal(feedback);
+    }
+
+    closeFeedbackModal() {
+        this.view.hideFeedbackModal();
+    }
+
     setPOSModalCategory(cat) {
         this.posOrderModalCategory = cat;
         this.view.renderPOSModalCategories(cat);

@@ -231,12 +231,14 @@ body {
     -webkit-backdrop-filter: blur(20px);
     border-top: 1px solid var(--ios-border);
     padding: 0.6rem 1rem calc(0.4rem + var(--safe-bottom));
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     z-index: 500;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.03);
 }
 .tab-item {
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;

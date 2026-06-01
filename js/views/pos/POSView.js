@@ -1549,5 +1549,41 @@ export class POSView {
             </div>
         `;
     }
+
+    showFeedbackModal(feedbackList) {
+        const modal = document.getElementById("pos-feedback-modal");
+        const container = document.getElementById("pos-feedback-list-container");
+        if (!container) return;
+
+        if (feedbackList.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state" style="padding: 2rem 0;">
+                    <div class="empty-state-icon" style="font-size:2.5rem; margin-bottom:0.5rem;">💬</div>
+                    <p style="font-size:0.85rem; color:var(--pos-text-secondary);">No customer reviews received yet.</p>
+                </div>
+            `;
+        } else {
+            container.innerHTML = feedbackList.map(fb => {
+                const stars = "★".repeat(fb.rating) + "☆".repeat(5 - fb.rating);
+                return `
+                    <div style="background:var(--pos-bg-alt); border:1px solid var(--pos-border); border-radius:12px; padding:1rem; text-align:left;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+                            <span style="font-weight:700; color:var(--pos-text); font-size:0.9rem;">${fb.customer || 'Anonymous Guest'}</span>
+                            <span style="color:#eab308; font-weight:700; font-size:0.85rem;">${stars}</span>
+                        </div>
+                        <p style="font-size:0.8rem; color:var(--pos-text); line-height:1.4; margin-bottom:0.4rem;">"${fb.comment}"</p>
+                        <span style="font-size:0.7rem; color:var(--pos-text-secondary);">${new Date(fb.timestamp).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+                    </div>
+                `;
+            }).join("");
+        }
+
+        if (modal) modal.classList.add("open");
+    }
+
+    hideFeedbackModal() {
+        const modal = document.getElementById("pos-feedback-modal");
+        if (modal) modal.classList.remove("open");
+    }
 }
 

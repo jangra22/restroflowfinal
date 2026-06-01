@@ -377,7 +377,12 @@ export class AppModel extends EventTarget {
         }
         try {
             if (!localStorage.getItem("restoflow_feedback")) {
-                localStorage.setItem("restoflow_feedback", JSON.stringify([]));
+                const defaultFeedback = [
+                    { id: "FB-1021", timestamp: new Date(Date.now() - 3600000 * 2).toISOString(), rating: 5, customer: "Arjun Raghavan", comment: "Excellent butter chicken! Naan was crispy and warm. High end ambience." },
+                    { id: "FB-1022", timestamp: new Date(Date.now() - 3600000 * 5).toISOString(), rating: 4, customer: "Aarav Sharma", comment: "Authentic Kulhad Chai is spectacular. Quick service." },
+                    { id: "FB-1023", timestamp: new Date(Date.now() - 3600000 * 24).toISOString(), rating: 5, customer: "Priya Nair", comment: "Loved the spicy paneer tikka pizza! Highly recommended." }
+                ];
+                localStorage.setItem("restoflow_feedback", JSON.stringify(defaultFeedback));
             }
         } catch (e) {
             localStorage.setItem("restoflow_feedback", JSON.stringify([]));

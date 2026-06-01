@@ -173,7 +173,7 @@
         </section>
         
         <!-- View 1: POS Billing Console -->
-        <section id="view-pos-billing" class="pos-view-panel" style="display: flex;">
+        <section id="view-pos-pos" class="pos-view-panel" style="display: flex;">
             <div class="dashboard-grid-title">Dine-In Billing Counter</div>
             
             <div class="billing-workspace">
@@ -281,22 +281,22 @@
             
             <!-- Statistical Summary Cards -->
             <div class="metrics-row">
-                <div class="metric-card">
+                <div class="metric-card" onclick="posCtrl.switchDashboardTab('pos')">
                     <h5>Today's Gross Sales</h5>
                     <div class="metric-number" id="rep-today-sales">₹0.00</div>
                     <span style="color:#10b981; font-size:0.8rem; font-weight:700;">↑ 12.4% vs last week</span>
                 </div>
-                <div class="metric-card">
+                <div class="metric-card" onclick="posCtrl.switchDashboardTab('pos')">
                     <h5>Active Tables</h5>
                     <div class="metric-number" id="rep-active-tables">0 / 12</div>
                     <span style="color:var(--pos-text-secondary); font-size:0.8rem;">Dine-In occupancy count</span>
                 </div>
-                <div class="metric-card">
+                <div class="metric-card" onclick="posCtrl.switchDashboardTab('inventory')">
                     <h5>Low Stock Alerts</h5>
                     <div class="metric-number" id="rep-low-stocks" style="color:var(--status-dining);">0</div>
                     <span style="color:var(--status-alert); font-size:0.8rem; font-weight:700;">Action required</span>
                 </div>
-                <div class="metric-card">
+                <div class="metric-card" onclick="posCtrl.showFeedbackListModal()">
                     <h5>Customer Rating Index</h5>
                     <div class="metric-number" id="rep-satisfaction" style="color:#38bdf8;">4.8 ★</div>
                     <span style="color:#10b981; font-size:0.8rem; font-weight:700;">Outstanding score</span>
@@ -385,6 +385,19 @@
                         Send to Kitchen (KOT)
                     </button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- POS FEEDBACK DIALOG POPUP -->
+    <div class="modal" id="pos-feedback-modal">
+        <div class="modal-content" style="max-width: 500px; padding: 2.5rem; width: 90%;">
+            <button class="close-modal" onclick="posCtrl.closeFeedbackModal()">&times;</button>
+            <h3 style="font-family:'Playfair Display', serif; font-size:1.6rem; margin-bottom: 0.5rem; color:var(--pos-text);">Customer Feedback Audits</h3>
+            <p style="color:var(--pos-text-secondary); font-size:0.85rem; margin-bottom:1.5rem;">Recent dining satisfaction indices submitted via QR billing.</p>
+            
+            <div id="pos-feedback-list-container" style="overflow-y:auto; max-height:400px; display:flex; flex-direction:column; gap:0.85rem; padding-right:0.5rem;">
+                <!-- Feedbacks injected dynamically -->
             </div>
         </div>
     </div>

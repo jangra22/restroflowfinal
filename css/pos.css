@@ -482,6 +482,13 @@ main {
     flex-direction: column;
     gap: 0.4rem;
     box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    cursor: pointer;
+    transition: var(--transition-pos);
+}
+.metric-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--pos-gold);
+    box-shadow: 0 10px 25px rgba(176, 42, 91, 0.08);
 }
 .metric-card h5 {
     color: var(--pos-text-secondary);
