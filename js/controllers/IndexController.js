@@ -50,6 +50,10 @@ export class IndexController {
         this.view.hideDemoModal();
     }
 
+    toggleMobileMenu() {
+        this.view.toggleMobileMenu();
+    }
+
     handleConsultationSubmit(e) {
         e.preventDefault();
         

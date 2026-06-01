@@ -21,6 +21,40 @@ const MOCKUP_DATA = {
 export class IndexView {
     constructor() {
         this.addToastKeyframeStyle();
+        this.bindNavLinks();
+    }
+
+    bindNavLinks() {
+        document.querySelectorAll("#main-navigation a").forEach(link => {
+            link.addEventListener("click", () => {
+                this.closeMobileMenu();
+            });
+        });
+    }
+
+    toggleMobileMenu() {
+        const nav = document.getElementById("main-navigation");
+        const btn = document.getElementById("mobile-menu-btn");
+        if (nav && btn) {
+            nav.classList.toggle("mobile-open");
+            btn.classList.toggle("active");
+            
+            if (nav.classList.contains("mobile-open")) {
+                document.body.style.overflow = "hidden";
+            } else {
+                document.body.style.overflow = "";
+            }
+        }
+    }
+
+    closeMobileMenu() {
+        const nav = document.getElementById("main-navigation");
+        const btn = document.getElementById("mobile-menu-btn");
+        if (nav && btn && nav.classList.contains("mobile-open")) {
+            nav.classList.remove("mobile-open");
+            btn.classList.remove("active");
+            document.body.style.overflow = "";
+        }
     }
 
     switchMockup(portal) {
