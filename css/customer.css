@@ -496,15 +496,15 @@ body {
 /* --- Secure Mock Checkout --- */
 .payment-selector {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
     margin-bottom: 1.5rem;
 }
 .payment-option {
     background: var(--ios-card);
     border: 1px solid var(--ios-border);
     border-radius: 10px;
-    padding: 1rem;
+    padding: 0.85rem 0.4rem;
     text-align: center;
     cursor: pointer;
     font-weight: 600;
@@ -661,3 +661,600 @@ body {
     margin-bottom: 1rem;
     color: var(--ios-gold);
 }
+
+/* ==========================================================================
+   RESTOFLOW PREMIUM LUXURY STYLING ADDITIONS (GANESHWARAM SIGNATURE SPA)
+   ========================================================================== */
+
+/* --- Custom Headings and Layout Toggles --- */
+.chef-sig-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 0 1rem;
+    margin: 1.5rem 0 1rem;
+}
+.chef-sig-header h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--ios-text);
+}
+.chef-sig-header p {
+    font-size: 0.8rem;
+    color: var(--ios-text-secondary);
+    margin-top: 0.2rem;
+}
+.view-all-link {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #735c00; /* Signature Gold */
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+.view-all-link:hover {
+    color: var(--ios-accent);
+}
+
+/* --- Premium Food Cards --- */
+.premium-food-card {
+    background: var(--ios-card);
+    border-radius: 24px;
+    border: 1px solid rgba(224, 224, 224, 0.65);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.premium-food-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0px 12px 40px rgba(115, 92, 0, 0.08);
+    border-color: rgba(212, 175, 55, 0.4);
+}
+.card-img-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+}
+.card-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.premium-food-card:hover .card-img-container img {
+    transform: scale(1.05);
+}
+.card-badges-row {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.food-badge {
+    padding: 0.25rem 0.65rem;
+    border-radius: 100px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+.food-badge.veg {
+    background: rgba(255, 255, 255, 0.85);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+.food-badge.veg::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10b981;
+}
+.food-badge.popular {
+    background: var(--ios-accent);
+    color: white;
+    box-shadow: 0 4px 10px rgba(176, 42, 91, 0.3);
+}
+.food-badge.recommended {
+    background: #d4af37;
+    color: #554300;
+    box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3);
+}
+
+.card-info {
+    padding: 1.25rem;
+}
+.card-title-price {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+.card-title-price h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--ios-text);
+    flex: 1;
+}
+.card-title-price .price-tag {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #735c00; /* Gold */
+}
+.card-desc {
+    font-size: 0.85rem;
+    color: var(--ios-text-secondary);
+    line-height: 1.45;
+    margin-bottom: 1.25rem;
+}
+.card-actions-row {
+    display: flex;
+    gap: 0.75rem;
+}
+.btn-card-add {
+    flex: 1;
+    background: var(--ios-accent);
+    color: white;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(176, 42, 91, 0.25);
+    transition: all 0.2s ease;
+}
+.btn-card-add:active {
+    transform: scale(0.97);
+}
+.fav-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: white;
+    border: 1px solid var(--ios-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: #7f7663;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.fav-btn.active, .fav-btn:hover {
+    color: var(--ios-accent);
+    border-color: rgba(176, 42, 91, 0.3);
+    background: rgba(176, 42, 91, 0.05);
+}
+
+/* --- Floating Bottom Cart Bar --- */
+.floating-cart-bar {
+    position: fixed;
+    bottom: calc(75px + var(--safe-bottom) + 12px);
+    left: 12px;
+    right: 12px;
+    background: var(--ios-accent);
+    color: white;
+    border-radius: 100px;
+    padding: 0.85rem 1.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 10px 30px rgba(176, 42, 91, 0.45);
+    z-index: 450;
+    cursor: pointer;
+    animation: bounceInUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+.floating-cart-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.floating-cart-badge {
+    background: rgba(255, 255, 255, 0.25);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+.floating-cart-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+@keyframes bounceInUp {
+    0% { opacity: 0; transform: translateY(50px) scale(0.95); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* --- VIP Profile Components --- */
+.vip-profile-card {
+    background: var(--ios-card);
+    border-radius: 24px;
+    border: 1px solid var(--ios-border);
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.03);
+    position: relative;
+}
+.avatar-container {
+    position: relative;
+    width: 110px;
+    height: 110px;
+    margin: 0 auto 1.25rem;
+}
+.avatar-circle {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--ios-card);
+    box-shadow: 0 4px 15px rgba(115, 92, 0, 0.15);
+}
+.avatar-edit-overlay {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    background: #735c00; /* Gold */
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    border: 2px solid white;
+    cursor: pointer;
+}
+.profile-vip-tier {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: #ffe088;
+    color: #554300;
+    padding: 0.35rem 1rem;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 2px 6px rgba(212,175,55,0.25);
+}
+.profile-subtext {
+    font-size: 0.85rem;
+    color: var(--ios-text-secondary);
+    margin-bottom: 1.25rem;
+}
+.points-metrics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    border-top: 1px solid var(--ios-border);
+    padding-top: 1.25rem;
+}
+.point-metric-box {
+    background: var(--ios-card-alt);
+    border-radius: 12px;
+    padding: 0.75rem;
+    text-align: center;
+}
+.point-metric-box h6 {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--ios-text-secondary);
+    margin-bottom: 0.25rem;
+}
+.point-metric-box div {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--ios-accent);
+}
+
+/* --- VIP Upgrade Card --- */
+.upgrade-banner-card {
+    background: linear-gradient(135deg, #735c00 0%, #a87e2a 40%, #d4af37 100%);
+    border-radius: 20px;
+    padding: 1.5rem;
+    color: white;
+    margin-bottom: 1.5rem;
+    text-align: left;
+    box-shadow: 0 8px 25px rgba(115, 92, 0, 0.3);
+}
+.upgrade-banner-card h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.35rem;
+}
+.upgrade-banner-card p {
+    font-size: 0.8rem;
+    opacity: 0.9;
+    margin-bottom: 1.25rem;
+    line-height: 1.4;
+}
+.btn-upgrade-action {
+    background: white;
+    color: #735c00;
+    font-weight: 700;
+    font-size: 0.8rem;
+    padding: 0.5rem 1.25rem;
+    border-radius: 100px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+}
+
+/* --- List Operations Group --- */
+.profile-menu-group {
+    background: var(--ios-card);
+    border: 1px solid var(--ios-border);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+}
+.profile-menu-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--ios-border);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.profile-menu-item:last-child {
+    border-bottom: none;
+}
+.profile-menu-item:hover, .profile-menu-item.active {
+    background: rgba(176, 42, 91, 0.04);
+}
+.profile-menu-left {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--ios-text);
+}
+.profile-menu-left span.icon {
+    font-size: 1.15rem;
+    color: var(--ios-accent);
+}
+.profile-menu-right {
+    color: var(--ios-text-secondary);
+    font-size: 0.85rem;
+}
+
+/* --- Invoices Order Cards --- */
+.invoice-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    margin-top: 1rem;
+}
+.invoice-card {
+    background: var(--ios-card);
+    border: 1px solid var(--ios-border);
+    border-radius: 16px;
+    padding: 1rem;
+    display: flex;
+    gap: 0.85rem;
+    align-items: center;
+}
+.invoice-card-img {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    object-fit: cover;
+}
+.invoice-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.invoice-details h5 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--ios-text);
+}
+.invoice-details span.order-num {
+    font-size: 0.75rem;
+    color: var(--ios-text-secondary);
+    margin-bottom: 0.2rem;
+}
+.invoice-details p.meta {
+    font-size: 0.75rem;
+    color: var(--ios-text-secondary);
+}
+.invoice-card-right {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.35rem;
+}
+.invoice-card-price {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--ios-text);
+}
+.invoice-status-badge {
+    padding: 0.2rem 0.5rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+.invoice-status-badge.delivered {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+/* --- VISA Mockup Payment Card --- */
+.visa-mockup-box {
+    background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+    border-radius: 16px;
+    padding: 1.25rem;
+    color: white;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 110px;
+    margin-bottom: 0.85rem;
+}
+.visa-row-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.visa-chip {
+    width: 28px;
+    height: 20px;
+    background: #ffe088;
+    border-radius: 4px;
+}
+.visa-logo {
+    font-weight: 800;
+    font-style: italic;
+    font-size: 1.1rem;
+    letter-spacing: 0.05em;
+}
+.visa-row-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+.visa-numbers {
+    font-family: monospace;
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+}
+.visa-expiry {
+    font-size: 0.7rem;
+    opacity: 0.75;
+}
+
+.upi-link-btn {
+    border: 1px dashed var(--ios-border);
+    background: white;
+    border-radius: 12px;
+    padding: 0.85rem;
+    width: 100%;
+    color: var(--ios-text-secondary);
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.upi-link-btn:hover {
+    border-color: var(--ios-gold);
+    color: #735c00;
+    background: rgba(212,175,55,0.02);
+}
+
+/* --- Live Kitchen Display monitor for customer --- */
+.live-kitchen-card {
+    background: var(--ios-card);
+    border: 1px solid var(--ios-border);
+    border-radius: 20px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    text-align: center;
+}
+.kitchen-sizzle-dot {
+    width: 12px;
+    height: 12px;
+    background: #10b981;
+    border-radius: 50%;
+    display: inline-block;
+    position: relative;
+    margin-right: 0.5rem;
+}
+.kitchen-sizzle-dot::after {
+    content: '';
+    position: absolute;
+    top: -4px; left: -4px; right: -4px; bottom: -4px;
+    border: 2px solid #10b981;
+    border-radius: 50%;
+    animation: pulseChef 1.8s infinite;
+}
+
+@keyframes pulseChef {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1.6); opacity: 0; }
+}
+
+.kitchen-visuals-area {
+    height: 160px;
+    background: var(--ios-card-alt);
+    border-radius: 16px;
+    margin: 1.25rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+.cooking-pan-graphic {
+    font-size: 4rem;
+    animation: sizzlePan 0.8s ease-in-out infinite alternate;
+}
+.steam-cloud {
+    position: absolute;
+    font-size: 1.5rem;
+    opacity: 0;
+    animation: steamRise 2s infinite ease-out;
+}
+.steam-1 { left: 45%; top: 40px; animation-delay: 0s; }
+.steam-2 { left: 52%; top: 35px; animation-delay: 0.6s; }
+.steam-3 { left: 48%; top: 45px; animation-delay: 1.2s; }
+
+@keyframes sizzlePan {
+    from { transform: translateY(0) rotate(-2deg); }
+    to { transform: translateY(-4px) rotate(2deg); }
+}
+@keyframes steamRise {
+    0% { transform: translateY(20px) scale(0.6); opacity: 0; }
+    50% { opacity: 0.5; }
+    100% { transform: translateY(-40px) scale(1.2); opacity: 0; }
+}
+

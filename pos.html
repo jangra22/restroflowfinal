@@ -34,18 +34,18 @@
             <div class="pin-display" id="pin-secure-display"></div>
             
             <div class="pin-pad">
-                <button class="pin-btn" onclick="pressPin('1')">1</button>
-                <button class="pin-btn" onclick="pressPin('2')">2</button>
-                <button class="pin-btn" onclick="pressPin('3')">3</button>
-                <button class="pin-btn" onclick="pressPin('4')">4</button>
-                <button class="pin-btn" onclick="pressPin('5')">5</button>
-                <button class="pin-btn" onclick="pressPin('6')">6</button>
-                <button class="pin-btn" onclick="pressPin('7')">7</button>
-                <button class="pin-btn" onclick="pressPin('8')">8</button>
-                <button class="pin-btn" onclick="pressPin('9')">9</button>
-                <button class="pin-btn" style="background:var(--pos-bg-alt);" onclick="clearPin()">C</button>
-                <button class="pin-btn" onclick="pressPin('0')">0</button>
-                <button class="pin-btn" style="background:var(--pos-primary); color:white;" onclick="submitPin()">✔</button>
+                <button class="pin-btn" onclick="posCtrl.pressPin('1')">1</button>
+                <button class="pin-btn" onclick="posCtrl.pressPin('2')">2</button>
+                <button class="pin-btn" onclick="posCtrl.pressPin('3')">3</button>
+                <button class="pin-btn" onclick="posCtrl.pressPin('4')">4</button>
+                <button class="pin-btn" onclick="posCtrl.pressPin('5')">5</button>
+                <button class="pin-btn" onclick="posCtrl.pressPin('6')">6</button>
+                <button class="pin-btn" onclick="posCtrl.pressPin('7')">7</button>
+                <button class="pin-btn" onclick="posCtrl.pressPin('8')">8</button>
+                <button class="pin-btn" onclick="posCtrl.pressPin('9')">9</button>
+                <button class="pin-btn" style="background:var(--pos-bg-alt);" onclick="posCtrl.clearPin()">C</button>
+                <button class="pin-btn" onclick="posCtrl.pressPin('0')">0</button>
+                <button class="pin-btn" style="background:var(--pos-primary); color:white;" onclick="posCtrl.submitPin()">✔</button>
             </div>
             
             <p id="login-error-msg" style="color:var(--status-alert); font-size:0.85rem; font-weight:700; margin-top:1.5rem; display:none;"></p>
@@ -61,22 +61,22 @@
             </div>
             
             <ul class="nav-links">
-                <li class="nav-link active" id="tab-nav-pos" onclick="switchDashboardTab('pos')">
+                <li class="nav-link active" id="tab-nav-pos" onclick="posCtrl.switchDashboardTab('pos')">
                     <span>💳</span> POS Terminal
                 </li>
-                <li class="nav-link" id="tab-nav-online" onclick="switchDashboardTab('online')">
+                <li class="nav-link" id="tab-nav-online" onclick="posCtrl.switchDashboardTab('online')">
                     <span class="pulse-dot"></span> Online Desk
                 </li>
-                <li class="nav-link" id="tab-nav-kds" onclick="switchDashboardTab('kds')">
+                <li class="nav-link" id="tab-nav-kds" onclick="posCtrl.switchDashboardTab('kds')">
                     <span>🍳</span> Kitchen Monitor
                 </li>
-                <li class="nav-link" id="tab-nav-inventory" onclick="switchDashboardTab('inventory')">
+                <li class="nav-link" id="tab-nav-inventory" onclick="posCtrl.switchDashboardTab('inventory')">
                     <span>📦</span> Ingredients
                 </li>
-                <li class="nav-link" id="tab-nav-reports" onclick="switchDashboardTab('reports')">
+                <li class="nav-link" id="tab-nav-reports" onclick="posCtrl.switchDashboardTab('reports')">
                     <span>📈</span> Reports
                 </li>
-                <li class="nav-link" id="tab-nav-security" onclick="switchDashboardTab('security')">
+                <li class="nav-link" id="tab-nav-security" onclick="posCtrl.switchDashboardTab('security')">
                     <span>🔒</span> Security Log
                 </li>
             </ul>
@@ -87,7 +87,7 @@
                 <h5 id="merchant-staff-name">David Miller</h5>
                 <span id="merchant-staff-role">Manager</span>
             </div>
-            <button class="btn-pos-secondary" onclick="logoutMerchant()" style="padding:0.35rem 0.6rem; font-size:0.75rem;">Logout</button>
+            <button class="btn-pos-secondary" onclick="posCtrl.logoutMerchant()" style="padding:0.35rem 0.6rem; font-size:0.75rem;">Logout</button>
         </div>
     </aside>
 
@@ -116,7 +116,7 @@
                             <h3 style="font-size: 1.1rem; font-family:'Playfair Display', serif;" id="terminal-selected-title">Receipt Terminal: Table --</h3>
                             <p style="color:var(--pos-text-secondary); font-size:0.8rem; margin-top:0.2rem;">Verify items and click billing to close ticket.</p>
                         </div>
-                        <button class="btn-pos-secondary" id="btn-terminal-add-items" style="display:none; padding:0.4rem 0.8rem; font-size:0.75rem;" onclick="openOrderModal()">+ Take Custom Order</button>
+                        <button class="btn-pos-secondary" id="btn-terminal-add-items" style="display:none; padding:0.4rem 0.8rem; font-size:0.75rem;" onclick="posCtrl.openOrderModal()">+ Take Custom Order</button>
                     </div>
 
                     <div class="terminal-receipt-desk" id="terminal-active-ticket-desk">
@@ -131,17 +131,17 @@
                         <div class="custom-section-title" style="font-size:0.75rem; color:var(--pos-text); font-weight:700; margin-bottom: 0.4rem;">Customer CRM Rewards</div>
                         <div class="pos-crm-input-group">
                             <input type="tel" id="pos-crm-phone-input" class="stock-input" style="flex:1; text-align:left; width: 100%;" placeholder="Enter 10-digit Phone" maxlength="10">
-                            <button class="btn-pos-secondary" style="padding:0.4rem 0.8rem; font-size:0.75rem;" onclick="lookupPOSLoyalty()">CRM Search</button>
+                            <button class="btn-pos-secondary" style="padding:0.4rem 0.8rem; font-size:0.75rem;" onclick="posCtrl.lookupPOSLoyalty()">CRM Search</button>
                         </div>
                         <div id="pos-crm-status-details" style="font-size:0.75rem; margin-top:0.6rem; display:none; color:var(--pos-text-secondary);"></div>
                     </div>
 
                     <div id="terminal-action-buttons-desk" style="display: none;">
                         <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
-                            <button class="btn-pos-secondary" style="flex:1;" onclick="applyDiscount(10)">Add 10% Discount</button>
-                            <button class="btn-pos-secondary" style="flex:1;" onclick="applyDiscount(20)">Add 20% Discount</button>
+                            <button class="btn-pos-secondary" style="flex:1;" onclick="posCtrl.applyDiscount(10)">Add 10% Discount</button>
+                            <button class="btn-pos-secondary" style="flex:1;" onclick="posCtrl.applyDiscount(20)">Add 20% Discount</button>
                         </div>
-                        <button class="btn-pos-primary" style="width: 100%;" onclick="processTerminalCheckout()">
+                        <button class="btn-pos-primary" style="width: 100%;" onclick="posCtrl.processTerminalCheckout()">
                             Settle Payment & Close Ticket
                         </button>
                     </div>
@@ -173,7 +173,7 @@
         <section id="view-pos-inventory" class="pos-view-panel" style="display: none;">
             <div style="display: flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
                 <div class="dashboard-grid-title" style="margin-bottom:0;">Ingredient Stock Inventory Desk</div>
-                <button class="btn-pos-primary" onclick="resetDefaultStock()">Refill All Standard Recipe Ingredients</button>
+                <button class="btn-pos-primary" onclick="posCtrl.resetDefaultStock()">Refill All Standard Recipe Ingredients</button>
             </div>
 
             <div class="pos-table-card">
@@ -260,7 +260,7 @@
     <!-- POS ORDER ENTRY POPUP -->
     <div class="modal" id="pos-order-modal">
         <div class="modal-content" style="max-width: 960px; display: grid; grid-template-columns: 1.3fr 1fr; gap: 2rem; padding: 2.5rem; width: 90%;">
-            <button class="close-modal" onclick="closeOrderModal()">&times;</button>
+            <button class="close-modal" onclick="posCtrl.closeOrderModal()">&times;</button>
             
             <!-- Left Panel: Menu Items Picker -->
             <div style="display:flex; flex-direction:column; overflow:hidden; height: 600px;">
@@ -300,7 +300,7 @@
                         </div>
                     </div>
                     
-                    <button class="btn-pos-primary" style="width:100%; padding:1rem; border-radius:8px; font-size:1rem;" onclick="submitPOSModalOrder()">
+                    <button class="btn-pos-primary" style="width:100%; padding:1rem; border-radius:8px; font-size:1rem;" onclick="posCtrl.submitPOSModalOrder()">
                         Send to Kitchen (KOT)
                     </button>
                 </div>
@@ -309,7 +309,6 @@
     </div>
 
     <!-- Script references -->
-    <script src="js/core-state.js"></script>
-    <script src="js/pos.js"></script>
+    <script type="module" src="js/app-pos.js"></script>
 </body>
 </html>

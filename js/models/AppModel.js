@@ -1,8 +1,10 @@
 /**
- * RestoFlow Core State Management Engine (Indian Edition)
- * Handles Indian Rupee currency (₹), GST (5% comprising 2.5% CGST + 2.5% SGST),
+ * RestoFlow Core State Model (Indian Edition)
+ * Manages currency (₹), GST (5% comprising 2.5% CGST + 2.5% SGST),
  * Indian recipe items, loyalty points databases, coupons verification,
  * and live Zomato / Swiggy aggregator orders queues.
+ * 
+ * Extends EventTarget to act as an observable model in our MVC architecture.
  */
 
 const DEFAULT_MENU = [
@@ -171,65 +173,66 @@ const DEFAULT_AGGREGATOR_ORDERS = [
     }
 ];
 
-function initDatabase() {
-    if (!localStorage.getItem("restoflow_menu")) {
-        localStorage.setItem("restoflow_menu", JSON.stringify(DEFAULT_MENU));
+export class AppModel extends EventTarget {
+    constructor() {
+        super();
+        this.init();
     }
-    if (!localStorage.getItem("restoflow_inventory")) {
-        localStorage.setItem("restoflow_inventory", JSON.stringify(DEFAULT_INVENTORY));
-    }
-    if (!localStorage.getItem("restoflow_tables")) {
-        localStorage.setItem("restoflow_tables", JSON.stringify(DEFAULT_TABLES));
-    }
-    if (!localStorage.getItem("restoflow_staff")) {
-        localStorage.setItem("restoflow_staff", JSON.stringify(DEFAULT_STAFF));
-    }
-    if (!localStorage.getItem("restoflow_coupons")) {
-        localStorage.setItem("restoflow_coupons", JSON.stringify(DEFAULT_COUPONS));
-    }
-    if (!localStorage.getItem("restoflow_loyalty")) {
-        localStorage.setItem("restoflow_loyalty", JSON.stringify(DEFAULT_LOYALTY));
-    }
-    if (!localStorage.getItem("restoflow_aggregator_orders")) {
-        localStorage.setItem("restoflow_aggregator_orders", JSON.stringify(DEFAULT_AGGREGATOR_ORDERS));
-    }
-    if (!localStorage.getItem("restoflow_orders")) {
-        localStorage.setItem("restoflow_orders", JSON.stringify([]));
-    }
-    if (!localStorage.getItem("restoflow_feedback")) {
-        localStorage.setItem("restoflow_feedback", JSON.stringify([]));
-    }
-}
 
-// Global Core State Manager
-const CoreState = {
     init() {
-        initDatabase();
+        if (!localStorage.getItem("restoflow_menu")) {
+            localStorage.setItem("restoflow_menu", JSON.stringify(DEFAULT_MENU));
+        }
+        if (!localStorage.getItem("restoflow_inventory")) {
+            localStorage.setItem("restoflow_inventory", JSON.stringify(DEFAULT_INVENTORY));
+        }
+        if (!localStorage.getItem("restoflow_tables")) {
+            localStorage.setItem("restoflow_tables", JSON.stringify(DEFAULT_TABLES));
+        }
+        if (!localStorage.getItem("restoflow_staff")) {
+            localStorage.setItem("restoflow_staff", JSON.stringify(DEFAULT_STAFF));
+        }
+        if (!localStorage.getItem("restoflow_coupons")) {
+            localStorage.setItem("restoflow_coupons", JSON.stringify(DEFAULT_COUPONS));
+        }
+        if (!localStorage.getItem("restoflow_loyalty")) {
+            localStorage.setItem("restoflow_loyalty", JSON.stringify(DEFAULT_LOYALTY));
+        }
+        if (!localStorage.getItem("restoflow_aggregator_orders")) {
+            localStorage.setItem("restoflow_aggregator_orders", JSON.stringify(DEFAULT_AGGREGATOR_ORDERS));
+        }
+        if (!localStorage.getItem("restoflow_orders")) {
+            localStorage.setItem("restoflow_orders", JSON.stringify([]));
+        }
+        if (!localStorage.getItem("restoflow_feedback")) {
+            localStorage.setItem("restoflow_feedback", JSON.stringify([]));
+        }
+
+        // Cross-tab sync via localstorage event
         window.addEventListener("storage", (e) => {
             if (e.key && e.key.startsWith("restoflow_")) {
-                const event = new CustomEvent("restoflowStateChange", { detail: { key: e.key } });
-                window.dispatchEvent(event);
+                this.notifyChange(e.key);
             }
         });
-    },
+    }
 
     // Menu Methods
     getMenu() {
         return JSON.parse(localStorage.getItem("restoflow_menu")) || [];
-    },
+    }
     saveMenu(menu) {
         localStorage.setItem("restoflow_menu", JSON.stringify(menu));
         this.notifyChange("restoflow_menu");
-    },
+    }
 
     // Inventory Methods
     getInventory() {
         return JSON.parse(localStorage.getItem("restoflow_inventory")) || {};
-    },
+    }
     saveInventory(inv) {
         localStorage.setItem("restoflow_inventory", JSON.stringify(inv));
         this.notifyChange("restoflow_inventory");
-    },
+    }
     deductStock(menuItemId, quantity = 1, itemCustomizations = []) {
         const menu = this.getMenu();
         const item = menu.find(m => m.id === menuItemId);
@@ -262,16 +265,16 @@ const CoreState = {
 
         this.saveInventory(inv);
         return success;
-    },
+    }
 
     // Tables Methods
     getTables() {
         return JSON.parse(localStorage.getItem("restoflow_tables")) || [];
-    },
+    }
     saveTables(tables) {
         localStorage.setItem("restoflow_tables", JSON.stringify(tables));
         this.notifyChange("restoflow_tables");
-    },
+    }
     updateTableStatus(tableId, status) {
         const tables = this.getTables();
         const table = tables.find(t => t.id === parseInt(tableId));
@@ -279,12 +282,12 @@ const CoreState = {
             table.status = status;
             this.saveTables(tables);
         }
-    },
+    }
 
     // Coupons Methods
     getCoupons() {
         return JSON.parse(localStorage.getItem("restoflow_coupons")) || [];
-    },
+    }
     verifyCoupon(code, billSubtotal) {
         const coupons = this.getCoupons();
         const coupon = coupons.find(c => c.code.toUpperCase() === code.trim().toUpperCase());
@@ -292,20 +295,20 @@ const CoreState = {
             return coupon;
         }
         return null;
-    },
+    }
 
     // Loyalty CRM Database Methods
     getLoyaltyDatabase() {
         return JSON.parse(localStorage.getItem("restoflow_loyalty")) || {};
-    },
+    }
     saveLoyaltyDatabase(loyalty) {
         localStorage.setItem("restoflow_loyalty", JSON.stringify(loyalty));
         this.notifyChange("restoflow_loyalty");
-    },
+    }
     getLoyaltyCustomer(phone) {
         const db = this.getLoyaltyDatabase();
         return db[phone] || null;
-    },
+    }
     earnLoyaltyPoints(phone, billTotal) {
         if (!phone) return;
         const db = this.getLoyaltyDatabase();
@@ -321,7 +324,7 @@ const CoreState = {
         this.saveLoyaltyDatabase(db);
         this.logSecurityEvent(`Customer ${phone} earned ${pointsEarned} loyalty points.`);
         return pointsEarned;
-    },
+    }
     redeemLoyaltyPoints(phone, pointsToRedeem) {
         if (!phone) return false;
         const db = this.getLoyaltyDatabase();
@@ -333,23 +336,23 @@ const CoreState = {
             return true;
         }
         return false;
-    },
+    }
     registerLoyaltyCustomer(phone, name) {
         const db = this.getLoyaltyDatabase();
         db[phone] = { name: name || "Guest Customer", points: 0 };
         this.saveLoyaltyDatabase(db);
         this.logSecurityEvent(`Registered new loyalty profile for ${name} (${phone}).`);
         return db[phone];
-    },
+    }
 
     // Online Aggregator Orders (Zomato & Swiggy)
     getAggregatorOrders() {
         return JSON.parse(localStorage.getItem("restoflow_aggregator_orders")) || [];
-    },
+    }
     saveAggregatorOrders(orders) {
         localStorage.setItem("restoflow_aggregator_orders", JSON.stringify(orders));
         this.notifyChange("restoflow_aggregator_orders");
-    },
+    }
     acceptAggregatorOrder(orderId) {
         const aggOrders = this.getAggregatorOrders();
         const orderIdx = aggOrders.findIndex(o => o.id === orderId);
@@ -386,7 +389,7 @@ const CoreState = {
             return newOrder;
         }
         return null;
-    },
+    }
     rejectAggregatorOrder(orderId) {
         const aggOrders = this.getAggregatorOrders();
         const orderIdx = aggOrders.findIndex(o => o.id === orderId);
@@ -399,16 +402,16 @@ const CoreState = {
             return true;
         }
         return false;
-    },
+    }
 
     // Orders Methods
     getOrders() {
         return JSON.parse(localStorage.getItem("restoflow_orders")) || [];
-    },
+    }
     saveOrders(orders) {
         localStorage.setItem("restoflow_orders", JSON.stringify(orders));
         this.notifyChange("restoflow_orders");
-    },
+    }
     createOrder(orderData) {
         const orders = this.getOrders();
         const newOrder = {
@@ -449,7 +452,7 @@ const CoreState = {
         }
 
         return newOrder;
-    },
+    }
     updateOrderStatus(orderId, status) {
         const orders = this.getOrders();
         const order = orders.find(o => o.id === orderId);
@@ -463,7 +466,7 @@ const CoreState = {
             }
             this.saveOrders(orders);
         }
-    },
+    }
     settlePayment(orderId, paymentMethod) {
         const orders = this.getOrders();
         const order = orders.find(o => o.id === orderId);
@@ -476,12 +479,12 @@ const CoreState = {
             }
             this.saveOrders(orders);
         }
-    },
+    }
 
     // Session / Auth simulation
     getCurrentUser() {
         return JSON.parse(sessionStorage.getItem("restoflow_user")) || null;
-    },
+    }
     login(username, pin) {
         const staff = JSON.parse(localStorage.getItem("restoflow_staff")) || [];
         const user = staff.find(s => s.username === username.toLowerCase() && s.pin === pin);
@@ -497,14 +500,14 @@ const CoreState = {
         }
         this.logSecurityEvent(`Failed login attempt for username: ${username}.`, "WARNING");
         return null;
-    },
+    }
     logout() {
         const user = this.getCurrentUser();
         if (user) {
             this.logSecurityEvent(`User ${user.name} logged out.`);
         }
         sessionStorage.removeItem("restoflow_user");
-    },
+    }
     logSecurityEvent(message, level = "INFO") {
         const logs = JSON.parse(localStorage.getItem("restoflow_security_logs")) || [];
         logs.push({
@@ -514,10 +517,10 @@ const CoreState = {
         });
         localStorage.setItem("restoflow_security_logs", JSON.stringify(logs.slice(-100))); // Keep last 100
         this.notifyChange("restoflow_security_logs");
-    },
+    }
     getSecurityLogs() {
         return JSON.parse(localStorage.getItem("restoflow_security_logs")) || [];
-    },
+    }
 
     // Feedback Methods
     addFeedback(feedbackData) {
@@ -530,18 +533,19 @@ const CoreState = {
         feedback.push(item);
         localStorage.setItem("restoflow_feedback", JSON.stringify(feedback));
         this.notifyChange("restoflow_feedback");
-    },
+    }
     getFeedback() {
         return JSON.parse(localStorage.getItem("restoflow_feedback")) || [];
-    },
+    }
 
-    // Cross tab sync notification dispatcher
     notifyChange(key) {
+        // Dispatch internally
+        this.dispatchEvent(new CustomEvent("stateChange", { detail: { key } }));
+        // Dispatch globally for cross-tab listeners
         const event = new CustomEvent("restoflowStateChange", { detail: { key } });
         window.dispatchEvent(event);
     }
-};
+}
 
-// Auto initialize on script include
-CoreState.init();
-window.CoreState = CoreState;
+// Single instance to use throughout
+export const appModel = new AppModel();

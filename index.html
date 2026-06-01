@@ -41,7 +41,7 @@
             </nav>
             <div class="header-actions">
                 <a href="#pricing-section" class="btn btn-secondary" id="btn-header-login">Book Demo</a>
-                <button class="btn btn-primary" id="btn-header-launch" onclick="openDemoModal()">Get Started</button>
+                <button class="btn btn-primary" id="btn-header-launch" onclick="indexCtrl.openDemoModal()">Get Started</button>
             </div>
         </div>
     </header>
@@ -56,7 +56,7 @@
             <p>One fully-secured cloud system connecting your billing counter, kitchen orders, inventory storage, and customer QR checkouts. iOS, Android, and web-ready.</p>
             
             <div class="hero-cta">
-                <button class="btn btn-primary" id="btn-hero-demo" onclick="openDemoModal()">Book Live Consultation</button>
+                <button class="btn btn-primary" id="btn-hero-demo" onclick="indexCtrl.openDemoModal()">Book Live Consultation</button>
                 <a href="#mockup-section" class="btn btn-secondary" id="link-hero-explore">Try Interactive Demo</a>
             </div>
 
@@ -69,8 +69,8 @@
                         <div class="mockup-dot"></div>
                     </div>
                     <div class="mockup-tabs">
-                        <button class="mockup-tab active" id="tab-btn-customer" onclick="switchMockup('customer')">Customer QR App View</button>
-                        <button class="mockup-tab" id="tab-btn-pos" onclick="switchMockup('pos')">Merchant Dashboard & POS</button>
+                        <button class="mockup-tab active" id="tab-btn-customer" onclick="indexCtrl.switchMockup('customer')">Customer QR App View</button>
+                        <button class="mockup-tab" id="tab-btn-pos" onclick="indexCtrl.switchMockup('pos')">Merchant Dashboard & POS</button>
                     </div>
                     <div style="width: 50px;"></div>
                 </div>
@@ -203,15 +203,15 @@
                     
                     <!-- Billing Frequency Switcher -->
                     <div style="display: inline-flex; background: rgba(0, 0, 0, 0.3); padding: 0.3rem; border-radius: 100px; margin: 1rem 0; border: 1px solid var(--border);">
-                        <button class="mockup-tab active" id="btn-freq-monthly" onclick="setBillingFrequency('monthly')" style="font-size: 0.8rem; padding: 0.35rem 1rem;">Monthly</button>
-                        <button class="mockup-tab" id="btn-freq-annually" onclick="setBillingFrequency('annually')" style="font-size: 0.8rem; padding: 0.35rem 1rem;">Annually</button>
+                        <button class="mockup-tab active" id="btn-freq-monthly" onclick="indexCtrl.setBillingFrequency('monthly')" style="font-size: 0.8rem; padding: 0.35rem 1rem;">Monthly</button>
+                        <button class="mockup-tab" id="btn-freq-annually" onclick="indexCtrl.setBillingFrequency('annually')" style="font-size: 0.8rem; padding: 0.35rem 1rem;">Annually</button>
                     </div>
 
                     <div class="plan-price" id="unified-price-label" style="font-size: 3rem; margin: 1rem 0; color: white;">₹4,999<span>/mo</span></div>
                     
                     <p style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 600; margin-bottom: 2rem; height: 18px; transition: color 0.3s ease;" id="unified-price-savings">No contract. Pause or cancel anytime.</p>
                     
-                    <button class="btn btn-primary" onclick="openDemoModal('All-Inclusive')" style="width: 100%; font-size: 1rem; padding: 0.9rem; border-radius: 8px;">Book A Free Setup Demo</button>
+                    <button class="btn btn-primary" onclick="indexCtrl.openDemoModal('All-Inclusive')" style="width: 100%; font-size: 1rem; padding: 0.9rem; border-radius: 8px;">Book A Free Setup Demo</button>
                     
                     <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 1rem;">14-day fully featured test environment included by default.</p>
                 </div>
@@ -223,11 +223,11 @@
     <!-- Consultation Booking Modal Form -->
     <div class="modal" id="demo-modal">
         <div class="modal-content">
-            <button class="close-modal" id="btn-close-modal" onclick="closeDemoModal()">&times;</button>
+            <button class="close-modal" id="btn-close-modal" onclick="indexCtrl.closeDemoModal()">&times;</button>
             <h3 id="modal-heading-text">Book RestoFlow Demo</h3>
             <p>Select your preferred slot, and one of our restaurant growth architects will contact you within 15 minutes.</p>
             
-            <form id="consultation-form" onsubmit="handleConsultationSubmit(event)">
+            <form id="consultation-form" onsubmit="indexCtrl.handleConsultationSubmit(event)">
                 <div class="form-group">
                     <label for="demo-name">Your Full Name</label>
                     <input type="text" id="demo-name" required placeholder="Sarah Connor">
@@ -290,7 +290,6 @@
     </footer>
 
     <!-- Script imports -->
-    <script src="js/core-state.js"></script>
-    <script src="js/index.js"></script>
+    <script type="module" src="js/app-index.js"></script>
 </body>
 </html>
