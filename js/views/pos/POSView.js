@@ -348,76 +348,214 @@ export class POSView {
     }
 
     renderKDSKitchenMonitor() {
-        const orders = this.model.getOrders().filter(o => o.status !== "completed" && o.paymentStatus === "paid");
+        const allOrders = this.model.getOrders();
+        // Retrieve dockets currently in active cooking phases (pending, cooking, ready)
+        const activeOrders = allOrders.filter(o => o.status === "pending" || o.status === "cooking" || o.status === "ready");
         const board = document.getElementById("pos-kds-board-grid");
         if (!board) return;
 
-        if (orders.length === 0) {
-            board.innerHTML = `
-                <div class="empty-state" style="grid-column: 1 / -1;">
-                    <div class="empty-state-icon">🍳</div>
-                    <p>No cooking orders are in the queue. Restaurant is calm.</p>
+        const newOrders = activeOrders.filter(o => o.status === "pending" || !o.status);
+        const cookingOrders = activeOrders.filter(o => o.status === "cooking");
+        const readyOrders = activeOrders.filter(o => o.status === "ready");
+
+        // Format current digital clock time
+        const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const activeCount = activeOrders.length;
+
+        // Apply dark layout to the KDS View Panel
+        const panel = document.getElementById("view-pos-kds");
+        if (panel) {
+            panel.style.background = "#09090b";
+            panel.style.color = "#ffffff";
+            panel.style.padding = "1.5rem 2rem 2rem 2rem";
+            
+            // Inject or update premium KDS header
+            let kdsHeader = panel.querySelector(".kds-custom-header");
+            if (!kdsHeader) {
+                kdsHeader = document.createElement("div");
+                kdsHeader.className = "kds-custom-header";
+                kdsHeader.style.cssText = `
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 2rem;
+                    border-bottom: 1px solid #1f1f23;
+                    padding-bottom: 1rem;
+                `;
+                panel.insertBefore(kdsHeader, board);
+            }
+            kdsHeader.innerHTML = `
+                <h2 style="font-family:'Playfair Display', serif; font-size: 2.2rem; font-weight: 700; color: #ffffff; margin: 0;">Kitchen Display</h2>
+                <div style="display: flex; gap: 1.5rem; color: #71717a; font-size: 0.95rem; font-weight: 600; align-items: center;">
+                    <span>${activeCount} active</span>
+                    <span>•</span>
+                    <span>${timeStr}</span>
                 </div>
             `;
-            return;
+            
+            // Hide the old default light-theme title
+            const oldTitle = panel.querySelector(".dashboard-grid-title");
+            if (oldTitle) oldTitle.style.display = "none";
         }
 
-        board.innerHTML = orders.map(order => {
-            let statusBadge = "pending";
-            let nextActionLabel = "Start Cooking";
-            let nextActionStatus = "cooking";
-            
-            if (order.status === "cooking") {
-                statusBadge = "cooking";
-                nextActionLabel = "Ready to Serve";
-                nextActionStatus = "ready";
-            } else if (order.status === "ready") {
-                statusBadge = "ready";
-                nextActionLabel = "Deliver Order";
-                nextActionStatus = "served";
-            } else if (order.status === "served") {
-                statusBadge = "ready";
-                nextActionLabel = "Complete Bill";
-                nextActionStatus = "completed";
-            }
+        // Apply 3-column layouts inside board grid
+        board.style.cssText = `
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1.5rem;
+            background: #09090b;
+            min-height: calc(100vh - 12rem);
+            align-items: start;
+        `;
 
-            return `
-                <div class="kds-card">
-                    <div class="kds-header">
-                        <div>
-                            <h4 style="font-family:'Playfair Display', serif; font-weight: 700; color:var(--pos-text);">Table ${order.tableId || 'Takeaway'}</h4>
-                            <span style="font-size:0.75rem; color:var(--pos-text-secondary);">${order.id}</span>
+        board.innerHTML = `
+            <!-- Column 1: New Orders -->
+            <div class="kds-column" style="background: #09090b; display: flex; flex-direction: column; gap: 1rem; height: 100%;">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 0.5rem; border-bottom: 2px solid #e28a2b; margin-bottom: 0.5rem;">
+                    <span style="background: rgba(226, 138, 43, 0.15); color: #e28a2b; padding: 0.25rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; border: 1px solid rgba(226, 138, 43, 0.25);">New Orders</span>
+                    <span style="color: #71717a; font-weight: 700; font-size: 0.9rem; background: #18181b; padding: 0.15rem 0.4rem; border-radius: 4px;">${newOrders.length}</span>
+                </div>
+                <div class="kds-cards-list" style="display: flex; flex-direction: column; gap: 1rem; max-height: calc(100vh - 17rem); overflow-y: auto; padding-right: 0.25rem;">
+                    ${newOrders.length === 0 ? `
+                        <div style="padding: 4rem 1rem; text-align: center; color: #3f3f46; font-size: 0.9rem; font-weight: 500; font-style: italic;">
+                            No new dockets
                         </div>
-                        <span class="kds-badge ${statusBadge}">${order.status}</span>
-                    </div>
+                    ` : newOrders.map(order => this.renderKDSSingleCard(order, "Start Cooking", "cooking")).join("")}
+                </div>
+            </div>
 
-                    <div class="kds-items">
-                        ${order.items.map(i => `
-                            <div style="display:flex; justify-content:space-between; align-items:center; font-weight:600; margin-bottom:0.25rem;">
-                                <span>${i.qty}x ${i.name}</span>
-                                <button onclick="posCtrl.deleteKDSItem('${order.id}', '${i.id}')" style="background:transparent; border:none; color:var(--status-alert); cursor:pointer; font-size:0.75rem;" title="Void Item">❌ Void</button>
-                            </div>
-                            ${i.customizations && i.customizations.length > 0 ? `<p style="font-size:0.75rem; color:var(--pos-primary); margin-top:-0.15rem; margin-bottom:0.25rem;">+ ${i.customizations.join(", ")}</p>` : ''}
-                        `).join("")}
-                    </div>
+            <!-- Column 2: In Kitchen -->
+            <div class="kds-column" style="background: #09090b; display: flex; flex-direction: column; gap: 1rem; height: 100%;">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 0.5rem; border-bottom: 2px solid #2563eb; margin-bottom: 0.5rem;">
+                    <span style="background: rgba(37, 99, 235, 0.15); color: #3b82f6; padding: 0.25rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; border: 1px solid rgba(37, 99, 235, 0.25);">In Kitchen</span>
+                    <span style="color: #71717a; font-weight: 700; font-size: 0.9rem; background: #18181b; padding: 0.15rem 0.4rem; border-radius: 4px;">${cookingOrders.length}</span>
+                </div>
+                <div class="kds-cards-list" style="display: flex; flex-direction: column; gap: 1rem; max-height: calc(100vh - 17rem); overflow-y: auto; padding-right: 0.25rem;">
+                    ${cookingOrders.length === 0 ? `
+                        <div style="padding: 4rem 1rem; text-align: center; color: #3f3f46; font-size: 0.9rem; font-weight: 500; font-style: italic;">
+                            No active cooking
+                        </div>
+                    ` : cookingOrders.map(order => this.renderKDSSingleCard(order, "Mark Ready", "ready")).join("")}
+                </div>
+            </div>
 
-                    <div class="kds-btn-grid">
-                        ${order.status !== "served" ? `
-                            <button class="kds-btn" style="background:var(--pos-primary); color:white;" onclick="posCtrl.updateKDSOrder('${order.id}', '${nextActionStatus}')">
-                                ${nextActionLabel}
-                            </button>
-                        ` : `
-                            <button class="kds-btn" style="background:#10b981; color:white;" onclick="posCtrl.updateKDSOrder('${order.id}', 'completed')">
-                                Close Docket
-                            </button>
-                        `}
-                        <button class="kds-btn" style="background:var(--pos-bg-alt); color:var(--pos-text-secondary);" onclick="posCtrl.cancelKDSOrder('${order.id}')">
-                            Reject Order
-                        </button>
-                    </div>
+            <!-- Column 3: Ready to Serve -->
+            <div class="kds-column" style="background: #09090b; display: flex; flex-direction: column; gap: 1rem; height: 100%;">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 0.5rem; border-bottom: 2px solid #10b981; margin-bottom: 0.5rem;">
+                    <span style="background: rgba(16, 185, 129, 0.15); color: #10b981; padding: 0.25rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; border: 1px solid rgba(16, 185, 129, 0.25);">Ready to Serve</span>
+                    <span style="color: #71717a; font-weight: 700; font-size: 0.9rem; background: #18181b; padding: 0.15rem 0.4rem; border-radius: 4px;">${readyOrders.length}</span>
+                </div>
+                <div class="kds-cards-list" style="display: flex; flex-direction: column; gap: 1rem; max-height: calc(100vh - 17rem); overflow-y: auto; padding-right: 0.25rem;">
+                    ${readyOrders.length === 0 ? `
+                        <div style="padding: 4rem 1rem; text-align: center; color: #3f3f46; font-size: 0.9rem; font-weight: 500; font-style: italic;">
+                            No pending service
+                        </div>
+                    ` : readyOrders.map(order => this.renderKDSSingleCard(order, "✓ Served & Dismiss", "served")).join("")}
+                </div>
+            </div>
+        `;
+    }
+
+    renderKDSSingleCard(order, buttonText, nextStatus) {
+        const elapsedMs = new Date() - new Date(order.timestamp);
+        const elapsedMins = Math.max(0, Math.floor(elapsedMs / 60000));
+        
+        // Critical alerts for dishes waiting over 15 minutes
+        const isOverdue = elapsedMins >= 15;
+        const timeColor = isOverdue ? "#ef4444" : "#71717a";
+        const borderColor = isOverdue ? "#881337" : "#27272a"; // Red alert vs dark border
+        const timeIcon = isOverdue ? "⏳" : "🕒";
+
+        // Display short ID (4-digit format)
+        const shortId = order.id ? order.id.slice(-4) : "0000";
+        // Table indicator e.g. T2 or Takeaway
+        const tableLabel = order.tableId ? `T${order.tableId}` : "Takeaway";
+
+        // Generate dish item tags and gold customizations list
+        const itemsHtml = (order.items || []).map(item => {
+            let html = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; font-weight: 600; font-size: 0.95rem;">
+                    <span style="color: #ffffff;">${item.qty}x ${item.name}</span>
                 </div>
             `;
+            if (item.customizations && item.customizations.length > 0) {
+                item.customizations.forEach(cust => {
+                    html += `
+                        <div style="font-size: 0.75rem; color: #d97706; font-weight: 700; margin-left: 1.25rem; margin-top: -0.2rem; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.3rem;">
+                            <span style="color: #f59e0b;">⚠️</span>
+                            <span>${cust}</span>
+                        </div>
+                    `;
+                });
+            }
+            return html;
         }).join("");
+
+        // Build premium full-width action buttons
+        let btnStyle = `
+            width: 100%;
+            padding: 0.7rem;
+            background: #27272a;
+            border: 1px solid #3f3f46;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            margin-top: 0.4rem;
+        `;
+        let btnHoverStyle = `this.style.background='#3f3f46'; this.style.borderColor='#52525b';`;
+        let btnLeaveStyle = `this.style.background='#27272a'; this.style.borderColor='#3f3f46';`;
+
+        if (nextStatus === "served") {
+            btnStyle = `
+                width: 100%;
+                padding: 0.7rem;
+                background: rgba(16, 185, 129, 0.08);
+                border: 1px solid rgba(16, 185, 129, 0.25);
+                color: #10b981;
+                font-weight: 700;
+                font-size: 0.85rem;
+                border-radius: 6px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                text-align: center;
+                margin-top: 0.4rem;
+            `;
+            btnHoverStyle = `this.style.background='rgba(16, 185, 129, 0.16)'; this.style.borderColor='rgba(16, 185, 129, 0.4)';`;
+            btnLeaveStyle = `this.style.background='rgba(16, 185, 129, 0.08)'; this.style.borderColor='rgba(16, 185, 129, 0.25)';`;
+        }
+
+        return `
+            <div class="kds-card" style="background: #18181b; border: 1px solid ${borderColor}; border-radius: 8px; padding: 1.25rem; display: flex; flex-direction: column; gap: 0.85rem; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                <!-- Header: Order ID, Table, Timer -->
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="font-size: 1.1rem; font-weight: 800; color: #ffffff;">#${shortId}</span>
+                        <span style="background: #27272a; color: #a1a1aa; padding: 0.15rem 0.45rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">${tableLabel}</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.35rem; color: ${timeColor}; font-size: 0.8rem; font-weight: 700;">
+                        <span>${timeIcon}</span>
+                        <span>${elapsedMins}m</span>
+                    </div>
+                </div>
+                
+                <!-- Items list -->
+                <div style="flex: 1; min-height: 40px;">
+                    ${itemsHtml}
+                </div>
+                
+                <!-- Action Button -->
+                <button style="${btnStyle}" 
+                        onmouseover="${btnHoverStyle}" 
+                        onmouseout="${btnLeaveStyle}"
+                        onclick="posCtrl.updateKDSOrder('${order.id}', '${nextStatus}')">
+                    ${buttonText}
+                </button>
+            </div>
+        `;
     }
 
     renderInventoryManager(searchQuery = "", categoryFilter = "All", statusFilter = "All") {

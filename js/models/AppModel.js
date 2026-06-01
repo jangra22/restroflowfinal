@@ -777,11 +777,17 @@ export class AppModel extends EventTarget {
         const orders = this.getOrders();
         const order = orders.find(o => o.id === orderId);
         if (order) {
-            order.status = status;
-            if (status === "served" && order.tableId) {
+            // For Takeaway and Delivery orders, "served" status means they are 100% complete!
+            if (status === "served" && (order.orderType === "Takeaway" || order.orderType === "Delivery")) {
+                order.status = "completed";
+            } else {
+                order.status = status;
+            }
+
+            if (order.status === "served" && order.tableId) {
                 this.updateTableStatus(order.tableId, "Billing");
             }
-            if (status === "completed" && order.tableId) {
+            if (order.status === "completed" && order.tableId) {
                 this.updateTableStatus(order.tableId, "Free");
             }
             this.saveOrders(orders);
@@ -793,9 +799,19 @@ export class AppModel extends EventTarget {
         if (order) {
             order.paymentStatus = "paid";
             order.paymentMethod = paymentMethod;
-            order.status = "pending"; // Push to KDS kitchen queue
-            if (order.tableId) {
-                this.updateTableStatus(order.tableId, "Dining");
+            
+            // If the order has already been served or marked ready, it's completed upon payment!
+            if (order.status === "served" || order.status === "ready") {
+                order.status = "completed";
+                if (order.tableId) {
+                    this.updateTableStatus(order.tableId, "Free");
+                }
+            } else {
+                // If it's a brand new order being paid upfront, it goes to KDS kitchen queue
+                order.status = "pending";
+                if (order.tableId) {
+                    this.updateTableStatus(order.tableId, "Dining");
+                }
             }
             this.saveOrders(orders);
         }
