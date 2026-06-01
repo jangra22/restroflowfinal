@@ -7,6 +7,7 @@
  * Extends EventTarget to act as an observable model in our MVC architecture.
  */
 
+
 const DEFAULT_MENU = [
     {
         id: "m1",
@@ -84,27 +85,63 @@ const DEFAULT_MENU = [
         price: 90.00,
         description: "Golden milk-solid dumplings soaked in warm cardamom sugar syrup topped with chilled rabdi cream.",
         ingredients: { milk: 1.5, sugar: 2, cream: 1 },
-        customizations: [
-            { name: "Add Extra Rabdi", price: 30.00 }
-        ]
+        customizations: []
+    },
+    {
+        id: "m8",
+        name: "Chicken Biriyani",
+        category: "Mains",
+        price: 280.00,
+        description: "Premium Basmati rice cooked with layered spiced chicken, saffron, cardamoms, and deep fried onions.",
+        ingredients: { chicken: 1.5, rice: 2.0, spices: 1 },
+        customizations: []
+    },
+    {
+        id: "m9",
+        name: "Choco Lava Cake",
+        category: "Desserts",
+        price: 350.00,
+        description: "Decadent chocolate cake with a rich molten lava core served piping warm.",
+        ingredients: { sugar: 1.5, butter: 1.0 },
+        customizations: []
+    },
+    {
+        id: "m10",
+        name: "Pastry Small",
+        category: "Desserts",
+        price: 100.00,
+        description: "Indulgent single slice vanilla frosted premium sponge pastry.",
+        ingredients: { sugar: 1.0, cream: 1.0 },
+        customizations: []
+    },
+    {
+        id: "m11",
+        name: "Banana Pastry",
+        category: "Desserts",
+        price: 200.00,
+        description: "Decadent pastry loaded with caramelized local banana layers.",
+        ingredients: { sugar: 1.0, cream: 1.0 },
+        customizations: []
     }
 ];
 
 const DEFAULT_INVENTORY = {
-    chicken: { name: "Tandoori Bone-Free Chicken Fillet", qty: 35, unit: "kg", min: 8 },
-    paneer: { name: "Artisanal Malai Cottage Cheese", qty: 30, unit: "kg", min: 6 },
-    atta: { name: "Premium Sharbati Atta / Flour", qty: 50, unit: "kg", min: 10 },
-    butter: { name: "Amul Salted Table Butter", qty: 15, unit: "kg", min: 3 },
-    tomato: { name: "Tomato Puree & Onion Masalas", qty: 25, unit: "litres", min: 5 },
-    spices: { name: "Indian Garam Masala Blend", qty: 10, unit: "kg", min: 2 },
-    dough: { name: "Fermented Pizza Bases", qty: 40, unit: "pcs", min: 10 },
-    cheese: { name: "Grated Local Mozzarella Blends", qty: 20, unit: "kg", min: 4 },
-    yogurt: { name: "Fresh Creamy Thick Curd", qty: 24, unit: "litres", min: 6 },
-    mango: { name: "Alphonso Mango Saffron Syrup", qty: 15, unit: "litres", min: 3 },
-    tea: { name: "Assam CTC Strong Tea Leaves", qty: 8, unit: "kg", min: 2 },
-    milk: { name: "Buffalo Cream Dairy Milk", qty: 45, unit: "litres", min: 10 },
-    sugar: { name: "Demerara Sugar Cardamoms", qty: 20, unit: "kg", min: 5 },
-    cream: { name: "Chilled Rabdi Cardamom Basundi", qty: 12, unit: "litres", min: 3 }
+    chicken: { name: "Chicken", category: "Meat", qty: 25, max: 50, unit: "kg", min: 8, cost: 220, supplier: "Fresh Farms", lastUpdated: "2023-06-15" },
+    rice: { name: "Rice", category: "Ingredients", qty: 45, max: 100, unit: "kg", min: 10, cost: 80, supplier: "Grain Suppliers", lastUpdated: "2023-06-14" },
+    paneer: { name: "Paneer", category: "Dairy", qty: 8, max: 30, unit: "kg", min: 6, cost: 320, supplier: "Dairy Fresh", lastUpdated: "2023-06-15" },
+    tomato: { name: "Tomatoes", category: "Produce", qty: 15, max: 40, unit: "kg", min: 5, cost: 60, supplier: "Fresh Farms", lastUpdated: "2023-06-15" },
+    spices: { name: "Garam Masala", category: "Spices", qty: 2, max: 5, unit: "kg", min: 2, cost: 800, supplier: "Spice World", lastUpdated: "2023-06-10" },
+    takeaway: { name: "Takeaway Boxes", category: "Packaging", qty: 0, max: 500, unit: "pcs", min: 50, cost: 12, supplier: "Package Solutions", lastUpdated: "2023-06-12" },
+    atta: { name: "Atta Flour", category: "Ingredients", qty: 50, max: 100, unit: "kg", min: 10, cost: 45, supplier: "Grain Suppliers", lastUpdated: "2023-06-14" },
+    butter: { name: "Butter", category: "Dairy", qty: 15, max: 30, unit: "kg", min: 3, cost: 250, supplier: "Dairy Fresh", lastUpdated: "2023-06-15" },
+    dough: { name: "Pizza Dough", category: "Ingredients", qty: 40, max: 80, unit: "pcs", min: 10, cost: 15, supplier: "Fresh Farms", lastUpdated: "2023-06-15" },
+    cheese: { name: "Mozzarella Cheese", category: "Dairy", qty: 20, max: 40, unit: "kg", min: 4, cost: 450, supplier: "Dairy Fresh", lastUpdated: "2023-06-15" },
+    yogurt: { name: "Yogurt", category: "Dairy", qty: 24, max: 50, unit: "litres", min: 6, cost: 60, supplier: "Dairy Fresh", lastUpdated: "2023-06-15" },
+    mango: { name: "Mango Pulp", category: "Produce", qty: 15, max: 30, unit: "litres", min: 3, cost: 180, supplier: "Fresh Farms", lastUpdated: "2023-06-15" },
+    tea: { name: "Tea Leaves", category: "Ingredients", qty: 8, max: 20, unit: "kg", min: 2, cost: 140, supplier: "Spice World", lastUpdated: "2023-06-10" },
+    milk: { name: "Buffalo Milk", category: "Dairy", qty: 45, max: 100, unit: "litres", min: 10, cost: 65, supplier: "Dairy Fresh", lastUpdated: "2023-06-15" },
+    sugar: { name: "Sugar", category: "Ingredients", qty: 20, max: 50, unit: "kg", min: 5, cost: 40, supplier: "Grain Suppliers", lastUpdated: "2023-06-14" },
+    cream: { name: "Rabdi Cream", category: "Dairy", qty: 12, max: 30, unit: "litres", min: 3, cost: 220, supplier: "Dairy Fresh", lastUpdated: "2023-06-15" }
 };
 
 const DEFAULT_TABLES = [
@@ -123,10 +160,13 @@ const DEFAULT_TABLES = [
 ];
 
 const DEFAULT_STAFF = [
-    { username: "admin", pin: "1111", name: "Sarah Connor", role: "Admin" },
-    { username: "manager", pin: "2222", name: "David Miller", role: "Manager" },
-    { username: "captain", pin: "3333", name: "Alex Mercer", role: "Captain" },
-    { username: "billing", pin: "4444", name: "Emma Watson", role: "Billing Staff" }
+    { username: "manager", pin: "2222", name: "Rajesh Kumar", role: "Restaurant Manager", branch: "Main Branch", contact: "rajesh.kumar@example.com / +91 98765 43210", joinDate: "2021-03-15", status: "Active" },
+    { username: "billing", pin: "4444", name: "Priya Singh", role: "Cashier", branch: "Main Branch", contact: "priya.singh@example.com / +91 87654 32109", joinDate: "2021-05-20", status: "Active" },
+    { username: "chef", pin: "5555", name: "Amit Patel", role: "Chef", branch: "Main Branch", contact: "amit.patel@example.com / +91 76543 21098", joinDate: "2021-04-10", status: "Active" },
+    { username: "waiter1", pin: "6666", name: "Neha Sharma", role: "Waiter", branch: "Downtown Branch", contact: "neha.sharma@example.com / +91 65432 10987", joinDate: "2022-01-15", status: "Active" },
+    { username: "waiter2", pin: "7777", name: "Vikram Reddy", role: "Waiter", branch: "Downtown Branch", contact: "vikram.reddy@example.com / +91 54321 09876", joinDate: "2022-02-20", status: "Inactive" },
+    { username: "admin", pin: "1111", name: "Ananya Desai", role: "Admin", branch: "Main Branch", contact: "ananya.desai@example.com / +91 43210 98765", joinDate: "2020-11-10", status: "Active" },
+    { username: "chef2", pin: "8888", name: "Rahul Gupta", role: "Chef", branch: "Uptown Branch", contact: "rahul.gupta@example.com / +91 32109 87654", joinDate: "2022-03-05", status: "Active" }
 ];
 
 const DEFAULT_COUPONS = [
@@ -141,34 +181,102 @@ const DEFAULT_LOYALTY = {
     "9871234560": { name: "Priya Nair", points: 80 }
 };
 
-const DEFAULT_AGGREGATOR_ORDERS = [
+const DEFAULT_ORDERS = [
     {
-        id: "ZOM-7649",
-        aggregator: "Zomato",
-        timestamp: new Date().toISOString(),
-        customer: "Vikram Malhotra (+91 98110 55432)",
-        status: "incoming",
+        id: "RF-892341",
+        timestamp: new Date(Date.now() - 3600000 * 2).toISOString(),
+        status: "completed",
+        paymentStatus: "paid",
+        paymentMethod: "UPI",
         items: [
-            { id: "m1", name: "Butter Chicken & Garlic Naan Combo", qty: 1, price: 380.00, customizations: ["Double Butter"] }
+            { id: "m1", name: "Butter Chicken & Garlic Naan Combo", qty: 2, price: 380.00 }
         ],
-        subtotal: 420.00,
-        tax: 21.00,
-        total: 441.00,
-        orderType: "Delivery"
+        subtotal: 760.00,
+        tax: 38.00,
+        total: 798.00,
+        tableId: 3,
+        orderType: "Dine-In",
+        phone: "9876543210"
     },
+    {
+        id: "RF-104928",
+        timestamp: new Date(Date.now() - 3600000 * 1.5).toISOString(),
+        status: "completed",
+        paymentStatus: "paid",
+        paymentMethod: "Cash",
+        items: [
+            { id: "m10", name: "Pastry Small", qty: 1, price: 100.00 },
+            { id: "m11", name: "Banana Pastry", qty: 2, price: 200.00 },
+            { id: "m9", name: "Choco Lava Cake", qty: 2, price: 350.00 }
+        ],
+        subtotal: 1200.00,
+        tax: 60.00,
+        total: 1260.00,
+        tableId: 7,
+        orderType: "Dine-In",
+        phone: "9998887776"
+    },
+    {
+        id: "RF-556432",
+        timestamp: new Date(Date.now() - 1800000).toISOString(),
+        status: "cooking",
+        paymentStatus: "unpaid",
+        items: [
+            { id: "m3", name: "Spicy Kadai Paneer Pizza", qty: 1, price: 290.00 },
+            { id: "m6", name: "Authentic Masala Kulhad Chai", qty: 2, price: 40.00 }
+        ],
+        subtotal: 370.00,
+        tax: 18.50,
+        total: 388.50,
+        tableId: 1,
+        orderType: "Dine-In"
+    }
+];
+
+const DEFAULT_AGGREGATOR_ORDERS = [
     {
         id: "SWI-8831",
         aggregator: "Swiggy",
-        timestamp: new Date().toISOString(),
-        customer: "Aditi Sen (+91 99330 11223)",
+        timestamp: new Date(Date.now() - 900000).toISOString(), // 15 mins ago
+        customer: "Aarav Gupta (+91 98122 33445)",
         status: "incoming",
         items: [
-            { id: "m2", name: "Artisanal Paneer Tikka Masala Combo", qty: 1, price: 320.00, customizations: [] },
-            { id: "m6", name: "Authentic Masala Kulhad Chai", qty: 2, price: 40.00, customizations: [] }
+            { id: "s1", name: "Fried Papad", qty: 1, price: 30.00 },
+            { id: "s2", name: "Samosa", qty: 1, price: 20.00 }
         ],
-        subtotal: 400.00,
-        tax: 20.00,
-        total: 420.00,
+        subtotal: 50.00,
+        tax: 2.50,
+        total: 52.50,
+        orderType: "Delivery"
+    },
+    {
+        id: "ZOM-7649",
+        aggregator: "Zomato",
+        timestamp: new Date(Date.now() - 1800000).toISOString(), // 30 mins ago
+        customer: "Sneha Sen (+91 99110 55432)",
+        status: "cooking", // Maps to Dispatched in KOT card views
+        items: [
+            { id: "z1", name: "Palak Paneer", qty: 1, price: 280.00 },
+            { id: "z2", name: "Butter Naan", qty: 12, price: 40.00 }
+        ],
+        subtotal: 760.00,
+        tax: 38.00,
+        total: 798.00,
+        orderType: "Delivery"
+    },
+    {
+        id: "TAL-9912",
+        aggregator: "Talabat",
+        timestamp: new Date(Date.now() - 3600000).toISOString(), // 1 hour ago
+        customer: "Fatima Khan (+971 50 123 4567)",
+        status: "served", // Maps to Delivered in KOT cards
+        items: [
+            { id: "t1", name: "Masala Dosa", qty: 2, price: 120.00 },
+            { id: "t2", name: "Idli-sambar", qty: 1, price: 80.00 }
+        ],
+        subtotal: 320.00,
+        tax: 16.00,
+        total: 336.00,
         orderType: "Delivery"
     }
 ];
@@ -179,32 +287,99 @@ export class AppModel extends EventTarget {
         this.init();
     }
 
+    safeGetItem(key, defaultVal = []) {
+        try {
+            const data = localStorage.getItem(key);
+            if (!data) return defaultVal;
+            return JSON.parse(data);
+        } catch (e) {
+            console.error(`Error parsing localStorage key ${key}:`, e);
+            return defaultVal;
+        }
+    }
+
     init() {
-        if (!localStorage.getItem("restoflow_menu")) {
+        // Dynamic self-healing schema re-seeder for menu
+        try {
+            const storedMenu = localStorage.getItem("restoflow_menu");
+            if (!storedMenu || !storedMenu.includes("m8")) {
+                localStorage.setItem("restoflow_menu", JSON.stringify(DEFAULT_MENU));
+            }
+        } catch (e) {
             localStorage.setItem("restoflow_menu", JSON.stringify(DEFAULT_MENU));
         }
-        if (!localStorage.getItem("restoflow_inventory")) {
+
+        // Dynamic self-healing schema re-seeder for inventory
+        try {
+            const storedInventory = localStorage.getItem("restoflow_inventory");
+            const hasCost = storedInventory && storedInventory.includes("cost");
+            if (!storedInventory || !hasCost) {
+                localStorage.setItem("restoflow_inventory", JSON.stringify(DEFAULT_INVENTORY));
+            }
+        } catch (e) {
             localStorage.setItem("restoflow_inventory", JSON.stringify(DEFAULT_INVENTORY));
         }
-        if (!localStorage.getItem("restoflow_tables")) {
+
+        try {
+            if (!localStorage.getItem("restoflow_tables")) {
+                localStorage.setItem("restoflow_tables", JSON.stringify(DEFAULT_TABLES));
+            }
+        } catch (e) {
             localStorage.setItem("restoflow_tables", JSON.stringify(DEFAULT_TABLES));
         }
-        if (!localStorage.getItem("restoflow_staff")) {
+
+        try {
+            const storedStaff = localStorage.getItem("restoflow_staff");
+            const hasContact = storedStaff && storedStaff.includes("contact");
+            const hasAnanya = storedStaff && storedStaff.includes("Ananya Desai");
+            if (!storedStaff || !hasContact || !hasAnanya) {
+                localStorage.setItem("restoflow_staff", JSON.stringify(DEFAULT_STAFF));
+            }
+        } catch (e) {
             localStorage.setItem("restoflow_staff", JSON.stringify(DEFAULT_STAFF));
         }
-        if (!localStorage.getItem("restoflow_coupons")) {
+
+        try {
+            if (!localStorage.getItem("restoflow_coupons")) {
+                localStorage.setItem("restoflow_coupons", JSON.stringify(DEFAULT_COUPONS));
+            }
+        } catch (e) {
             localStorage.setItem("restoflow_coupons", JSON.stringify(DEFAULT_COUPONS));
         }
-        if (!localStorage.getItem("restoflow_loyalty")) {
+        try {
+            if (!localStorage.getItem("restoflow_loyalty")) {
+                localStorage.setItem("restoflow_loyalty", JSON.stringify(DEFAULT_LOYALTY));
+            }
+        } catch (e) {
             localStorage.setItem("restoflow_loyalty", JSON.stringify(DEFAULT_LOYALTY));
         }
-        if (!localStorage.getItem("restoflow_aggregator_orders")) {
+        try {
+            if (!localStorage.getItem("restoflow_aggregator_orders")) {
+                localStorage.setItem("restoflow_aggregator_orders", JSON.stringify(DEFAULT_AGGREGATOR_ORDERS));
+            }
+        } catch (e) {
             localStorage.setItem("restoflow_aggregator_orders", JSON.stringify(DEFAULT_AGGREGATOR_ORDERS));
         }
-        if (!localStorage.getItem("restoflow_orders")) {
-            localStorage.setItem("restoflow_orders", JSON.stringify([]));
+
+        try {
+            const storedOrders = localStorage.getItem("restoflow_orders");
+            let parseFailed = false;
+            try {
+                if (storedOrders) JSON.parse(storedOrders);
+            } catch (err) {
+                parseFailed = true;
+            }
+            if (!storedOrders || storedOrders === "[]" || parseFailed || JSON.parse(storedOrders).length < 2) {
+                localStorage.setItem("restoflow_orders", JSON.stringify(DEFAULT_ORDERS));
+            }
+        } catch (e) {
+            localStorage.setItem("restoflow_orders", JSON.stringify(DEFAULT_ORDERS));
         }
-        if (!localStorage.getItem("restoflow_feedback")) {
+        try {
+            if (!localStorage.getItem("restoflow_feedback")) {
+                localStorage.setItem("restoflow_feedback", JSON.stringify([]));
+            }
+        } catch (e) {
             localStorage.setItem("restoflow_feedback", JSON.stringify([]));
         }
 
@@ -217,8 +392,9 @@ export class AppModel extends EventTarget {
     }
 
     // Menu Methods
+
     getMenu() {
-        return JSON.parse(localStorage.getItem("restoflow_menu")) || [];
+        return this.safeGetItem("restoflow_menu", DEFAULT_MENU);
     }
     saveMenu(menu) {
         localStorage.setItem("restoflow_menu", JSON.stringify(menu));
@@ -227,7 +403,7 @@ export class AppModel extends EventTarget {
 
     // Inventory Methods
     getInventory() {
-        return JSON.parse(localStorage.getItem("restoflow_inventory")) || {};
+        return this.safeGetItem("restoflow_inventory", DEFAULT_INVENTORY);
     }
     saveInventory(inv) {
         localStorage.setItem("restoflow_inventory", JSON.stringify(inv));
@@ -269,7 +445,7 @@ export class AppModel extends EventTarget {
 
     // Tables Methods
     getTables() {
-        return JSON.parse(localStorage.getItem("restoflow_tables")) || [];
+        return this.safeGetItem("restoflow_tables", DEFAULT_TABLES);
     }
     saveTables(tables) {
         localStorage.setItem("restoflow_tables", JSON.stringify(tables));
@@ -286,7 +462,7 @@ export class AppModel extends EventTarget {
 
     // Coupons Methods
     getCoupons() {
-        return JSON.parse(localStorage.getItem("restoflow_coupons")) || [];
+        return this.safeGetItem("restoflow_coupons", DEFAULT_COUPONS);
     }
     verifyCoupon(code, billSubtotal) {
         const coupons = this.getCoupons();
@@ -299,7 +475,7 @@ export class AppModel extends EventTarget {
 
     // Loyalty CRM Database Methods
     getLoyaltyDatabase() {
-        return JSON.parse(localStorage.getItem("restoflow_loyalty")) || {};
+        return this.safeGetItem("restoflow_loyalty", DEFAULT_LOYALTY);
     }
     saveLoyaltyDatabase(loyalty) {
         localStorage.setItem("restoflow_loyalty", JSON.stringify(loyalty));
@@ -347,7 +523,7 @@ export class AppModel extends EventTarget {
 
     // Online Aggregator Orders (Zomato & Swiggy)
     getAggregatorOrders() {
-        return JSON.parse(localStorage.getItem("restoflow_aggregator_orders")) || [];
+        return this.safeGetItem("restoflow_aggregator_orders", DEFAULT_AGGREGATOR_ORDERS);
     }
     saveAggregatorOrders(orders) {
         localStorage.setItem("restoflow_aggregator_orders", JSON.stringify(orders));
@@ -406,7 +582,7 @@ export class AppModel extends EventTarget {
 
     // Orders Methods
     getOrders() {
-        return JSON.parse(localStorage.getItem("restoflow_orders")) || [];
+        return this.safeGetItem("restoflow_orders", DEFAULT_ORDERS);
     }
     saveOrders(orders) {
         localStorage.setItem("restoflow_orders", JSON.stringify(orders));
@@ -473,20 +649,28 @@ export class AppModel extends EventTarget {
         if (order) {
             order.paymentStatus = "paid";
             order.paymentMethod = paymentMethod;
-            order.status = "completed";
+            order.status = "pending"; // Push to KDS kitchen queue
             if (order.tableId) {
-                this.updateTableStatus(order.tableId, "Free");
+                this.updateTableStatus(order.tableId, "Dining");
             }
             this.saveOrders(orders);
         }
     }
 
+    getStaffList() {
+        return this.safeGetItem("restoflow_staff", DEFAULT_STAFF);
+    }
+
     // Session / Auth simulation
     getCurrentUser() {
-        return JSON.parse(sessionStorage.getItem("restoflow_user")) || null;
+        try {
+            return JSON.parse(sessionStorage.getItem("restoflow_user")) || null;
+        } catch (e) {
+            return null;
+        }
     }
     login(username, pin) {
-        const staff = JSON.parse(localStorage.getItem("restoflow_staff")) || [];
+        const staff = this.getStaffList();
         const user = staff.find(s => s.username === username.toLowerCase() && s.pin === pin);
         if (user) {
             sessionStorage.setItem("restoflow_user", JSON.stringify({
@@ -509,7 +693,7 @@ export class AppModel extends EventTarget {
         sessionStorage.removeItem("restoflow_user");
     }
     logSecurityEvent(message, level = "INFO") {
-        const logs = JSON.parse(localStorage.getItem("restoflow_security_logs")) || [];
+        const logs = this.safeGetItem("restoflow_security_logs", []);
         logs.push({
             timestamp: new Date().toISOString(),
             level,
@@ -519,12 +703,12 @@ export class AppModel extends EventTarget {
         this.notifyChange("restoflow_security_logs");
     }
     getSecurityLogs() {
-        return JSON.parse(localStorage.getItem("restoflow_security_logs")) || [];
+        return this.safeGetItem("restoflow_security_logs", []);
     }
 
     // Feedback Methods
     addFeedback(feedbackData) {
-        const feedback = JSON.parse(localStorage.getItem("restoflow_feedback")) || [];
+        const feedback = this.safeGetItem("restoflow_feedback", []);
         const item = {
             id: "FB-" + Math.floor(1000 + Math.random() * 9000),
             timestamp: new Date().toISOString(),
@@ -535,7 +719,7 @@ export class AppModel extends EventTarget {
         this.notifyChange("restoflow_feedback");
     }
     getFeedback() {
-        return JSON.parse(localStorage.getItem("restoflow_feedback")) || [];
+        return this.safeGetItem("restoflow_feedback", []);
     }
 
     notifyChange(key) {

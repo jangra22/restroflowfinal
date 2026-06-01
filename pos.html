@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ganeshwaram Signature | Merchant Control & Smart POS Dashboard</title>
     <meta name="description" content="Secure administrative terminal for Ganeshwaram. Process transactions, manage inventory, and track live kitchen dockets.">
-    <link rel="stylesheet" href="css/pos.css">
+    <link rel="stylesheet" href="css/pos.css?v=2.0.1">
 </head>
 <body>
 
@@ -51,30 +51,59 @@
             <p id="login-error-msg" style="color:var(--status-alert); font-size:0.85rem; font-weight:700; margin-top:1.5rem; display:none;"></p>
         </div>
     </div>
-
     <!-- MAIN SIDEBAR NAVIGATION -->
     <aside id="merchant-sidebar" style="display: none;">
         <div>
             <div class="brand-section">
-                <div class="brand-icon">G</div>
-                <div class="brand-name">Ganeshwaram<span>.</span></div>
+                <div class="brand-icon" style="background:var(--pos-primary); color:white; display:flex; align-items:center; justify-content:center; border-radius:8px; font-weight:800; font-size:1.1rem; width:32px; height:32px;">R</div>
+                <div class="brand-name" style="font-family:'Playfair Display', serif; font-weight:700; font-size:1.2rem; color:var(--pos-text); margin-left:0.5rem;">RestroFlow</div>
             </div>
             
             <ul class="nav-links">
+                <li class="nav-link" id="tab-nav-dashboard" onclick="posCtrl.switchDashboardTab('dashboard')">
+                    <span>🎛️</span> Dashboard
+                </li>
                 <li class="nav-link active" id="tab-nav-pos" onclick="posCtrl.switchDashboardTab('pos')">
                     <span>💳</span> POS Terminal
+                </li>
+                <li class="nav-link" id="tab-nav-orders" onclick="posCtrl.switchDashboardTab('orders')">
+                    <span>🛒</span> Orders
+                </li>
+                <li class="nav-link" id="tab-nav-menu" onclick="posCtrl.switchDashboardTab('menu')">
+                    <span>☕</span> Menu
                 </li>
                 <li class="nav-link" id="tab-nav-online" onclick="posCtrl.switchDashboardTab('online')">
                     <span class="pulse-dot"></span> Online Desk
                 </li>
                 <li class="nav-link" id="tab-nav-kds" onclick="posCtrl.switchDashboardTab('kds')">
-                    <span>🍳</span> Kitchen Monitor
+                    <span>🍳</span> Kitchen Display
                 </li>
                 <li class="nav-link" id="tab-nav-inventory" onclick="posCtrl.switchDashboardTab('inventory')">
-                    <span>📦</span> Ingredients
+                    <span>📦</span> Inventory
+                </li>
+                <li class="nav-link" id="tab-nav-customers" onclick="posCtrl.switchDashboardTab('customers')">
+                    <span>👥</span> Customers
+                </li>
+                <li class="nav-link" id="tab-nav-employees" onclick="posCtrl.switchDashboardTab('employees')">
+                    <span>👤</span> Employees
+                </li>
+                <li class="nav-link" id="tab-nav-branches" onclick="posCtrl.switchDashboardTab('branches')">
+                    <span>🏢</span> Branches
+                </li>
+                <li class="nav-link" id="tab-nav-integrations" onclick="posCtrl.switchDashboardTab('integrations')">
+                    <span>🔌</span> Integrations
+                </li>
+                <li class="nav-link" id="tab-nav-permissions" onclick="posCtrl.switchDashboardTab('permissions')">
+                    <span>🛡️</span> Roles & Permissions
                 </li>
                 <li class="nav-link" id="tab-nav-reports" onclick="posCtrl.switchDashboardTab('reports')">
                     <span>📈</span> Reports
+                </li>
+                <li class="nav-link" id="tab-nav-billing-sub" onclick="posCtrl.switchDashboardTab('billing-sub')">
+                    <span>💳</span> Billing
+                </li>
+                <li class="nav-link" id="tab-nav-settings" onclick="posCtrl.switchDashboardTab('settings')">
+                    <span>⚙️</span> Settings
                 </li>
                 <li class="nav-link" id="tab-nav-security" onclick="posCtrl.switchDashboardTab('security')">
                     <span>🔒</span> Security Log
@@ -93,6 +122,55 @@
 
     <!-- CONTENT MODULE DESK -->
     <main id="merchant-main" style="display: none;">
+        <!-- View: Dashboard Overview -->
+        <section id="view-pos-dashboard" class="pos-view-panel" style="display: none; flex-direction: column; width: 100%;">
+            <!-- Injected via POSView.js -->
+        </section>
+
+        <!-- View: Orders Management -->
+        <section id="view-pos-orders" class="pos-view-panel" style="display: none; flex-direction: column; width: 100%;">
+            <!-- Injected via POSView.js -->
+        </section>
+
+        <!-- View: Menu Editor -->
+        <section id="view-pos-menu" class="pos-view-panel" style="display: none; flex-direction: column; width: 100%;">
+            <!-- Injected via POSView.js -->
+        </section>
+
+        <!-- View: Customers Database CRM -->
+        <section id="view-pos-customers" class="pos-view-panel" style="display: none; flex-direction: column; width: 100%;">
+            <!-- Injected via POSView.js -->
+        </section>
+
+        <!-- View: Employees Management Directory -->
+        <section id="view-pos-employees" class="pos-view-panel" style="display: none; flex-direction: column; width: 100%;">
+            <!-- Injected via POSView.js -->
+        </section>
+
+        <!-- View: Branches List -->
+        <section id="view-pos-branches" class="pos-view-panel" style="display: none; flex-direction: column; width: 100%;">
+            <!-- Injected via POSView.js -->
+        </section>
+
+        <!-- View: Third-Party Integrations -->
+        <section id="view-pos-integrations" class="pos-view-panel" style="display: none; flex-direction: column; width: 100%;">
+            <!-- Injected via POSView.js -->
+        </section>
+
+        <!-- View: Roles & Permissions Matrix -->
+        <section id="view-pos-permissions" class="pos-view-panel" style="display: none; flex-direction: column; width: 100%;">
+            <!-- Injected via POSView.js -->
+        </section>
+
+        <!-- View: SaaS Billing Subscription -->
+        <section id="view-pos-billing-sub" class="pos-view-panel" style="display: none; flex-direction: column; width: 100%;">
+            <!-- Injected via POSView.js -->
+        </section>
+
+        <!-- View: General System Settings -->
+        <section id="view-pos-settings" class="pos-view-panel" style="display: none; flex-direction: column; width: 100%;">
+            <!-- Injected via POSView.js -->
+        </section>
         
         <!-- View 1: POS Billing Console -->
         <section id="view-pos-billing" class="pos-view-panel" style="display: flex;">
@@ -309,6 +387,6 @@
     </div>
 
     <!-- Script references -->
-    <script type="module" src="js/app-pos.js"></script>
+    <script type="module" src="js/app-pos.js?v=2.0.1"></script>
 </body>
 </html>

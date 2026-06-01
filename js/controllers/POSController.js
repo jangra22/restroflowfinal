@@ -16,6 +16,27 @@ export class POSController {
         this.posDraftBasket = [];
         this.posOrderModalCategory = "All";
 
+        // Employee Management Filter States
+        this.employeeSearchQuery = "";
+        this.employeeRoleFilter = "All";
+        this.employeeStatusFilter = "All";
+        this.employeeBranchFilter = "All";
+
+        // Inventory Management Filter States
+        this.inventorySearchQuery = "";
+        this.inventoryCategoryFilter = "All";
+        this.inventoryStatusFilter = "All";
+
+        // Orders Management Filter States
+        this.orderSearchQuery = "";
+        this.orderChannelFilter = "All";
+        this.orderStatusFilter = "All";
+
+        // Menu Management Filter States
+        this.menuSearchQuery = "";
+        this.menuCategoryFilter = "All";
+        this.menuStatusFilter = "All";
+
         // Listen for database changes to keep UI synchronized
         this.model.addEventListener("stateChange", (e) => {
             this.refreshActiveDashboardView();
@@ -23,6 +44,34 @@ export class POSController {
     }
 
     init() {
+        // Force-populate staff dropdown dynamically
+        const staffList = this.model.getStaffList();
+        this.view.renderLoginProfiles(staffList);
+
+        // Bind physical keyboard support for PIN code entry
+        window.addEventListener("keydown", (e) => {
+            const loginGate = document.getElementById("merchant-login-gate");
+            if (loginGate && loginGate.style.display !== "none") {
+                // If focus is on the dropdown select, ignore keyboard triggers for standard numeric pin-pad actions so they can select via arrow keys
+                if (document.activeElement === document.getElementById("login-username-select")) {
+                    if (e.key === "Enter") {
+                        e.preventDefault();
+                        this.submitPin();
+                    }
+                    return;
+                }
+
+                if (e.key >= "0" && e.key <= "9") {
+                    this.pressPin(e.key);
+                } else if (e.key === "Backspace") {
+                    this.clearPin();
+                } else if (e.key === "Enter") {
+                    e.preventDefault();
+                    this.submitPin();
+                }
+            }
+        });
+
         // Bind real-time cross-tab updates from system
         window.addEventListener("restoflowStateChange", (e) => {
             this.refreshActiveDashboardView();
@@ -93,17 +142,37 @@ export class POSController {
 
     refreshActiveDashboardView() {
         try {
-            if (this.currentDashboardTab === "pos") {
+            if (this.currentDashboardTab === "dashboard") {
+                this.view.renderPOSDashboard();
+            } else if (this.currentDashboardTab === "pos") {
                 this.view.renderPOSFloorLayout(this.posSelectedTableId);
                 this.view.renderActiveCheckoutTicket(this.posSelectedTableId, this.appliedDiscountPercent);
+            } else if (this.currentDashboardTab === "orders") {
+                this.view.renderOrdersManager(this.orderSearchQuery, this.orderChannelFilter, this.orderStatusFilter);
+            } else if (this.currentDashboardTab === "menu") {
+                this.view.renderMenuEditor(this.menuSearchQuery, this.menuCategoryFilter, this.menuStatusFilter);
             } else if (this.currentDashboardTab === "online") {
                 this.view.renderOnlineOrdersDesk();
             } else if (this.currentDashboardTab === "kds") {
                 this.view.renderKDSKitchenMonitor();
             } else if (this.currentDashboardTab === "inventory") {
-                this.view.renderInventoryManager();
+                this.view.renderInventoryManager(this.inventorySearchQuery, this.inventoryCategoryFilter, this.inventoryStatusFilter);
+            } else if (this.currentDashboardTab === "customers") {
+                this.view.renderCustomersManager();
+            } else if (this.currentDashboardTab === "employees") {
+                this.view.renderEmployeeManager(this.employeeSearchQuery, this.employeeRoleFilter, this.employeeStatusFilter, this.employeeBranchFilter);
+            } else if (this.currentDashboardTab === "branches") {
+                this.view.renderBranches();
+            } else if (this.currentDashboardTab === "integrations") {
+                this.view.renderIntegrations();
+            } else if (this.currentDashboardTab === "permissions") {
+                this.view.renderPermissions();
             } else if (this.currentDashboardTab === "reports") {
                 this.view.renderAnalyticsReports();
+            } else if (this.currentDashboardTab === "billing-sub") {
+                this.view.renderBilling();
+            } else if (this.currentDashboardTab === "settings") {
+                this.view.renderSettings();
             } else if (this.currentDashboardTab === "security") {
                 this.view.renderSecurityAccessConsole();
             }
@@ -115,6 +184,84 @@ export class POSController {
     switchDashboardTab(tabId) {
         this.currentDashboardTab = tabId;
         this.view.switchTab(tabId);
+        this.refreshActiveDashboardView();
+    }
+
+    // --- Dynamic Employee Directory Handlers ---
+    handleEmployeeSearch(val) {
+        this.employeeSearchQuery = val;
+        this.view.renderEmployeeManager(this.employeeSearchQuery, this.employeeRoleFilter, this.employeeStatusFilter, this.employeeBranchFilter);
+    }
+
+    handleEmployeeFilter(type, val) {
+        if (type === 'role') this.employeeRoleFilter = val;
+        if (type === 'status') this.employeeStatusFilter = val;
+        if (type === 'branch') this.employeeBranchFilter = val;
+        this.view.renderEmployeeManager(this.employeeSearchQuery, this.employeeRoleFilter, this.employeeStatusFilter, this.employeeBranchFilter);
+    }
+
+    addEmployeePrompt() {
+        const name = prompt("Enter new employee name:");
+        if (!name) return;
+        const role = prompt("Enter employee role (e.g. Waiter, Cashier, Chef, Restaurant Manager, Admin):");
+        const branch = prompt("Enter branch (e.g. Main Branch, Downtown Branch, Uptown Branch):");
+        const email = prompt("Enter work email:");
+        const phone = prompt("Enter contact phone:");
+        
+        const currentStaff = JSON.parse(localStorage.getItem("restoflow_staff")) || [];
+        const nextId = 1001 + currentStaff.length;
+        const newEmp = {
+            username: name.toLowerCase().replace(/\s+/g, ""),
+            pin: "0000",
+            name,
+            role,
+            branch,
+            contact: `${email.toLowerCase()} / +91 ${phone}`,
+            joinDate: new Date().toISOString().split('T')[0],
+            status: "Active"
+        };
+        currentStaff.push(newEmp);
+        localStorage.setItem("restoflow_staff", JSON.stringify(currentStaff));
+        this.model.logSecurityEvent(`Registered new employee profile: ${name} (${role})`);
+        this.refreshActiveDashboardView();
+    }
+
+    // --- Dynamic Inventory Table Handlers ---
+    handleInventorySearch(val) {
+        this.inventorySearchQuery = val;
+        this.view.renderInventoryManager(this.inventorySearchQuery, this.inventoryCategoryFilter, this.inventoryStatusFilter);
+    }
+
+    handleInventoryFilter(type, val) {
+        if (type === 'category') this.inventoryCategoryFilter = val;
+        if (type === 'status') this.inventoryStatusFilter = val;
+        this.view.renderInventoryManager(this.inventorySearchQuery, this.inventoryCategoryFilter, this.inventoryStatusFilter);
+    }
+
+    addInventoryItemPrompt() {
+        const name = prompt("Enter item name (e.g. Rice, Milk, Paneer):");
+        if (!name) return;
+        const category = prompt("Enter category (e.g. Meat, Ingredients, Dairy, Produce, Spices, Packaging):");
+        const maxQty = parseFloat(prompt("Enter maximum stock capacity limit:"));
+        const cost = parseFloat(prompt("Enter unit cost (₹):"));
+        const supplier = prompt("Enter supplier name:");
+        const unit = prompt("Enter unit (e.g., kg, litres, pcs):");
+        
+        const inv = this.model.getInventory();
+        const key = name.toLowerCase().replace(/\s+/g, "");
+        inv[key] = {
+            name,
+            category,
+            qty: maxQty,
+            max: maxQty,
+            unit,
+            min: maxQty * 0.2,
+            cost,
+            supplier,
+            lastUpdated: new Date().toISOString().split('T')[0]
+        };
+        this.model.saveInventory(inv);
+        this.model.logSecurityEvent(`Added new raw inventory item: ${name} (Supplier: ${supplier})`);
         this.refreshActiveDashboardView();
     }
 
@@ -168,6 +315,98 @@ export class POSController {
         this.appliedDiscountPercent = 0;
         
         this.refreshActiveDashboardView();
+    }
+
+    deleteReceiptItem(orderId, itemId) {
+        if (confirm("Are you sure you want to delete/void this item from the receipt?")) {
+            const orders = this.model.getOrders();
+            const orderIdx = orders.findIndex(o => o.id === orderId);
+            
+            if (orderIdx !== -1) {
+                const order = orders[orderIdx];
+                const itemIdx = order.items.findIndex(i => i.id === itemId);
+                
+                if (itemIdx !== -1) {
+                    const deletedItem = order.items[itemIdx];
+                    order.items.splice(itemIdx, 1);
+                    
+                    // Recalculate subtotal
+                    let subtotal = 0;
+                    order.items.forEach(i => subtotal += (i.price * i.qty));
+                    order.subtotal = subtotal;
+                    
+                    // Recalculate discounts and taxes
+                    const couponDiscount = order.couponDiscount ? parseFloat(order.couponDiscount) : 0;
+                    const loyaltyDiscount = order.loyaltyDiscount ? parseFloat(order.loyaltyDiscount) : 0;
+                    const cashierDiscountVal = (subtotal - couponDiscount - loyaltyDiscount) * (this.appliedDiscountPercent / 100);
+                    const totalDiscount = couponDiscount + loyaltyDiscount + cashierDiscountVal;
+                    
+                    const isGSTFree = order.couponCode === "GSTFREE" || order.appliedCoupon === "GSTFREE";
+                    const tax = isGSTFree ? 0 : Math.max(0, subtotal - totalDiscount) * 0.05;
+                    
+                    order.tax = tax;
+                    order.total = Math.max(0, subtotal - totalDiscount) + tax;
+                    
+                    if (order.items.length === 0) {
+                        orders.splice(orderIdx, 1);
+                        this.model.updateTableStatus(order.tableId, "Free");
+                        this.posSelectedTableId = null;
+                        this.model.logSecurityEvent(`Voided entire empty receipt for Table ${order.tableId}.`, "WARNING");
+                    } else {
+                        orders[orderIdx] = order;
+                        this.model.logSecurityEvent(`Deleted item "${deletedItem.name}" from Table ${order.tableId} receipt.`, "WARNING");
+                    }
+                    
+                    this.model.saveOrders(orders);
+                    this.refreshActiveDashboardView();
+                }
+            }
+        }
+    }
+
+    deleteKDSItem(orderId, itemId) {
+        if (confirm("Are you sure you want to void this item from the kitchen order card?")) {
+            const orders = this.model.getOrders();
+            const orderIdx = orders.findIndex(o => o.id === orderId);
+            
+            if (orderIdx !== -1) {
+                const order = orders[orderIdx];
+                const itemIdx = order.items.findIndex(i => i.id === itemId);
+                
+                if (itemIdx !== -1) {
+                    const deletedItem = order.items[itemIdx];
+                    order.items.splice(itemIdx, 1);
+                    
+                    // Recalculate subtotal
+                    let subtotal = 0;
+                    order.items.forEach(i => subtotal += (i.price * i.qty));
+                    order.subtotal = subtotal;
+                    
+                    // Recalculate discounts and taxes
+                    const couponDiscount = order.couponDiscount ? parseFloat(order.couponDiscount) : 0;
+                    const loyaltyDiscount = order.loyaltyDiscount ? parseFloat(order.loyaltyDiscount) : 0;
+                    const totalDiscount = couponDiscount + loyaltyDiscount;
+                    
+                    const isGSTFree = order.couponCode === "GSTFREE" || order.appliedCoupon === "GSTFREE";
+                    const tax = isGSTFree ? 0 : Math.max(0, subtotal - totalDiscount) * 0.05;
+                    
+                    order.tax = tax;
+                    order.total = Math.max(0, subtotal - totalDiscount) + tax;
+                    
+                    if (order.items.length === 0) {
+                        orders.splice(orderIdx, 1);
+                        this.model.updateTableStatus(order.tableId, "Free");
+                        this.model.logSecurityEvent(`Voided entire kitchen ticket for Table ${order.tableId} from KDS.`, "WARNING");
+                    } else {
+                        orders[orderIdx] = order;
+                        this.model.logSecurityEvent(`Voided item "${deletedItem.name}" from KDS Docket ${order.id}.`, "WARNING");
+                    }
+                    
+                    this.model.saveOrders(orders);
+                    this.refreshActiveDashboardView();
+                }
+            }
+        }
     }
 
     // 4. Kitchen Monitors Controls (KDS)
@@ -382,17 +621,123 @@ export class POSController {
 
     // 8. Online Delivery Aggregators Handlers
     acceptOnlineOrder(orderId) {
-        const order = this.model.acceptAggregatorOrder(orderId);
-        if (order) {
-            alert(`Aggregator Order ${orderId} accepted successfully! Transferred to KDS.`);
+        const aggOrders = this.model.getAggregatorOrders();
+        const idx = aggOrders.findIndex(o => o.id === orderId);
+        if (idx !== -1) {
+            aggOrders[idx].status = "cooking"; // Change status to cooking so it shows "Mark food ready"
+            this.model.saveAggregatorOrders(aggOrders);
+            this.model.logSecurityEvent(`Accepted online aggregator order ${orderId} into Cooking queue.`);
+            
+            // Also push to central model queue for KDS sync
+            const order = this.model.acceptAggregatorOrder(orderId);
+            if (order) {
+                alert(`Aggregator Order ${orderId} accepted successfully! Transferred to KDS.`);
+            }
+            this.refreshActiveDashboardView();
+        }
+    }
+
+    dispatchOnlineOrder(orderId) {
+        const aggOrders = this.model.getAggregatorOrders();
+        const idx = aggOrders.findIndex(o => o.id === orderId);
+        if (idx !== -1) {
+            aggOrders[idx].status = "served"; // Dispatched
+            this.model.saveAggregatorOrders(aggOrders);
+            this.model.logSecurityEvent(`Marked Online order ${orderId} as ready & Dispatched.`);
             this.refreshActiveDashboardView();
         }
     }
 
     rejectOnlineOrder(orderId) {
         if (confirm(`Are you sure you want to reject Aggregator Docket ${orderId}?`)) {
-            this.model.rejectAggregatorOrder(orderId);
+            const aggOrders = this.model.getAggregatorOrders();
+            const idx = aggOrders.findIndex(o => o.id === orderId);
+            if (idx !== -1) {
+                aggOrders.splice(idx, 1);
+                this.model.saveAggregatorOrders(aggOrders);
+                this.model.logSecurityEvent(`Rejected Aggregator Order ${orderId}.`);
+                this.refreshActiveDashboardView();
+            }
+        }
+    }
+
+    // --- Dynamic Orders Filter Handlers ---
+    handleOrderSearch(val) {
+        this.orderSearchQuery = val;
+        this.view.renderOrdersManager(this.orderSearchQuery, this.orderChannelFilter, this.orderStatusFilter);
+    }
+
+    handleOrderFilter(type, val) {
+        if (type === 'channel') this.orderChannelFilter = val;
+        if (type === 'status') this.orderStatusFilter = val;
+        this.view.renderOrdersManager(this.orderSearchQuery, this.orderChannelFilter, this.orderStatusFilter);
+    }
+
+    // --- Dynamic Menu Editor Handlers ---
+    handleMenuSearch(val) {
+        this.menuSearchQuery = val;
+        this.view.renderMenuEditor(this.menuSearchQuery, this.menuCategoryFilter, this.menuStatusFilter);
+    }
+
+    handleMenuFilter(type, val) {
+        if (type === 'category') this.menuCategoryFilter = val;
+        this.view.renderMenuEditor(this.menuSearchQuery, this.menuCategoryFilter, this.menuStatusFilter);
+    }
+
+    toggleMenuItemAvailability(itemId) {
+        const menu = this.model.getMenu();
+        const idx = menu.findIndex(i => i.id === itemId);
+        if (idx !== -1) {
+            menu[idx].status = menu[idx].status === "Inactive" ? "Active" : "Inactive";
+            this.model.saveMenu(menu);
+            this.model.logSecurityEvent(`Toggled menu availability for ${menu[idx].name}.`);
             this.refreshActiveDashboardView();
         }
+    }
+
+    editMenuItemPricePrompt(itemId) {
+        const menu = this.model.getMenu();
+        const item = menu.find(i => i.id === itemId);
+        if (!item) return;
+
+        const newPrice = parseFloat(prompt(`Enter new price for ${item.name}:`, item.price));
+        if (isNaN(newPrice) || newPrice <= 0) {
+            alert("Invalid price!");
+            return;
+        }
+
+        item.price = newPrice;
+        this.model.saveMenu(menu);
+        this.model.logSecurityEvent(`Updated price of ${item.name} to ₹${newPrice}.`);
+        this.refreshActiveDashboardView();
+    }
+
+    addMenuItemPrompt() {
+        const name = prompt("Enter new dish name:");
+        if (!name) return;
+        const category = prompt("Enter category (e.g. Mains, Desserts, Beverages, Fusion Pizzas):");
+        const price = parseFloat(prompt("Enter price (₹):"));
+        if (isNaN(price) || price <= 0) {
+            alert("Invalid price!");
+            return;
+        }
+        const description = prompt("Enter description:");
+
+        const menu = this.model.getMenu();
+        const nextId = "m" + (menu.length + 1);
+        const newItem = {
+            id: nextId,
+            name,
+            category,
+            price,
+            description,
+            ingredients: { spices: 1 },
+            status: "Active"
+        };
+
+        menu.push(newItem);
+        this.model.saveMenu(menu);
+        this.model.logSecurityEvent(`Added new menu item: ${name} (₹${price})`);
+        this.refreshActiveDashboardView();
     }
 }

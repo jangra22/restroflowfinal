@@ -3,15 +3,15 @@
  * Directs dynamic rendering of modular sub-components.
  */
 
-import { Header } from './components/Header.js';
-import { CategorySlider } from './components/CategorySlider.js';
-import { MenuSection } from './components/MenuSection.js';
-import { CartDrawer } from './components/CartDrawer.js';
-import { ProfileTab } from './components/ProfileTab.js';
-import { OrdersTab } from './components/OrdersTab.js';
-import { KitchenTab } from './components/KitchenTab.js';
-import { EventsTab } from './components/EventsTab.js';
-import { CustomizerSheet } from './components/CustomizerSheet.js';
+import { Header } from './components/Header.js?v=2.0.1';
+import { CategorySlider } from './components/CategorySlider.js?v=2.0.1';
+import { MenuSection } from './components/MenuSection.js?v=2.0.1';
+import { CartDrawer } from './components/CartDrawer.js?v=2.0.1';
+import { ProfileTab } from './components/ProfileTab.js?v=2.0.1';
+import { OrdersTab } from './components/OrdersTab.js?v=2.0.1';
+import { KitchenTab } from './components/KitchenTab.js?v=2.0.1';
+import { EventsTab } from './components/EventsTab.js?v=2.0.1';
+import { CustomizerSheet } from './components/CustomizerSheet.js?v=2.0.1';
 
 export class CustomerView {
     constructor(model) {

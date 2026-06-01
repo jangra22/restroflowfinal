@@ -1,5 +1,5 @@
 /* --- Restaurant POS & Merchant Dashboard Stylesheet ---
- * Ganeshwaram Signature Edition
+ * EaseMyRestro Premium Signature Edition
  */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
@@ -8,13 +8,13 @@
     --pos-bg: #f8f9fa;
     --pos-bg-card: #ffffff;
     --pos-bg-alt: #f3f4f5;
-    --pos-primary: #b02a5b; /* Brand Pink for Action Buttons */
+    --pos-primary: #b02a5b; /* Signature Pink-Burgundy for Primary Buttons */
     --pos-primary-glow: rgba(176, 42, 91, 0.15);
-    --pos-gold: #d4af37;    /* Signature Gold for Accents & VIP */
+    --pos-gold: #d4af37;    /* Signature Gold for Accent highlights */
     --pos-border: #e0e0e0;
     --pos-border-hover: #d0c5af;
-    --pos-text: #191c1d;    /* Deep Charcoal for high contrast readability */
-    --pos-text-secondary: #7f7663;
+    --pos-text: #191c1d;    /* Deep charcoal */
+    --pos-text-secondary: #7f7663; /* Warm grey */
     --pos-muted: #adb4b6;
     
     /* Semantic Status Colors */
@@ -125,6 +125,27 @@ aside {
     justify-content: space-between;
     padding: 1.5rem 1rem;
     box-shadow: 4px 0 20px rgba(0,0,0,0.02);
+}
+aside > div:first-child {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    flex: 1;
+    margin-bottom: 1rem;
+    scrollbar-width: thin;
+}
+aside > div:first-child::-webkit-scrollbar {
+    width: 6px;
+}
+aside > div:first-child::-webkit-scrollbar-track {
+    background: transparent;
+}
+aside > div:first-child::-webkit-scrollbar-thumb {
+    background: var(--pos-border);
+    border-radius: 3px;
+}
+aside > div:first-child::-webkit-scrollbar-thumb:hover {
+    background: var(--pos-primary);
 }
 
 .brand-section {

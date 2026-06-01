@@ -2,11 +2,12 @@
  * RestoFlow Customer Mobile Portal Application Bootstrap
  */
 
-import { appModel } from './models/AppModel.js';
-import { CustomerView } from './views/customer/CustomerView.js';
-import { CustomerController } from './controllers/CustomerController.js';
+import { appModel } from './models/AppModel.js?v=2.0.1';
+import { CustomerView } from './views/customer/CustomerView.js?v=2.0.1';
+import { CustomerController } from './controllers/CustomerController.js?v=2.0.1';
 
-document.addEventListener("DOMContentLoaded", () => {
+function initCustomerApp() {
+    if (window.custCtrl) return;
     const view = new CustomerView(appModel);
     const controller = new CustomerController(appModel, view);
 
@@ -15,4 +16,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Run Customer portal initialization
     controller.init();
-});
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initCustomerApp);
+} else {
+    initCustomerApp();
+}
