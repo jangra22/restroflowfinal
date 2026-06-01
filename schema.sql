@@ -50,19 +50,35 @@ CREATE TABLE menu (
     category VARCHAR(100) NOT NULL,
     price NUMERIC(10, 2) NOT NULL,
     description TEXT,
+    image TEXT,
     ingredients JSONB NOT NULL, -- Format: {"ingredient_key": amount}
     customizations JSONB DEFAULT '[]'::jsonb -- Array of optional add-ons
 );
 
--- Seed starting premium menu items
-INSERT INTO menu (id, name, category, price, description, ingredients, customizations) VALUES
-('m1', 'Butter Chicken & Garlic Naan Combo', 'Mains', 380.00, 'Tender tandoori chicken cooked in a rich, buttery tomato sauce served with two garlic naans.', '{"chicken": 1.5, "atta": 2, "butter": 1, "tomato": 1, "spices": 1}', '[{"name": "Double Butter", "price": 40.00}, {"name": "Extra Garlic Naan", "price": 50.00}]'),
-('m2', 'Artisanal Paneer Tikka Masala Combo', 'Mains', 320.00, 'Spiced chargrilled cottage cheese paneer cooked in a tomato-onion masala gravel served with two butter rotis.', '{"paneer": 1.5, "atta": 2, "butter": 1, "tomato": 1, "spices": 1}', '[{"name": "Extra Roti", "price": 30.00}, {"name": "Add Cheese Layer", "price": 40.00}]'),
-('m3', 'Spicy Kadai Paneer Pizza', 'Fusion Pizzas', 290.00, 'Hand-stretched pizza topped with wok-tossed spicy paneer, bell peppers, onions, and local mozzarella.', '{"dough": 1, "cheese": 2, "paneer": 1, "tomato": 1}', '[{"name": "Cheese Burst Crust", "price": 60.00}, {"name": "Extra Paneer Cubes", "price": 50.00}]'),
-('m4', 'Tandoori Chicken Tikka Pizza', 'Fusion Pizzas', 340.00, 'Smoky tandoori chicken tikka, red onions, fresh green chillies, coriander, and mint chutney drizzles.', '{"dough": 1, "cheese": 2, "chicken": 1, "tomato": 1}', '[{"name": "Double Tandoori Tikka", "price": 80.00}]'),
-('m5', 'Royal Mango Lassi', 'Beverages', 90.00, 'Creamy, thick yogurt sweet beverage churned with handpicked premium Alphonso mango pulp and saffron.', '{"yogurt": 1, "mango": 1, "sugar": 1}', '[{"name": "Add Pistachio Garnish", "price": 15.00}]'),
-('m6', 'Authentic Masala Kulhad Chai', 'Beverages', 40.00, 'Slow-brewed strong CTC tea boiled with fresh buffalo milk, grated ginger, cardamoms, and lemongrass.', '{"tea": 1, "milk": 1, "ginger": 1, "sugar": 1}', '[{"name": "Sugar-Free", "price": 0.00}]'),
-('m7', 'Hot Gulab Jamun (2 Pcs) with Rabdi', 'Desserts', 90.00, 'Golden milk-solid dumplings soaked in warm cardamom sugar syrup topped with chilled rabdi cream.', '{"milk": 1.5, "sugar": 2, "cream": 1}', '[{"name": "Add Extra Rabdi", "price": 30.00}]');
+-- Seed starting premium vegetarian menu items
+INSERT INTO menu (id, name, category, price, description, image, ingredients, customizations) VALUES
+('m1', 'Crispy Corn & Pepper Salt', 'Starters', 220.00, 'Sweet corn kernels fried crisp and tossed with red onions, spring greens, crushed black pepper, and sea salt.', 'https://images.unsplash.com/photo-1518492104633-130d0cc84637?auto=format&fit=crop&q=80&w=600', '{"corn": 1, "spices": 1}', '[]'),
+('m2', 'Artisanal Paneer Tikka Masala Combo', 'Mains', 320.00, 'Spiced chargrilled cottage cheese paneer cooked in a tomato-onion masala gravel served with two butter rotis.', 'https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?auto=format&fit=crop&q=80&w=600', '{"paneer": 1.5, "atta": 2, "butter": 1, "tomato": 1, "spices": 1}', '[{"name": "Extra Roti", "price": 30.00}, {"name": "Add Cheese Layer", "price": 40.00}]'),
+('m3', 'Spicy Kadai Paneer Pizza', 'Fusion Pizzas', 290.00, 'Hand-stretched pizza topped with wok-tossed spicy paneer, bell peppers, onions, and local mozzarella.', 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&q=80&w=600', '{"dough": 1, "cheese": 2, "paneer": 1, "tomato": 1}', '[{"name": "Cheese Burst Crust", "price": 60.00}, {"name": "Extra Paneer Cubes", "price": 50.00}]'),
+('m4', 'Truffle Mushroom & Spinach Pizza', 'Fusion Pizzas', 350.00, 'Artisanal pizza loaded with sautéed wild button mushrooms, fresh baby spinach, white garlic cream, and truffle oil.', 'https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?auto=format&fit=crop&q=80&w=600', '{"dough": 1, "cheese": 2, "spices": 1}', '[{"name": "Double Cheese", "price": 50.00}]'),
+('m5', 'Royal Mango Lassi', 'Beverages', 90.00, 'Creamy, thick yogurt sweet beverage churned with handpicked premium Alphonso mango pulp and saffron.', 'https://images.unsplash.com/photo-1571006682887-f13c63968600?auto=format&fit=crop&q=80&w=600', '{"yogurt": 1, "mango": 1, "sugar": 1}', '[{"name": "Add Pistachio Garnish", "price": 15.00}]'),
+('m6', 'Authentic Masala Kulhad Chai', 'Beverages', 40.00, 'Slow-brewed strong CTC tea boiled with fresh buffalo milk, grated ginger, cardamoms, and lemongrass.', 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&q=80&w=600', '{"tea": 1, "milk": 1, "ginger": 1, "sugar": 1}', '[{"name": "Sugar-Free", "price": 0.00}]'),
+('m7', 'Hot Gulab Jamun (2 Pcs) with Rabdi', 'Desserts', 90.00, 'Golden milk-solid dumplings soaked in warm cardamom sugar syrup topped with chilled rabdi cream.', 'https://images.unsplash.com/photo-1601050690597-df056fb4ce78?auto=format&fit=crop&q=80&w=600', '{"milk": 1.5, "sugar": 2, "cream": 1}', '[{"name": "Add Extra Rabdi", "price": 30.00}]'),
+('m8', 'Paneer Kathi Roll', 'Starters', 180.00, 'Flaky paratha loaded with spice-marinated roasted paneer cubes, crunchy green bell peppers, tangy red onions, and fresh mint-yogurt chutney.', 'https://images.unsplash.com/photo-1626132647523-66f5bf380027?auto=format&fit=crop&q=80&w=600', '{"paneer": 1, "atta": 1, "butter": 1, "spices": 1}', '[]'),
+('m9', 'Crispy Honey Chilli Potato', 'Chinese', 210.00, 'Crispy double-fried potato fingers tossed with capsicums and spring onions in a sweet-and-spicy honey sesame sauce.', 'https://images.unsplash.com/photo-1626132647523-66f5bf380027?auto=format&fit=crop&q=80&w=600', '{"tomato": 1, "sugar": 1, "spices": 1}', '[]'),
+('m10', 'Vegetable Hakka Noodles', 'Chinese', 230.00, 'Stir-fried boiled wheat noodles tossed with colorful julienned cabbage, fresh carrots, crisp capsicum, and premium soy sauce.', 'https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&q=80&w=600', '{"atta": 1, "spices": 1}', '[{"name": "Schezwan Style", "price": 20.00}]'),
+('m11', 'Choco Lava Cake', 'Desserts', 150.00, 'Decadent warm chocolate cake with a rich, molten cocoa lava core, served piping hot.', 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&q=80&w=600', '{"sugar": 1.5, "butter": 1.0}', '[]'),
+('m12', 'Classic Steamed Veg Momos', 'Chinese', 140.00, 'Thin wheat wrappers loaded with minced seasoned cabbage, carrots, onions, and spring garlic, steamed soft. Served with spicy tomato-chili dip.', 'https://images.unsplash.com/photo-1625220194771-7ebedd0b7a2a?auto=format&fit=crop&q=80&w=600', '{"atta": 1, "spices": 1}', '[]'),
+('m13', 'Sizzling Veg Manchurian Gravy', 'Chinese', 240.00, 'Deep-fried vegetable globes cooked in a classic dark, thick soy-chili gravy with minced garlic and green onions.', 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=600', '{"atta": 1, "spices": 1, "tomato": 1}', '[]'),
+('m14', 'Dal Makhani with Laccha Paratha', 'Mains', 290.00, 'Slow-cooked premium black lentils simmered overnight on low charcoal fire with cream and churned table butter. Served with a crispy layered paratha.', 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&q=80&w=600', '{"milk": 1, "butter": 1.5, "atta": 2, "spices": 1}', '[{"name": "Extra Butter Paratha", "price": 40.00}]'),
+('m15', 'Dahi Ke Kebab', 'Starters', 240.00, 'Velvet-soft shallow-fried patties prepared with hung yogurt curd, fresh cottage cheese, crushed cardamoms, and green chilies.', 'https://images.unsplash.com/photo-1601050690597-df056fb4ce78?auto=format&fit=crop&q=80&w=600', '{"yogurt": 2, "paneer": 1, "spices": 1}', '[]'),
+('m16', 'Classic Kesar Pista Kulfi', 'Desserts', 110.00, 'Traditional Indian frozen dairy ice-cream flavored with premium saffron threads, ground pistachios, and rich cardamom milk.', 'https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&q=80&w=600', '{"milk": 2, "sugar": 1, "cream": 1}', '[]'),
+('m17', 'Virgin Mojito Mint Cooler', 'Beverages', 120.00, 'Sparkling summer cooler made with fresh muddled mint leaves, lime chunks, cane sugar, and chilled carbonated water.', 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&q=80&w=600', '{"sugar": 1}', '[]'),
+('m18', 'Veg Biryani with Mix Raita', 'Mains', 270.00, 'Fragrant premium long-grain Basmati rice slow-cooked on dum with saffron, mint, garden peas, carrots, french beans, and fried cashews.', 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&q=80&w=600', '{"yogurt": 1, "spices": 1}', '[]'),
+('m19', 'Premium Veg Spring Rolls', 'Chinese', 180.00, 'Golden, paper-thin crispy wrappers filled with stir-fried glass noodles, mushrooms, shredded cabbage, carrots, and soy sauce.', 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&q=80&w=600', '{"atta": 1, "spices": 1}', '[]'),
+('m20', 'Samosa Chaat Platter', 'Starters', 130.00, 'Crispy spiced potato-loaded samosas crushed and smothered with thick sweet yogurt, tangy tamarind, spicy mint chutney, and sev.', 'https://images.unsplash.com/photo-1601050690597-df056fb4ce78?auto=format&fit=crop&q=80&w=600', '{"atta": 1, "yogurt": 1, "spices": 1}', '[]'),
+('m21', 'Banarasi Tamatar Chaat', 'Starters', 140.00, 'Iconic spicy Varanasi street food prepared with mashed tomatoes, potatoes, ginger-chili paste, ghee, and sweet cumin water.', 'https://images.unsplash.com/photo-1601050690597-df056fb4ce78?auto=format&fit=crop&q=80&w=600', '{"tomato": 2, "butter": 1, "spices": 1}', '[]'),
+('m22', 'Royal Rabdi Malpua', 'Desserts', 180.00, 'Shallow-fried sweet fennel-infused pancakes soaked in sugar syrup and topped with thick, chilled Rabdi cream.', 'https://images.unsplash.com/photo-1601050690597-df056fb4ce78?auto=format&fit=crop&q=80&w=600', '{"milk": 2, "sugar": 2, "cream": 1, "atta": 1}', '[]');
 
 -- --------------------------------------------------------------------
 -- 3. RAW STOCK INVENTORY STORAGE
@@ -77,7 +93,6 @@ CREATE TABLE inventory (
 
 -- Seed raw warehouse stock
 INSERT INTO inventory (key, name, qty, unit, min_threshold) VALUES
-('chicken', 'Tandoori Bone-Free Chicken Fillet', 35.0, 'kg', 8.0),
 ('paneer', 'Artisanal Malai Cottage Cheese', 30.0, 'kg', 6.0),
 ('atta', 'Premium Sharbati Atta / Flour', 50.0, 'kg', 10.0),
 ('butter', 'Amul Salted Table Butter', 15.0, 'kg', 3.0),
@@ -90,7 +105,9 @@ INSERT INTO inventory (key, name, qty, unit, min_threshold) VALUES
 ('tea', 'Assam CTC Strong Tea Leaves', 8.0, 'kg', 2.0),
 ('milk', 'Buffalo Cream Dairy Milk', 45.0, 'litres', 10.0),
 ('sugar', 'Demerara Sugar Cardamoms', 20.0, 'kg', 5.0),
-('cream', 'Chilled Rabdi Cardamom Basundi', 12.0, 'litres', 3.0);
+('cream', 'Chilled Rabdi Cardamom Basundi', 12.0, 'litres', 3.0),
+('corn', 'Crispy Golden Sweet Corn', 20.0, 'kg', 4.0),
+('rice', 'Dehraduni Premium Basmati Rice', 50.0, 'kg', 10.0);
 
 -- --------------------------------------------------------------------
 -- 4. ACTIVE PROMOTION COUPONS

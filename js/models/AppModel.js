@@ -11,15 +11,13 @@
 const DEFAULT_MENU = [
     {
         id: "m1",
-        name: "Butter Chicken & Garlic Naan Combo",
-        category: "Mains",
-        price: 380.00,
-        description: "Tender tandoori chicken cooked in a rich, buttery tomato sauce served with two garlic naans.",
-        ingredients: { chicken: 1.5, atta: 2, butter: 1, tomato: 1, spices: 1 },
-        customizations: [
-            { name: "Double Butter", price: 40.00 },
-            { name: "Extra Garlic Naan", price: 50.00 }
-        ]
+        name: "Crispy Corn & Pepper Salt",
+        category: "Starters",
+        price: 220.00,
+        description: "Sweet corn kernels fried crisp and tossed with red onions, spring greens, crushed black pepper, and sea salt.",
+        image: "https://images.unsplash.com/photo-1518492104633-130d0cc84637?auto=format&fit=crop&q=80&w=600",
+        ingredients: { corn: 1, spices: 1 },
+        customizations: []
     },
     {
         id: "m2",
@@ -27,6 +25,7 @@ const DEFAULT_MENU = [
         category: "Mains",
         price: 320.00,
         description: "Spiced chargrilled cottage cheese paneer cooked in a tomato-onion masala gravel served with two butter rotis.",
+        image: "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?auto=format&fit=crop&q=80&w=600",
         ingredients: { paneer: 1.5, atta: 2, butter: 1, tomato: 1, spices: 1 },
         customizations: [
             { name: "Extra Roti", price: 30.00 },
@@ -39,6 +38,7 @@ const DEFAULT_MENU = [
         category: "Fusion Pizzas",
         price: 290.00,
         description: "Hand-stretched pizza topped with wok-tossed spicy paneer, bell peppers, onions, and local mozzarella.",
+        image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&q=80&w=600",
         ingredients: { dough: 1, cheese: 2, paneer: 1, tomato: 1 },
         customizations: [
             { name: "Cheese Burst Crust", price: 60.00 },
@@ -47,13 +47,14 @@ const DEFAULT_MENU = [
     },
     {
         id: "m4",
-        name: "Tandoori Chicken Tikka Pizza",
+        name: "Truffle Mushroom & Spinach Pizza",
         category: "Fusion Pizzas",
-        price: 340.00,
-        description: "Smoky tandoori chicken tikka, red onions, fresh green chillies, coriander, and mint chutney drizzles.",
-        ingredients: { dough: 1, cheese: 2, chicken: 1, tomato: 1 },
+        price: 350.00,
+        description: "Artisanal pizza loaded with sautéed wild button mushrooms, fresh baby spinach, white garlic cream, and truffle oil.",
+        image: "https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?auto=format&fit=crop&q=80&w=600",
+        ingredients: { dough: 1, cheese: 2, spices: 1 },
         customizations: [
-            { name: "Double Tandoori Tikka", price: 80.00 }
+            { name: "Double Cheese", price: 50.00 }
         ]
     },
     {
@@ -62,6 +63,7 @@ const DEFAULT_MENU = [
         category: "Beverages",
         price: 90.00,
         description: "Creamy, thick yogurt sweet beverage churned with handpicked premium Alphonso mango pulp and saffron.",
+        image: "https://images.unsplash.com/photo-1571006682887-f13c63968600?auto=format&fit=crop&q=80&w=600",
         ingredients: { yogurt: 1, mango: 1, sugar: 1 },
         customizations: [
             { name: "Add Pistachio Garnish", price: 15.00 }
@@ -73,6 +75,7 @@ const DEFAULT_MENU = [
         category: "Beverages",
         price: 40.00,
         description: "Slow-brewed strong CTC tea boiled with fresh buffalo milk, grated ginger, cardamoms, and lemongrass.",
+        image: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&q=80&w=600",
         ingredients: { tea: 1, milk: 1, ginger: 1, sugar: 1 },
         customizations: [
             { name: "Sugar-Free", price: 0.00 }
@@ -84,49 +87,169 @@ const DEFAULT_MENU = [
         category: "Desserts",
         price: 90.00,
         description: "Golden milk-solid dumplings soaked in warm cardamom sugar syrup topped with chilled rabdi cream.",
+        image: "https://images.unsplash.com/photo-1601050690597-df056fb4ce78?auto=format&fit=crop&q=80&w=600",
         ingredients: { milk: 1.5, sugar: 2, cream: 1 },
-        customizations: []
+        customizations: [
+            { name: "Add Extra Rabdi", price: 30.00 }
+        ]
     },
     {
         id: "m8",
-        name: "Chicken Biriyani",
-        category: "Mains",
-        price: 280.00,
-        description: "Premium Basmati rice cooked with layered spiced chicken, saffron, cardamoms, and deep fried onions.",
-        ingredients: { chicken: 1.5, rice: 2.0, spices: 1 },
+        name: "Paneer Kathi Roll",
+        category: "Starters",
+        price: 180.00,
+        description: "Flaky paratha loaded with spice-marinated roasted paneer cubes, crunchy green bell peppers, tangy red onions, and fresh mint-yogurt chutney.",
+        image: "https://images.unsplash.com/photo-1626132647523-66f5bf380027?auto=format&fit=crop&q=80&w=600",
+        ingredients: { paneer: 1, atta: 1, butter: 1, spices: 1 },
         customizations: []
     },
     {
         id: "m9",
-        name: "Choco Lava Cake",
-        category: "Desserts",
-        price: 350.00,
-        description: "Decadent chocolate cake with a rich molten lava core served piping warm.",
-        ingredients: { sugar: 1.5, butter: 1.0 },
+        name: "Crispy Honey Chilli Potato",
+        category: "Chinese",
+        price: 210.00,
+        description: "Crispy double-fried potato fingers tossed with capsicums and spring onions in a sweet-and-spicy honey sesame sauce.",
+        image: "https://images.unsplash.com/photo-1626132647523-66f5bf380027?auto=format&fit=crop&q=80&w=600",
+        ingredients: { tomato: 1, sugar: 1, spices: 1 },
         customizations: []
     },
     {
         id: "m10",
-        name: "Pastry Small",
-        category: "Desserts",
-        price: 100.00,
-        description: "Indulgent single slice vanilla frosted premium sponge pastry.",
-        ingredients: { sugar: 1.0, cream: 1.0 },
-        customizations: []
+        name: "Vegetable Hakka Noodles",
+        category: "Chinese",
+        price: 230.00,
+        description: "Stir-fried boiled wheat noodles tossed with colorful julienned cabbage, fresh carrots, crisp capsicum, and premium soy sauce.",
+        image: "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&q=80&w=600",
+        ingredients: { atta: 1, spices: 1 },
+        customizations: [
+            { name: "Schezwan Style", price: 20.00 }
+        ]
     },
     {
         id: "m11",
-        name: "Banana Pastry",
+        name: "Choco Lava Cake",
         category: "Desserts",
-        price: 200.00,
-        description: "Decadent pastry loaded with caramelized local banana layers.",
-        ingredients: { sugar: 1.0, cream: 1.0 },
+        price: 150.00,
+        description: "Decadent warm chocolate cake with a rich, molten cocoa lava core, served piping hot.",
+        image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&q=80&w=600",
+        ingredients: { sugar: 1.5, butter: 1.0 },
+        customizations: []
+    },
+    {
+        id: "m12",
+        name: "Classic Steamed Veg Momos",
+        category: "Chinese",
+        price: 140.00,
+        description: "Thin wheat wrappers loaded with minced seasoned cabbage, carrots, onions, and spring garlic, steamed soft. Served with spicy tomato-chili dip.",
+        image: "https://images.unsplash.com/photo-1625220194771-7ebedd0b7a2a?auto=format&fit=crop&q=80&w=600",
+        ingredients: { atta: 1, spices: 1 },
+        customizations: []
+    },
+    {
+        id: "m13",
+        name: "Sizzling Veg Manchurian Gravy",
+        category: "Chinese",
+        price: 240.00,
+        description: "Deep-fried vegetable globes cooked in a classic dark, thick soy-chili gravy with minced garlic and green onions.",
+        image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=600",
+        ingredients: { atta: 1, spices: 1, tomato: 1 },
+        customizations: []
+    },
+    {
+        id: "m14",
+        name: "Dal Makhani with Laccha Paratha",
+        category: "Mains",
+        price: 290.00,
+        description: "Slow-cooked premium black lentils simmered overnight on low charcoal fire with cream and churned table butter. Served with a crispy layered paratha.",
+        image: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&q=80&w=600",
+        ingredients: { milk: 1, butter: 1.5, atta: 2, spices: 1 },
+        customizations: [
+            { name: "Extra Butter Paratha", price: 40.00 }
+        ]
+    },
+    {
+        id: "m15",
+        name: "Dahi Ke Kebab",
+        category: "Starters",
+        price: 240.00,
+        description: "Velvet-soft shallow-fried patties prepared with hung yogurt curd, fresh cottage cheese, crushed cardamoms, and green chilies.",
+        image: "https://images.unsplash.com/photo-1601050690597-df056fb4ce78?auto=format&fit=crop&q=80&w=600",
+        ingredients: { yogurt: 2, paneer: 1, spices: 1 },
+        customizations: []
+    },
+    {
+        id: "m16",
+        name: "Classic Kesar Pista Kulfi",
+        category: "Desserts",
+        price: 110.00,
+        description: "Traditional Indian frozen dairy ice-cream flavored with premium saffron threads, ground pistachios, and rich cardamom milk.",
+        image: "https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&q=80&w=600",
+        ingredients: { milk: 2, sugar: 1, cream: 1 },
+        customizations: []
+    },
+    {
+        id: "m17",
+        name: "Virgin Mojito Mint Cooler",
+        category: "Beverages",
+        price: 120.00,
+        description: "Sparkling summer cooler made with fresh muddled mint leaves, lime chunks, cane sugar, and chilled carbonated water.",
+        image: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&q=80&w=600",
+        ingredients: { sugar: 1 },
+        customizations: []
+    },
+    {
+        id: "m18",
+        name: "Veg Biryani with Mix Raita",
+        category: "Mains",
+        price: 270.00,
+        description: "Fragrant premium long-grain Basmati rice slow-cooked on dum with saffron, mint, garden peas, carrots, french beans, and fried cashews.",
+        image: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&q=80&w=600",
+        ingredients: { yogurt: 1, spices: 1 },
+        customizations: []
+    },
+    {
+        id: "m19",
+        name: "Premium Veg Spring Rolls",
+        category: "Chinese",
+        price: 180.00,
+        description: "Golden, paper-thin crispy wrappers filled with stir-fried glass noodles, mushrooms, shredded cabbage, carrots, and soy sauce.",
+        image: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&q=80&w=600",
+        ingredients: { atta: 1, spices: 1 },
+        customizations: []
+    },
+    {
+        id: "m20",
+        name: "Samosa Chaat Platter",
+        category: "Starters",
+        price: 130.00,
+        description: "Crispy spiced potato-loaded samosas crushed and smothered with thick sweet yogurt, tangy tamarind, spicy mint chutney, and sev.",
+        image: "https://images.unsplash.com/photo-1601050690597-df056fb4ce78?auto=format&fit=crop&q=80&w=600",
+        ingredients: { atta: 1, yogurt: 1, spices: 1 },
+        customizations: []
+    },
+    {
+        id: "m21",
+        name: "Banarasi Tamatar Chaat",
+        category: "Starters",
+        price: 140.00,
+        description: "Iconic spicy Varanasi street food prepared with mashed tomatoes, potatoes, ginger-chili paste, ghee, and sweet cumin water.",
+        image: "https://images.unsplash.com/photo-1601050690597-df056fb4ce78?auto=format&fit=crop&q=80&w=600",
+        ingredients: { tomato: 2, butter: 1, spices: 1 },
+        customizations: []
+    },
+    {
+        id: "m22",
+        name: "Royal Rabdi Malpua",
+        category: "Desserts",
+        price: 180.00,
+        description: "Shallow-fried sweet fennel-infused pancakes soaked in sugar syrup and topped with thick, chilled Rabdi cream.",
+        image: "https://images.unsplash.com/photo-1601050690597-df056fb4ce78?auto=format&fit=crop&q=80&w=600",
+        ingredients: { milk: 2, sugar: 2, cream: 1, atta: 1 },
         customizations: []
     }
 ];
 
 const DEFAULT_INVENTORY = {
-    chicken: { name: "Chicken", category: "Meat", qty: 25, max: 50, unit: "kg", min: 8, cost: 220, supplier: "Fresh Farms", lastUpdated: "2023-06-15" },
     rice: { name: "Rice", category: "Ingredients", qty: 45, max: 100, unit: "kg", min: 10, cost: 80, supplier: "Grain Suppliers", lastUpdated: "2023-06-14" },
     paneer: { name: "Paneer", category: "Dairy", qty: 8, max: 30, unit: "kg", min: 6, cost: 320, supplier: "Dairy Fresh", lastUpdated: "2023-06-15" },
     tomato: { name: "Tomatoes", category: "Produce", qty: 15, max: 40, unit: "kg", min: 5, cost: 60, supplier: "Fresh Farms", lastUpdated: "2023-06-15" },
@@ -141,7 +264,8 @@ const DEFAULT_INVENTORY = {
     tea: { name: "Tea Leaves", category: "Ingredients", qty: 8, max: 20, unit: "kg", min: 2, cost: 140, supplier: "Spice World", lastUpdated: "2023-06-10" },
     milk: { name: "Buffalo Milk", category: "Dairy", qty: 45, max: 100, unit: "litres", min: 10, cost: 65, supplier: "Dairy Fresh", lastUpdated: "2023-06-15" },
     sugar: { name: "Sugar", category: "Ingredients", qty: 20, max: 50, unit: "kg", min: 5, cost: 40, supplier: "Grain Suppliers", lastUpdated: "2023-06-14" },
-    cream: { name: "Rabdi Cream", category: "Dairy", qty: 12, max: 30, unit: "litres", min: 3, cost: 220, supplier: "Dairy Fresh", lastUpdated: "2023-06-15" }
+    cream: { name: "Rabdi Cream", category: "Dairy", qty: 12, max: 30, unit: "litres", min: 3, cost: 220, supplier: "Dairy Fresh", lastUpdated: "2023-06-15" },
+    corn: { name: "Sweet Corn", category: "Produce", qty: 20, max: 50, unit: "kg", min: 4, cost: 100, supplier: "Fresh Farms", lastUpdated: "2023-06-15" }
 };
 
 const DEFAULT_TABLES = [
@@ -299,21 +423,22 @@ export class AppModel extends EventTarget {
     }
 
     init() {
-        // Dynamic self-healing schema re-seeder for menu
+        // Dynamic self-healing schema re-seeder for menu (Checks for premium vegetarian Malpua m22 to trigger migration)
         try {
             const storedMenu = localStorage.getItem("restoflow_menu");
-            if (!storedMenu || !storedMenu.includes("m8")) {
+            if (!storedMenu || !storedMenu.includes("m22")) {
                 localStorage.setItem("restoflow_menu", JSON.stringify(DEFAULT_MENU));
             }
         } catch (e) {
             localStorage.setItem("restoflow_menu", JSON.stringify(DEFAULT_MENU));
         }
 
-        // Dynamic self-healing schema re-seeder for inventory
+        // Dynamic self-healing schema re-seeder for inventory (Checks and purges old chicken stocks to load corn/rice)
         try {
             const storedInventory = localStorage.getItem("restoflow_inventory");
             const hasCost = storedInventory && storedInventory.includes("cost");
-            if (!storedInventory || !hasCost) {
+            const hasChicken = storedInventory && storedInventory.includes("chicken");
+            if (!storedInventory || !hasCost || hasChicken) {
                 localStorage.setItem("restoflow_inventory", JSON.stringify(DEFAULT_INVENTORY));
             }
         } catch (e) {

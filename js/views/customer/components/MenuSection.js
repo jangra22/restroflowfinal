@@ -92,7 +92,7 @@ export class MenuSection {
 
             items.forEach(item => {
                 totalItemsRendered++;
-                const imgUrl = FOOD_IMAGES[item.id] || "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&q=80&w=600";
+                const imgUrl = item.image || FOOD_IMAGES[item.id] || "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&q=80&w=600";
                 
                 // Badges
                 const badgeInfo = ITEM_BADGES[item.id];

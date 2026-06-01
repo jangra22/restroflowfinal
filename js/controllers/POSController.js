@@ -735,15 +735,33 @@ export class POSController {
     }
 
     addMenuItemPrompt() {
-        const name = prompt("Enter new dish name:");
-        if (!name) return;
-        const category = prompt("Enter category (e.g. Mains, Desserts, Beverages, Fusion Pizzas):");
-        const price = parseFloat(prompt("Enter price (₹):"));
-        if (isNaN(price) || price <= 0) {
-            alert("Invalid price!");
+        const modal = document.getElementById("pos-add-menu-modal");
+        if (modal) {
+            const form = document.getElementById("pos-add-menu-form");
+            if (form) form.reset();
+            modal.classList.add("open");
+        }
+    }
+
+    closeAddMenuModal() {
+        const modal = document.getElementById("pos-add-menu-modal");
+        if (modal) {
+            modal.classList.remove("open");
+        }
+    }
+
+    submitAddMenuForm(event) {
+        event.preventDefault();
+        const name = document.getElementById("add-menu-name").value.trim();
+        const category = document.getElementById("add-menu-category").value;
+        const price = parseFloat(document.getElementById("add-menu-price").value);
+        const description = document.getElementById("add-menu-desc").value.trim();
+        const image = document.getElementById("add-menu-image").value.trim();
+
+        if (!name || isNaN(price) || price <= 0) {
+            alert("Please enter a valid name and price!");
             return;
         }
-        const description = prompt("Enter description:");
 
         const menu = this.model.getMenu();
         const nextId = "m" + (menu.length + 1);
@@ -753,13 +771,16 @@ export class POSController {
             category,
             price,
             description,
+            image: image || "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&q=80&w=600",
             ingredients: { spices: 1 },
             status: "Active"
         };
 
         menu.push(newItem);
         this.model.saveMenu(menu);
-        this.model.logSecurityEvent(`Added new menu item: ${name} (₹${price})`);
+        this.model.logSecurityEvent(`Added new menu item via Admin Form: ${name} (₹${price})`);
+        
+        this.closeAddMenuModal();
         this.refreshActiveDashboardView();
     }
 }
